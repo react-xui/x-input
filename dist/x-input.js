@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Input = __webpack_require__(1);
 
-	module.exports = { Input: _Input.Input, NumericInput: _Input.NumericInput, InterInput: _Input.InterInput, PosInterInput: _Input.PosInterInput, LetterInput: _Input.LetterInput, ThousandInput: _Input.ThousandInput }; //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
+	module.exports = { Input: _Input.Input, NumericInput: _Input.NumericInput, InterInput: _Input.InterInput, PosInterInput: _Input.PosInterInput, LetterInput: _Input.LetterInput, ThousandInput: _Input.ThousandInput, InputContainer: _Input.InputContainer }; //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
 	/*
 	 * Created with Visual Studio Code.
 	 * github: https://github.com/React-Plugin/x-seed
@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ThousandInput = exports.LetterInput = exports.PosInterInput = exports.InterInput = exports.NumericInput = exports.Input = undefined;
+	exports.ThousandInput = exports.LetterInput = exports.PosInterInput = exports.InterInput = exports.NumericInput = exports.InputContainer = exports.Input = undefined;
 
 	var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
 	    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
@@ -317,6 +317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 	var ThousandInput = FormatContainer(Input, formatThousandthNumber);
+	exports.InputContainer = InputContainer;
 	exports.NumericInput = NumericInput;
 	exports.InterInput = InterInput;
 	exports.PosInterInput = PosInterInput;
