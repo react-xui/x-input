@@ -4,11 +4,11 @@ react.js文本输入框，限制输入内容为数字、字母、千分位等
 ## npm安装
 
 ```bash
-npm install x-input --save
+npm install jsx-input --save
 ```
 基本使用方式
 ```js
-import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput } from 'x-input';
+import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput } from 'jsx-input';
         <InterInput placeholder="请输入数字"/>
         <LetterInput placeholder="请输入字母"/>
         <ThousandInput placeholder="千分位数字"/>

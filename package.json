@@ -1,5 +1,5 @@
 {
-  "name": "x-input",
+  "name": "jsx-input",
   "version": "0.0.1",
   "description": "react xui ",
   "main": "./lib/index.js",
