@@ -16,13 +16,14 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 效果图如下
 
 ![x-input](examples/input.gif)
-
+## Input 
+输入框
 ## NumericInput
-纯数字输入框，只能输入正负整数或小数
+纯数字输入框，只能输入正负整数或小数，属性`decimals`限制小数位数
 ## LetterInput
 纯字母输入框
 ## ThousandInput
-带千分位的数字输入框
+带千分位的数字输入框，属性`decimals`限制小数位数
 ## PosInterInput
 正整数输入限制
 ## InputContainer (Input,regular)
