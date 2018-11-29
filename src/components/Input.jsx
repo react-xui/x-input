@@ -11,11 +11,11 @@ import React,{ Component } from "react";
 export class Input extends Component{
     constructor(props){
         super(props);
-        this.state={value:props.value||""};
+        this.state={value:typeof props.value ==='undefined'?"":props.value};
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
     componentWillReceiveProps(newProps,newState){
-        if(newProps.value != this.state.value){
+        if(typeof  newProps.value!=='undefined' && newProps.value != this.state.value){
             this.setState({value:newProps.value});
         }
     }
@@ -30,7 +30,7 @@ export class Input extends Component{
         delete newProps['className'];
         delete newProps['decimals'];
         delete newProps['onChange'];
-        delete newProps['value'];
+        // delete newProps['value'];
         return (
             <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps}/>
         )
@@ -46,7 +46,7 @@ export class Input extends Component{
 const InputContainer = (WrappedComponnet,reg=/^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/)=> class extends Component{
     constructor(props){
         super(props);
-        this.state={value:props.value||""};
+        this.state={value:typeof props.value ==='undefined'?"":props.value};
         this.decimals = props.decimals;
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }

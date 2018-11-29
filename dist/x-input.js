@@ -149,7 +149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
 
-	        _this.state = { value: props.value || "" };
+	        _this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
 	        _this.onChangeHandle = _this.onChangeHandle.bind(_this);
 	        return _this;
 	    }
@@ -157,7 +157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(Input, [{
 	        key: "componentWillReceiveProps",
 	        value: function componentWillReceiveProps(newProps, newState) {
-	            if (newProps.value != this.state.value) {
+	            if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value) {
 	                this.setState({ value: newProps.value });
 	            }
 	        }
@@ -177,7 +177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            delete newProps['className'];
 	            delete newProps['decimals'];
 	            delete newProps['onChange'];
-	            delete newProps['value'];
+	            // delete newProps['value'];
 	            return _react2.default.createElement("input", _extends({ className: cls, onChange: this.onChangeHandle, value: this.state.value }, newProps));
 	        }
 	    }]);
@@ -203,7 +203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var _this2 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-	            _this2.state = { value: props.value || "" };
+	            _this2.state = { value: typeof props.value === 'undefined' ? "" : props.value };
 	            _this2.decimals = props.decimals;
 	            _this2.onChangeHandle = _this2.onChangeHandle.bind(_this2);
 	            return _this2;

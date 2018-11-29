@@ -8,25 +8,23 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { v: '213' };
-  }
-  testFunc() {
-    this.setState({ show: !this.state.show });
+    this.clickHandle = this.clickHandle.bind(this);
   }
   changeHandle(value){
     console.log(value)
   }
-  click(){
-    this.setState({v:+new Date()})
+  clickHandle(e){
+    this.setState({v:11})
   }
   render() {
     return (
       <div>
-        <button onClick={this.click.bind(this)}>test</button>
+        <button onClick={this.clickHandle}>test</button>
         <Input value={this.state.v}/>
         <InterInput className="txb" placeholder="请输入数字" value={this.state.v} onChange={this.changeHandle.bind(this)}/>
-        <LetterInput placeholder="请输入字母" onChange={this.changeHandle.bind(this)}/>
-        <ThousandInput placeholder="千分位数字" decimals="4" onChange={this.changeHandle.bind(this)}/>
-        <NumericInput value="2.12" decimals="2" onChange={this.changeHandle.bind(this)}/>
+        <LetterInput placeholder="请输入字母"  value="" onChange={this.changeHandle.bind(this)}/>
+        <ThousandInput placeholder="千分位数字" value="" decimals="4" onChange={this.changeHandle.bind(this)}/>
+        <NumericInput value="2.12" decimals="2" value="123" onChange={this.changeHandle.bind(this)}/>
       </div>
     )
   }
