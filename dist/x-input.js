@@ -155,6 +155,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(Input, [{
+	        key: "componentWillReceiveProps",
+	        value: function componentWillReceiveProps(newProps, newState) {
+	            if (newProps.value != this.state.value) {
+	                this.setState({ value: newProps.value });
+	            }
+	        }
+	    }, {
 	        key: "onChangeHandle",
 	        value: function onChangeHandle(e) {
 	            var value = e.target.value;
@@ -170,6 +177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            delete newProps['className'];
 	            delete newProps['decimals'];
 	            delete newProps['onChange'];
+	            delete newProps['value'];
 	            return _react2.default.createElement("input", _extends({ className: cls, onChange: this.onChangeHandle, value: this.state.value }, newProps));
 	        }
 	    }]);
@@ -202,6 +210,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        _createClass(_class, [{
+	            key: "componentWillReceiveProps",
+	            value: function componentWillReceiveProps(newProps, newState) {
+	                if (newProps.value != this.state.value) {
+	                    this.setState({ value: newProps.value });
+	                }
+	            }
+	        }, {
 	            key: "onChangeHandle",
 	            value: function onChangeHandle(e) {
 	                var _this3 = this;
@@ -217,13 +232,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    this.setState({ value: value }, function () {
 	                        _this3.props.onChange && _this3.props.onChange(value);
 	                    });
-	                }
-	            }
-	        }, {
-	            key: "UNSAFE_componentWillReceiveProps",
-	            value: function UNSAFE_componentWillReceiveProps(newProps, newState) {
-	                if (newProps.value != this.state.value) {
-	                    this.setState({ value: newProps.value });
 	                }
 	            }
 	        }, {

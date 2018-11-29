@@ -14,6 +14,11 @@ export class Input extends Component{
         this.state={value:props.value||""};
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
+    componentWillReceiveProps(newProps,newState){
+        if(newProps.value != this.state.value){
+            this.setState({value:newProps.value});
+        }
+    }
     onChangeHandle(e){
         let {value} = e.target;
         this.setState({value});
@@ -25,6 +30,7 @@ export class Input extends Component{
         delete newProps['className'];
         delete newProps['decimals'];
         delete newProps['onChange'];
+        delete newProps['value'];
         return (
             <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps}/>
         )
@@ -44,6 +50,11 @@ const InputContainer = (WrappedComponnet,reg=/^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/)=>
         this.decimals = props.decimals;
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
+    componentWillReceiveProps(newProps,newState){
+        if(newProps.value != this.state.value){
+            this.setState({value:newProps.value});
+        }
+    }
     onChangeHandle(e){
         let {value} = e.target;
         let arr = value.split('.');
@@ -55,11 +66,6 @@ const InputContainer = (WrappedComponnet,reg=/^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/)=>
             this.setState({value},()=>{
                 this.props.onChange && this.props.onChange(value);
             });
-        }
-    }
-    UNSAFE_componentWillReceiveProps(newProps,newState){
-        if(newProps.value != this.state.value){
-            this.setState({value:newProps.value});
         }
     }
     render(){
