@@ -8,7 +8,7 @@
  */
 import React,{ Component } from "react";
 //文本输入框
-export class Input extends Component{
+class Base extends Component{
     constructor(props){
         super(props);
         this.state={value:typeof props.value ==='undefined'?"":props.value};
@@ -40,7 +40,7 @@ export class Input extends Component{
 // export class NumericInput extends Component{
 //     render(){
 //         let reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
-//         return <Input reg={reg} />
+//         return <Base reg={reg} />
 //     }
 // }
 const InputContainer = (WrappedComponnet,reg=/^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/)=> class extends Component{
@@ -77,10 +77,11 @@ const InputContainer = (WrappedComponnet,reg=/^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/)=>
         return <WrappedComponnet {...props}/>
     }
 }
-const NumericInput = InputContainer(Input);//数字
-const InterInput = InputContainer(Input,/^-?(0|[1-9][0-9]*)$/);//整数
-const PosInterInput = InputContainer(Input,/^(0|[1-9][0-9]*)$/);//正整数
-const LetterInput = InputContainer(Input,/^[a-zA-Z]+$/);//正整数
+const Input = InputContainer(Base,/\w*/);
+const NumericInput = InputContainer(Base);//数字
+const InterInput = InputContainer(Base,/^-?(0|[1-9][0-9]*)$/);//整数
+const PosInterInput = InputContainer(Base,/^(0|[1-9][0-9]*)$/);//正整数
+const LetterInput = InputContainer(Base,/^[a-zA-Z]+$/);//正整数
 
 const setCaretPosition=(tObj, sPos)=>{
     if(tObj.setSelectionRange){
@@ -154,5 +155,5 @@ const formatThousandthNumber =  function (num,{decimals}) {
         return str;
     }
 }
-const ThousandInput = FormatContainer(Input,formatThousandthNumber);
-export {InputContainer,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput};
+const ThousandInput = FormatContainer(Base,formatThousandthNumber);
+export {Input,InputContainer,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput};

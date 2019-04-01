@@ -16,12 +16,16 @@ class App extends React.Component {
   clickHandle(e){
     this.setState({v:11})
   }
+  getValueHandle=()=>{
+    alert(ReactDOM.findDOMNode(this.txt).value)
+  }
   render() {
     return (
       <div>
         <button onClick={this.clickHandle}>test</button>
-        <Input value={this.state.v}/>
-        <InterInput className="txb" placeholder="请输入数字" value={this.state.v} onChange={this.changeHandle.bind(this)}/>
+        <button onClick={this.getValueHandle}>getvalue</button>
+        <Input value={this.state.v} ref={txt=>this.txt=txt}/>
+        <InterInput className="txb" placeholder="请输入数字" value={this.state.v} />
         <LetterInput placeholder="请输入字母"  value="" onChange={this.changeHandle.bind(this)}/>
         <ThousandInput placeholder="千分位数字" value="" decimals="4" onChange={this.changeHandle.bind(this)}/>
         <NumericInput value="2.12" decimals="2" value="123" onChange={this.changeHandle.bind(this)}/>

@@ -141,20 +141,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	//文本输入框
-	var Input = exports.Input = function (_Component) {
-	    _inherits(Input, _Component);
+	var Base = function (_Component) {
+	    _inherits(Base, _Component);
 
-	    function Input(props) {
-	        _classCallCheck(this, Input);
+	    function Base(props) {
+	        _classCallCheck(this, Base);
 
-	        var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
+	        var _this = _possibleConstructorReturn(this, (Base.__proto__ || Object.getPrototypeOf(Base)).call(this, props));
 
 	        _this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
 	        _this.onChangeHandle = _this.onChangeHandle.bind(_this);
 	        return _this;
 	    }
 
-	    _createClass(Input, [{
+	    _createClass(Base, [{
 	        key: "componentWillReceiveProps",
 	        value: function componentWillReceiveProps(newProps, newState) {
 	            if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value) {
@@ -182,13 +182,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }]);
 
-	    return Input;
+	    return Base;
 	}(_react.Component);
 
 	// export class NumericInput extends Component{
 	//     render(){
 	//         let reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
-	//         return <Input reg={reg} />
+	//         return <Base reg={reg} />
 	//     }
 	// }
 
@@ -249,10 +249,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _class;
 	    }(_react.Component);
 	};
-	var NumericInput = InputContainer(Input); //数字
-	var InterInput = InputContainer(Input, /^-?(0|[1-9][0-9]*)$/); //整数
-	var PosInterInput = InputContainer(Input, /^(0|[1-9][0-9]*)$/); //正整数
-	var LetterInput = InputContainer(Input, /^[a-zA-Z]+$/); //正整数
+	var Input = InputContainer(Base, /\w*/);
+	var NumericInput = InputContainer(Base); //数字
+	var InterInput = InputContainer(Base, /^-?(0|[1-9][0-9]*)$/); //整数
+	var PosInterInput = InputContainer(Base, /^(0|[1-9][0-9]*)$/); //正整数
+	var LetterInput = InputContainer(Base, /^[a-zA-Z]+$/); //正整数
 
 	var setCaretPosition = function setCaretPosition(tObj, sPos) {
 	    if (tObj.setSelectionRange) {
@@ -346,7 +347,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return str;
 	    }
 	};
-	var ThousandInput = FormatContainer(Input, formatThousandthNumber);
+	var ThousandInput = FormatContainer(Base, formatThousandthNumber);
+	exports.Input = Input;
 	exports.InputContainer = InputContainer;
 	exports.NumericInput = NumericInput;
 	exports.InterInput = InterInput;
