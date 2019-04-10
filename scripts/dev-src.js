@@ -9,7 +9,7 @@ var compiler = webpack(config);
 var server = new WebpackDevServer(compiler, {
     contentBase:'dev'
 });
-server.listen(8099,'127.0.0.1',()=>{
-    console.log('http://localhost:8099/')
+server.listen(8089,'127.0.0.1',()=>{
+    console.log('http://localhost:8089/')
 });
 

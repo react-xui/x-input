@@ -193,8 +193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// }
 
 
-	var InputContainer = function InputContainer(WrappedComponnet) {
-	    var reg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+	var InputContainer = function InputContainer(WrappedComponnet, reg) {
 	    return function (_Component2) {
 	        _inherits(_class, _Component2);
 
@@ -203,7 +202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var _this2 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-	            _this2.state = { value: typeof props.value === 'undefined' ? "" : props.value };
+	            _this2.state = { value: typeof props.value === 'undefined' ? "" : _this2.format(props.value, true) };
 	            _this2.decimals = props.decimals;
 	            _this2.onChangeHandle = _this2.onChangeHandle.bind(_this2);
 	            return _this2;
@@ -213,26 +212,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	            key: "componentWillReceiveProps",
 	            value: function componentWillReceiveProps(newProps, newState) {
 	                if (newProps.value != this.state.value) {
-	                    this.setState({ value: newProps.value });
+	                    this.format(newProps.value);
+	                    // this.setState({ value: newProps.value });
+	                }
+	            }
+	        }, {
+	            key: "format",
+	            value: function format(value, isinit) {
+	                var _this3 = this;
+
+	                value = String(value);
+	                if (reg && value != '') {
+	                    var arr = value.split('.');
+	                    if (arr.length > 1) {
+	                        value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+	                    }
+	                    var res = value.match(reg);
+	                    value = res === null ? '' : res[0];
+	                }
+	                if (isinit) {
+	                    return value;
+	                } else {
+	                    this.setState({ value: value }, function () {
+	                        _this3.props.onChange && _this3.props.onChange(value);
+	                    });
 	                }
 	            }
 	        }, {
 	            key: "onChangeHandle",
 	            value: function onChangeHandle(e) {
-	                var _this3 = this;
-
 	                var value = e.target.value;
 
-	                var arr = value.split('.');
-	                if (arr.length > 1) {
-	                    value = arr[0] + '.' + arr[1].substr(0, this.decimals);
-	                }
-
-	                if (!reg || reg.test(value) || value === '') {
-	                    this.setState({ value: value }, function () {
-	                        _this3.props.onChange && _this3.props.onChange(value);
-	                    });
-	                }
+	                this.format(value);
 	            }
 	        }, {
 	            key: "render",
@@ -249,11 +260,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _class;
 	    }(_react.Component);
 	};
-	var Input = InputContainer(Base, /\w*/);
-	var NumericInput = InputContainer(Base); //数字
-	var InterInput = InputContainer(Base, /^-?(0|[1-9][0-9]*)$/); //整数
-	var PosInterInput = InputContainer(Base, /^(0|[1-9][0-9]*)$/); //正整数
-	var LetterInput = InputContainer(Base, /^[a-zA-Z]+$/); //正整数
+	var Input = InputContainer(Base);
+	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/); //数字
+	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)/); //整数
+	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/); //正整数
+	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //正整数
 
 	var setCaretPosition = function setCaretPosition(tObj, sPos) {
 	    if (tObj.setSelectionRange) {
