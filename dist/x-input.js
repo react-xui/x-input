@@ -211,7 +211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _createClass(_class, [{
 	            key: "componentWillReceiveProps",
 	            value: function componentWillReceiveProps(newProps, newState) {
-	                if (newProps.value != this.state.value) {
+	                if (newProps.value != this.state.value && typeof newProps.value !== 'undefined') {
 	                    this.format(newProps.value);
 	                    // this.setState({ value: newProps.value });
 	                }

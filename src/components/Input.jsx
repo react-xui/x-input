@@ -51,7 +51,7 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
     componentWillReceiveProps(newProps, newState) {
-        if (newProps.value != this.state.value) {
+        if (newProps.value != this.state.value && typeof newProps.value !=='undefined') {
             this.format(newProps.value)
             // this.setState({ value: newProps.value });
         }
