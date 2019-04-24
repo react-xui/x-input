@@ -127,7 +127,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         this.setState({ value }, () => {
             let tmp = this.state.value.length - rightpos
             setCaretPosition(target, tmp);
-            this.props.onChange && this.props.onChange(value);
+            this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
         })
     }
 }

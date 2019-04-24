@@ -314,7 +314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.setState({ value: value }, function () {
 	                    var tmp = _this5.state.value.length - rightpos;
 	                    setCaretPosition(target, tmp);
-	                    _this5.props.onChange && _this5.props.onChange(value);
+	                    _this5.props.onChange && _this5.props.onChange(value.replace(/\,/g, ''));
 	                });
 	            }
 	        }]);
