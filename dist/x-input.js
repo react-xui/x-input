@@ -221,7 +221,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function format(value, isinit) {
 	                var _this3 = this;
 
-	                value = String(value);
+	                value = String(value).replace(/\,/g, '');
 	                if (reg && value != '') {
 	                    var arr = value.split('.');
 	                    if (arr.length > 1) {
@@ -291,7 +291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return cursorPos;
 	};
-	var FormatContainer = function FormatContainer(WrappedComponnet, format) {
+	var FormatContainer = function FormatContainer(WrappedComponnet, _format) {
 	    return function (_NumericInput) {
 	        _inherits(_class2, _NumericInput);
 
@@ -303,19 +303,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _createClass(_class2, [{
 	            key: "onChangeHandle",
-	            value: function onChangeHandle(e, v) {
+	            value: function onChangeHandle(e) {
+	                var value = e.target.value;
+
+	                this.format(value, false, e);
+	            }
+	        }, {
+	            key: "format",
+	            value: function format(v, isinit, e) {
 	                var _this5 = this;
 
-	                var value = format(e.target.value.replace(/\,/g, ''), this.props);
-	                var target = e.target;
-	                var len = target.value.length;
-	                var pos = getPosition(target);
-	                var rightpos = len - pos; //算出从右计算的光标位置
-	                this.setState({ value: value }, function () {
-	                    var tmp = _this5.state.value.length - rightpos;
-	                    setCaretPosition(target, tmp);
-	                    _this5.props.onChange && _this5.props.onChange(value.replace(/\,/g, ''));
-	                });
+	                var value = _format(v.replace(/\,/g, ''), this.props);
+	                if (!isinit) {
+	                    var target = e.target;
+	                    var len = target.value.length;
+	                    var pos = getPosition(target);
+	                    var rightpos = len - pos; //算出从右计算的光标位置
+	                    this.setState({ value: value }, function () {
+	                        var tmp = _this5.state.value.length - rightpos;
+	                        setCaretPosition(target, tmp);
+	                        _this5.props.onChange && _this5.props.onChange(value.replace(/\,/g, ''));
+	                    });
+	                } else {
+	                    return value;
+	                }
 	            }
 	        }]);
 
@@ -327,7 +338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var decimals = _ref.decimals;
 
 	    // number = number.replace(/\,/g,'');
-	    num = String(num);
+	    num = String(num).replace(/\,/g, '');
 	    var arr = num.split('.');
 	    var number = arr[0];
 	    // let decimals  = arr.length>1 ?arr[1].length:0;

@@ -57,7 +57,7 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
         }
     }
     format(value,isinit) {
-        value= String(value);
+        value= String(value).replace(/\,/g, '');
         if (reg && value!='') {
             let arr = value.split('.');
             if (arr.length > 1) {
@@ -118,23 +118,31 @@ const getPosition = function (element) {
     return cursorPos;
 }
 const FormatContainer = (WrappedComponnet, format) => class extends NumericInput {
-    onChangeHandle(e, v) {
-        let value = format(e.target.value.replace(/\,/g, ''), this.props);
-        let target = e.target;
-        let len = target.value.length;
-        let pos = getPosition(target);
-        let rightpos = len - pos;//算出从右计算的光标位置
-        this.setState({ value }, () => {
-            let tmp = this.state.value.length - rightpos
-            setCaretPosition(target, tmp);
-            this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
-        })
+    onChangeHandle(e) {
+        let { value } = e.target;
+        this.format(value,false,e);
+    }
+    format(v,isinit,e) {
+        let value = format(v.replace(/\,/g, ''), this.props);
+        if(!isinit){
+            let target = e.target;
+            let len = target.value.length;
+            let pos = getPosition(target);
+            let rightpos = len - pos;//算出从右计算的光标位置
+            this.setState({ value }, () => {
+                let tmp = this.state.value.length - rightpos
+                setCaretPosition(target, tmp);
+                this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
+            })
+        }else{
+            return value;
+        }
     }
 }
 
 const formatThousandthNumber = function (num, { decimals }) {
     // number = number.replace(/\,/g,'');
-    num = String(num);
+    num = String(num).replace(/\,/g,'');
     let arr = num.split('.');
     let number = arr[0]
     // let decimals  = arr.length>1 ?arr[1].length:0;

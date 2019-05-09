@@ -7,7 +7,7 @@ var appElement = document.getElementById('example');
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { v: '213.123' };
+    this.state = { v: '2,133.123' };
     this.clickHandle = this.clickHandle.bind(this);
   }
   changeHandle(value){
