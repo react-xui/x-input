@@ -57,7 +57,12 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
         }
     }
     format(value,isinit) {
+        let oldvalue = value;
         value= String(value).replace(/\,/g, '');
+        let istriggerChange = true;
+        if( this.state &&( oldvalue == this.state.value || value == this.state.value)){
+            istriggerChange = false;
+        }
         if (reg && value!='') {
             let arr = value.split('.');
             if (arr.length > 1) {
@@ -70,7 +75,7 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
             return value;
         }else{
             this.setState({ value }, () => {
-                this.props.onChange && this.props.onChange(value);
+                istriggerChange && this.props.onChange && this.props.onChange(value);
             });
         }
     }
@@ -120,18 +125,19 @@ const getPosition = function (element) {
 const FormatContainer = (WrappedComponnet, format) => class extends NumericInput {
     onChangeHandle(e) {
         let { value } = e.target;
-        this.format(value,false,e);
+        this.format(value,false,e.target);
     }
-    format(v,isinit,e) {
-        let value = format(v.replace(/\,/g, ''), this.props);
+    format(v,isinit,target) {
+        let value = format(String(v).replace(/\,/g, ''), this.props);
         if(!isinit){
-            let target = e.target;
-            let len = target.value.length;
-            let pos = getPosition(target);
-            let rightpos = len - pos;//算出从右计算的光标位置
             this.setState({ value }, () => {
-                let tmp = this.state.value.length - rightpos
-                setCaretPosition(target, tmp);
+                if(target){
+                    let len = target.value.length;
+                    let pos = getPosition(target);
+                    let rightpos = len - pos;//算出从右计算的光标位置
+                    let tmp = this.state.value.length - rightpos
+                    setCaretPosition(target, tmp);
+                }
                 this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
             })
         }else{

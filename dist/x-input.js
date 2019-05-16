@@ -221,7 +221,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function format(value, isinit) {
 	                var _this3 = this;
 
+	                var oldvalue = value;
 	                value = String(value).replace(/\,/g, '');
+	                var istriggerChange = true;
+	                if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
+	                    istriggerChange = false;
+	                }
 	                if (reg && value != '') {
 	                    var arr = value.split('.');
 	                    if (arr.length > 1) {
@@ -234,7 +239,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return value;
 	                } else {
 	                    this.setState({ value: value }, function () {
-	                        _this3.props.onChange && _this3.props.onChange(value);
+	                        istriggerChange && _this3.props.onChange && _this3.props.onChange(value);
 	                    });
 	                }
 	            }
@@ -306,22 +311,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function onChangeHandle(e) {
 	                var value = e.target.value;
 
-	                this.format(value, false, e);
+	                this.format(value, false, e.target);
 	            }
 	        }, {
 	            key: "format",
-	            value: function format(v, isinit, e) {
+	            value: function format(v, isinit, target) {
 	                var _this5 = this;
 
-	                var value = _format(v.replace(/\,/g, ''), this.props);
+	                var value = _format(String(v).replace(/\,/g, ''), this.props);
 	                if (!isinit) {
-	                    var target = e.target;
-	                    var len = target.value.length;
-	                    var pos = getPosition(target);
-	                    var rightpos = len - pos; //算出从右计算的光标位置
 	                    this.setState({ value: value }, function () {
-	                        var tmp = _this5.state.value.length - rightpos;
-	                        setCaretPosition(target, tmp);
+	                        if (target) {
+	                            var len = target.value.length;
+	                            var pos = getPosition(target);
+	                            var rightpos = len - pos; //算出从右计算的光标位置
+	                            var tmp = _this5.state.value.length - rightpos;
+	                            setCaretPosition(target, tmp);
+	                        }
 	                        _this5.props.onChange && _this5.props.onChange(value.replace(/\,/g, ''));
 	                    });
 	                } else {
