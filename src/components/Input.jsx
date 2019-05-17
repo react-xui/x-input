@@ -117,7 +117,7 @@ const getPosition = function (element) {
         var selectRange = document.selection.createRange();
         selectRange.moveStart('character', -element.value.length);
         cursorPos = selectRange.text.length;
-    } else if (element.selectionStart || element.selectionStart == '0') {
+    } else if (element && (element.selectionStart || element.selectionStart == '0')) {
         cursorPos = element.selectionStart;
     }
     return cursorPos;
@@ -127,18 +127,24 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         let { value } = e.target;
         this.format(value,false,e.target);
     }
-    format(v,isinit,target) {
-        let value = format(String(v).replace(/\,/g, ''), this.props);
+    format(value,isinit,target) {
+        let oldvalue = value;
+        value = format(String(value).replace(/\,/g, ''), this.props);
+        let istriggerChange = true;
+        if( this.state &&( oldvalue == this.state.value || value == this.state.value)){
+            istriggerChange = false;
+        }
         if(!isinit){
+            let pos = getPosition(target);
             this.setState({ value }, () => {
                 if(target){
                     let len = target.value.length;
-                    let pos = getPosition(target);
                     let rightpos = len - pos;//算出从右计算的光标位置
                     let tmp = this.state.value.length - rightpos
+                    // console.log(tmp)
                     setCaretPosition(target, tmp);
                 }
-                this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
+                istriggerChange && this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
             })
         }else{
             return value;
