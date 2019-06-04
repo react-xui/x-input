@@ -46,8 +46,8 @@ class Base extends Component {
 const InputContainer = (WrappedComponnet, reg) => class extends Component {
     constructor(props) {
         super(props);
-        this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value,true) };
         this.decimals = props.decimals;
+        this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value,true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
     componentWillReceiveProps(newProps, newState) {
