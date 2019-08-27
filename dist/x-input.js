@@ -178,7 +178,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	            delete newProps['decimals'];
 	            delete newProps['onChange'];
 	            // delete newProps['value'];
-	            return _react2.default.createElement("input", _extends({ className: cls, onChange: this.onChangeHandle, value: this.state.value }, newProps));
+	            var value = this.state.value;
+	            (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
+	            var multiple = newProps.multiple;
+
+	            var props = _extends({ onChange: this.onChangeHandle, value: this.state.value }, newProps);
+	            var tag = multiple ? 'textarea' : 'input';
+	            return _react2.default.createElement(tag, props);
+	            // return (
+	            //     <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps} />
+	            // )
 	        }
 	    }]);
 
@@ -222,6 +231,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var _this3 = this;
 
 	                var oldvalue = value;
+	                (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
 	                value = String(value).replace(/\,/g, '');
 	                var istriggerChange = true;
 	                if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
@@ -269,7 +279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/); //数字
 	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)/); //整数
 	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/); //正整数
-	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //正整数
+	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
 
 	var setCaretPosition = function setCaretPosition(tObj, sPos) {
 	    if (tObj.setSelectionRange) {
@@ -296,8 +306,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return cursorPos;
 	};
+	//getDisplayName
+	function getDisplayName(WrappedComponent) {
+	    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+	}
 	var FormatContainer = function FormatContainer(WrappedComponnet, _format) {
-	    return function (_NumericInput) {
+	    var _class2, _temp;
+
+	    return _temp = _class2 = function (_NumericInput) {
 	        _inherits(_class2, _NumericInput);
 
 	        function _class2() {
@@ -343,7 +359,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }]);
 
 	        return _class2;
-	    }(NumericInput);
+	    }(NumericInput), _class2.displayName = "HOC(" + getDisplayName(WrappedComponnet) + ")", _temp;
 	};
 
 	var formatThousandthNumber = function formatThousandthNumber(num, _ref) {

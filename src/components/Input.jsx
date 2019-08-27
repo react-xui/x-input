@@ -31,9 +31,15 @@ class Base extends Component {
         delete newProps['decimals'];
         delete newProps['onChange'];
         // delete newProps['value'];
-        return (
-            <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps} />
-        )
+        let value = this.state.value;
+        typeof value === 'object' ? value = JSON.stringify(value) : null;
+        let {multiple} = newProps;
+        let props= {onChange:this.onChangeHandle, value:this.state.value,...newProps} ;
+        let tag = multiple ?'textarea':'input';
+        return React.createElement(tag,props) 
+        // return (
+        //     <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps} />
+        // )
     }
 }
 
@@ -47,33 +53,34 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
     constructor(props) {
         super(props);
         this.decimals = props.decimals;
-        this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value,true) };
+        this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
     componentWillReceiveProps(newProps, newState) {
-        if (newProps.value != this.state.value && typeof newProps.value !=='undefined') {
+        if (newProps.value != this.state.value && typeof newProps.value !== 'undefined') {
             this.format(newProps.value)
             // this.setState({ value: newProps.value });
         }
     }
-    format(value,isinit) {
+    format(value, isinit) {
         let oldvalue = value;
-        value= String(value).replace(/\,/g, '');
+        typeof value === 'object' ? value = JSON.stringify(value) : null;
+        value = String(value).replace(/\,/g, '');
         let istriggerChange = true;
-        if( this.state &&( oldvalue == this.state.value || value == this.state.value)){
+        if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
             istriggerChange = false;
         }
-        if (reg && value!='') {
+        if (reg && value != '') {
             let arr = value.split('.');
             if (arr.length > 1) {
                 value = arr[0] + '.' + arr[1].substr(0, this.decimals);
             }
             let res = value.match(reg);
-            value = res === null ? '': res[0]; 
+            value = res === null ? '' : res[0];
         }
-        if(isinit){
+        if (isinit) {
             return value;
-        }else{
+        } else {
             this.setState({ value }, () => {
                 istriggerChange && this.props.onChange && this.props.onChange(value);
             });
@@ -96,7 +103,7 @@ const Input = InputContainer(Base);
 const NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/);//数字
 const InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)/);//整数
 const PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/);//正整数
-const LetterInput = InputContainer(Base, /[a-zA-Z]+/);//正整数
+const LetterInput = InputContainer(Base, /[a-zA-Z]+/);//字母
 
 const setCaretPosition = (tObj, sPos) => {
     if (tObj.setSelectionRange) {
@@ -122,22 +129,29 @@ const getPosition = function (element) {
     }
     return cursorPos;
 }
+//getDisplayName
+function getDisplayName(WrappedComponent) {
+    return WrappedComponent.displayName ||
+        WrappedComponent.name ||
+        'Component'
+}
 const FormatContainer = (WrappedComponnet, format) => class extends NumericInput {
+    static displayName = `HOC(${getDisplayName(WrappedComponnet)})`
     onChangeHandle(e) {
         let { value } = e.target;
-        this.format(value,false,e.target);
+        this.format(value, false, e.target);
     }
-    format(value,isinit,target) {
+    format(value, isinit, target) {
         let oldvalue = value;
         value = format(String(value).replace(/\,/g, ''), this.props);
         let istriggerChange = true;
-        if( this.state &&( oldvalue == this.state.value || value == this.state.value)){
+        if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
             istriggerChange = false;
         }
-        if(!isinit){
+        if (!isinit) {
             let pos = getPosition(target);
             this.setState({ value }, () => {
-                if(target){
+                if (target) {
                     let len = target.value.length;
                     let rightpos = len - pos;//算出从右计算的光标位置
                     let tmp = this.state.value.length - rightpos
@@ -146,7 +160,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                 }
                 istriggerChange && this.props.onChange && this.props.onChange(value.replace(/\,/g, ''));
             })
-        }else{
+        } else {
             return value;
         }
     }
@@ -154,7 +168,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
 
 const formatThousandthNumber = function (num, { decimals }) {
     // number = number.replace(/\,/g,'');
-    num = String(num).replace(/\,/g,'');
+    num = String(num).replace(/\,/g, '');
     let arr = num.split('.');
     let number = arr[0]
     // let decimals  = arr.length>1 ?arr[1].length:0;

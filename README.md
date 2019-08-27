@@ -18,6 +18,8 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 ![x-input](examples/input.gif)
 ## Input 
 输入框
+## multiple:[bool]
+是否为多行textarea输入框
 ## NumericInput
 纯数字输入框，只能输入正负整数或小数，属性`decimals`限制小数位数
 ## LetterInput
