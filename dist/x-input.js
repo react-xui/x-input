@@ -164,10 +164,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "onChangeHandle",
 	        value: function onChangeHandle(e) {
-	            var value = e.target.value;
+	            var _this2 = this;
 
-	            this.setState({ value: value });
-	            this.props.onChange && this.props.onChange(e, value);
+	            var value = e.target.value;
+	            var target = e.target;
+
+	            this.setState({ value: value }, function () {
+	                _this2.props.onChange && _this2.props.onChange(target);
+	            });
 	        }
 	    }, {
 	        key: "render",
@@ -182,11 +186,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
 	            var multiple = newProps.multiple;
 
-	            var props = _extends({ onChange: this.onChangeHandle, value: this.state.value }, newProps);
+	            var props = _extends({ onChange: this.onChangeHandle }, newProps, { value: value });
 	            var tag = multiple ? 'textarea' : 'input';
+	            // console.log(value,111,newProps)
 	            return _react2.default.createElement(tag, props);
 	            // return (
-	            //     <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps} />
+	            //     <input className={cls} onChange={this.onChangeHandle} value={value}  />
 	            // )
 	        }
 	    }]);
@@ -209,12 +214,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        function _class(props) {
 	            _classCallCheck(this, _class);
 
-	            var _this2 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+	            var _this3 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-	            _this2.decimals = props.decimals;
-	            _this2.state = { value: typeof props.value === 'undefined' ? "" : _this2.format(props.value, true) };
-	            _this2.onChangeHandle = _this2.onChangeHandle.bind(_this2);
-	            return _this2;
+	            _this3.decimals = props.decimals;
+	            _this3.state = { value: typeof props.value === 'undefined' ? "" : _this3.format(props.value, true) };
+	            _this3.onChangeHandle = _this3.onChangeHandle.bind(_this3);
+	            return _this3;
 	        }
 
 	        _createClass(_class, [{
@@ -228,35 +233,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	            key: "format",
 	            value: function format(value, isinit) {
-	                var _this3 = this;
+	                var _this4 = this;
 
-	                var oldvalue = value;
-	                (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
-	                value = String(value).replace(/\,/g, '');
 	                var istriggerChange = true;
-	                if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
-	                    istriggerChange = false;
-	                }
-	                if (reg && value != '') {
-	                    var arr = value.split('.');
-	                    if (arr.length > 1) {
-	                        value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+	                if (reg) {
+	                    var oldvalue = value;
+	                    (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
+	                    value = String(value).replace(/\,/g, '');
+	                    if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
+	                        istriggerChange = false;
 	                    }
-	                    var res = value.match(reg);
-	                    value = res === null ? '' : res[0];
+	                    if (reg && value != '') {
+	                        var arr = value.split('.');
+	                        if (arr.length > 1) {
+	                            value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+	                        }
+	                        var res = value.match(reg);
+	                        value = res === null ? '' : res[0];
+	                    }
 	                }
 	                if (isinit) {
 	                    return value;
 	                } else {
 	                    this.setState({ value: value }, function () {
-	                        istriggerChange && _this3.props.onChange && _this3.props.onChange(value);
+	                        istriggerChange && _this4.props.onChange && _this4.props.onChange(value);
 	                    });
 	                }
 	            }
 	        }, {
 	            key: "onChangeHandle",
-	            value: function onChangeHandle(e) {
-	                var value = e.target.value;
+	            value: function onChangeHandle(target) {
+	                var value = target.value;
 
 	                this.format(value);
 	            }
@@ -324,15 +331,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _createClass(_class2, [{
 	            key: "onChangeHandle",
-	            value: function onChangeHandle(e) {
-	                var value = e.target.value;
+	            value: function onChangeHandle(target) {
+	                var value = target.value;
 
-	                this.format(value, false, e.target);
+	                this.format(value, false, target);
 	            }
 	        }, {
 	            key: "format",
 	            value: function format(value, isinit, target) {
-	                var _this5 = this;
+	                var _this6 = this;
 
 	                var oldvalue = value;
 	                value = _format(String(value).replace(/\,/g, ''), this.props);
@@ -341,16 +348,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    istriggerChange = false;
 	                }
 	                if (!isinit) {
+	                    //计算出新值和旧值之间相差几个千分位
+	                    var ql = value.split(',').length - this.state.value.split(',').length;
 	                    var pos = getPosition(target);
+	                    var len = target.value.length;
+	                    var rightpos = len - pos; //算出从右计算的光标位置
+	                    // console.log('right:',rightpos)
 	                    this.setState({ value: value }, function () {
 	                        if (target) {
-	                            var len = target.value.length;
-	                            var rightpos = len - pos; //算出从右计算的光标位置
-	                            var tmp = _this5.state.value.length - rightpos;
+	                            var tmp = _this6.state.value.length - rightpos;
+	                            // console.log(tmp,this.state.value.length,rightpos)
 	                            // console.log(tmp)
 	                            setCaretPosition(target, tmp);
 	                        }
-	                        istriggerChange && _this5.props.onChange && _this5.props.onChange(value.replace(/\,/g, ''));
+	                        istriggerChange && _this6.props.onChange && _this6.props.onChange(value.replace(/\,/g, ''));
 	                    });
 	                } else {
 	                    return value;

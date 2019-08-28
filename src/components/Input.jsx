@@ -21,8 +21,10 @@ class Base extends Component {
     }
     onChangeHandle(e) {
         let { value } = e.target;
-        this.setState({ value });
-        this.props.onChange && this.props.onChange(e, value);
+        let {target} = e;
+        this.setState({ value },()=>{
+            this.props.onChange && this.props.onChange( target);
+        });
     }
     render() {
         let cls = (this.props.className || "") + ' x-input';
@@ -34,11 +36,12 @@ class Base extends Component {
         let value = this.state.value;
         typeof value === 'object' ? value = JSON.stringify(value) : null;
         let {multiple} = newProps;
-        let props= {onChange:this.onChangeHandle, value:this.state.value,...newProps} ;
+        let props= {onChange:this.onChangeHandle ,...newProps,value} ;
         let tag = multiple ?'textarea':'input';
+        // console.log(value,111,newProps)
         return React.createElement(tag,props) 
         // return (
-        //     <input className={cls} onChange={this.onChangeHandle} value={this.state.value} {...newProps} />
+        //     <input className={cls} onChange={this.onChangeHandle} value={value}  />
         // )
     }
 }
@@ -63,20 +66,22 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
         }
     }
     format(value, isinit) {
-        let oldvalue = value;
-        typeof value === 'object' ? value = JSON.stringify(value) : null;
-        value = String(value).replace(/\,/g, '');
         let istriggerChange = true;
-        if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
-            istriggerChange = false;
-        }
-        if (reg && value != '') {
-            let arr = value.split('.');
-            if (arr.length > 1) {
-                value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+        if(reg){
+            let oldvalue = value;
+            typeof value === 'object' ? value = JSON.stringify(value) : null;
+            value = String(value).replace(/\,/g, '');
+            if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
+                istriggerChange = false;
             }
-            let res = value.match(reg);
-            value = res === null ? '' : res[0];
+            if (reg && value != '') {
+                let arr = value.split('.');
+                if (arr.length > 1) {
+                    value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+                }
+                let res = value.match(reg);
+                value = res === null ? '' : res[0];
+            }
         }
         if (isinit) {
             return value;
@@ -86,8 +91,8 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
             });
         }
     }
-    onChangeHandle(e) {
-        let { value } = e.target;
+    onChangeHandle(target) {
+        let { value } = target;
         this.format(value);
     }
     render() {
@@ -137,9 +142,9 @@ function getDisplayName(WrappedComponent) {
 }
 const FormatContainer = (WrappedComponnet, format) => class extends NumericInput {
     static displayName = `HOC(${getDisplayName(WrappedComponnet)})`
-    onChangeHandle(e) {
-        let { value } = e.target;
-        this.format(value, false, e.target);
+    onChangeHandle(target) {
+        let { value } = target;
+        this.format(value, false, target);
     }
     format(value, isinit, target) {
         let oldvalue = value;
@@ -149,12 +154,16 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
             istriggerChange = false;
         }
         if (!isinit) {
+            //计算出新值和旧值之间相差几个千分位
+            let ql = value.split(',').length - this.state.value.split(',').length;
             let pos = getPosition(target);
+            let len =  target.value.length;
+            let rightpos = len - pos ;//算出从右计算的光标位置
+            // console.log('right:',rightpos)
             this.setState({ value }, () => {
                 if (target) {
-                    let len = target.value.length;
-                    let rightpos = len - pos;//算出从右计算的光标位置
                     let tmp = this.state.value.length - rightpos
+                    // console.log(tmp,this.state.value.length,rightpos)
                     // console.log(tmp)
                     setCaretPosition(target, tmp);
                 }
