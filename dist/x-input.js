@@ -265,7 +265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function onChangeHandle(target) {
 	                var value = target.value;
 
-	                this.format(value);
+	                this.format(value, false, target);
 	            }
 	        }, {
 	            key: "render",
@@ -350,9 +350,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (!isinit) {
 	                    //计算出新值和旧值之间相差几个千分位
 	                    var ql = value.split(',').length - this.state.value.split(',').length;
-	                    var pos = getPosition(target);
-	                    var len = target.value.length;
-	                    var rightpos = len - pos; //算出从右计算的光标位置
+	                    var rightpos = 0;
+	                    if (target) {
+	                        var pos = getPosition(target);
+	                        var len = target.value.length;
+	                        rightpos = len - pos; //算出从右计算的光标位置
+	                    }
 	                    // console.log('right:',rightpos)
 	                    this.setState({ value: value }, function () {
 	                        if (target) {

@@ -9,6 +9,19 @@
             "request": "launch",
             "name": "启动程序",
             "program": "${workspaceFolder}\\lib\\index.js"
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "protocol": "inspector",
+            "name": "Jest input Tests",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            "runtimeArgs": [
+                "--inspect-brk"
+            ],
+            "cwd": "${workspaceRoot}",
+            "sourceMaps": true,
+            "console": "integratedTerminal"
+        },
     ]
 }

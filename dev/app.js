@@ -24,12 +24,12 @@ class App1 extends React.Component {
       <div>
         <button onClick={this.clickHandle} >test</button>
         <button onClick={this.getValueHandle}>getvalue</button>
-        <Input value={this.state.v} ref={txt=>this.txt=txt}/>
+        {/* <Input value={this.state.v} ref={txt=>this.txt=txt}/>
         <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
         <InterInput className="txb" placeholder="请输入数字" value={this.state.v} />
-        <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/>
+        <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/> */}
         <ThousandInput placeholder="千分位数字" value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>
-        <NumericInput value="2.12" decimals="2" onChange={this.changeHandle.bind(this)}/>
+        {/* <NumericInput value="2.12" decimals="2" onChange={this.changeHandle.bind(this)}/> */}
       </div>
     )
   }

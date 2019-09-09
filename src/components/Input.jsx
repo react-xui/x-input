@@ -93,7 +93,7 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
     }
     onChangeHandle(target) {
         let { value } = target;
-        this.format(value);
+        this.format(value,false,target);
     }
     render() {
         const newProps = {
@@ -156,9 +156,12 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         if (!isinit) {
             //计算出新值和旧值之间相差几个千分位
             let ql = value.split(',').length - this.state.value.split(',').length;
-            let pos = getPosition(target);
-            let len =  target.value.length;
-            let rightpos = len - pos ;//算出从右计算的光标位置
+            let rightpos =0;
+            if (target) {
+                let pos = getPosition(target);
+                let len =  target.value.length;
+                rightpos = len - pos ;//算出从右计算的光标位置
+            }
             // console.log('right:',rightpos)
             this.setState({ value }, () => {
                 if (target) {

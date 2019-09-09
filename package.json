@@ -1,6 +1,6 @@
 {
   "name": "jsx-input",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "react xui ",
   "main": "./lib/index.js",
   "repository": {
@@ -13,6 +13,7 @@
     "example": "examples"
   },
   "scripts": {
+    "test": "jest",
     "example": "npm-run-all prepublish exserver",
     "exserver": "node scripts/dev-examples",
     "start": "node scripts/dev-src",
@@ -32,6 +33,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "jest": "23.6.0",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.7.4",
     "babel-eslint": "^7.1.1",
@@ -47,16 +51,17 @@
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "npm-run-all": "^3.1.2",
-    "react": "^15.0.0",
-    "react-addons-test-utils": "^15.0.0",
-    "react-dom": "^15.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "rimraf": "^2.6.1",
     "style-loader": "^0.13.1",
     "uglify-js": "^2.6.0",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "sinon": "^7.4.2"
+  },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.6.1",
     "react-dom": "^0.14.0 || ^15.6.1"
