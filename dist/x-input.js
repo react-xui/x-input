@@ -215,9 +215,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        function _class(props) {
 	            _classCallCheck(this, _class);
 
+	            // this.decimals = props.decimals;
 	            var _this3 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-	            _this3.decimals = props.decimals;
 	            _this3.negative = _this3.props.negative || negative;
 	            _this3.state = { value: typeof props.value === 'undefined' ? "" : _this3.format(props.value, true) };
 	            _this3.onChangeHandle = _this3.onChangeHandle.bind(_this3);
@@ -254,7 +254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (reg && value != '') {
 	                        var arr = value.split('.');
 	                        if (arr.length > 1) {
-	                            value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+	                            value = arr[0] + '.' + arr[1].substr(0, this.props.decimals);
 	                        }
 	                        var res = value.match(reg);
 	                        value = res === null ? '' : res[0];

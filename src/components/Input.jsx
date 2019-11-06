@@ -55,7 +55,7 @@ class Base extends Component {
 const InputContainer = (WrappedComponnet, reg,negative= false) => class extends Component {
     constructor(props) {
         super(props);
-        this.decimals = props.decimals;
+        // this.decimals = props.decimals;
         this.negative = this.props.negative || negative;
         this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
@@ -84,7 +84,7 @@ const InputContainer = (WrappedComponnet, reg,negative= false) => class extends 
             if (reg && value != '') {
                 let arr = value.split('.');
                 if (arr.length > 1) {
-                    value = arr[0] + '.' + arr[1].substr(0, this.decimals);
+                    value = arr[0] + '.' + arr[1].substr(0, this.props.decimals);
                 }
                 let res = value.match(reg);
                 value = res === null ? '' : res[0];
