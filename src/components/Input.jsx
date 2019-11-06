@@ -52,10 +52,11 @@ class Base extends Component {
 //         return <Base reg={reg} />
 //     }
 // }
-const InputContainer = (WrappedComponnet, reg) => class extends Component {
+const InputContainer = (WrappedComponnet, reg,negative= false) => class extends Component {
     constructor(props) {
         super(props);
         this.decimals = props.decimals;
+        this.negative = this.props.negative || negative;
         this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
@@ -67,6 +68,12 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
     }
     format(value, isinit) {
         let istriggerChange = true;
+         if(/^\-/.test(value) && this.negative){
+            this.isnegative = true;
+        }else{
+            this.isnegative = false;
+        }
+        value = String(value).replace(/-/gi,'')
         if(reg){
             let oldvalue = value;
             typeof value === 'object' ? value = JSON.stringify(value) : null;
@@ -82,6 +89,9 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
                 let res = value.match(reg);
                 value = res === null ? '' : res[0];
             }
+        }
+        if(this.isnegative){
+            value = '-'+value;
         }
         if (isinit) {
             return value;
@@ -105,8 +115,8 @@ const InputContainer = (WrappedComponnet, reg) => class extends Component {
     }
 }
 const Input = InputContainer(Base);
-const NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/);//数字
-const InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)/);//整数
+const NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/);//数字,含小数
+const InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/);//整数
 const PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/);//正整数
 const LetterInput = InputContainer(Base, /[a-zA-Z]+/);//字母
 
@@ -144,11 +154,25 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
     static displayName = `HOC(${getDisplayName(WrappedComponnet)})`
     onChangeHandle(target) {
         let { value } = target;
+        // if(this.negative){
+        //     if(value =='-' ){
+        //         return value;
+        //     }
+        // }else{
+        //     return ''
+        // }
+        if(/^\-/.test(value)){
+            //如果负号开始
+            value = value.replace(/\-/gi,'');
+            this.negative ? this.isnegative = true:null;
+        }else{
+            this.isnegative = false;
+        }
         this.format(value, false, target);
     }
     format(value, isinit, target) {
         let oldvalue = value;
-        value = format(String(value).replace(/\,/g, ''), this.props);
+        value = format(String(value).replace(/\,/g, ''), this.props,this.state ? this.state.value:'',this.negative);
         let istriggerChange = true;
         if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
             istriggerChange = false;
@@ -163,6 +187,9 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                 rightpos = len - pos ;//算出从右计算的光标位置
             }
             // console.log('right:',rightpos)
+            if(this.isnegative){
+                value ='-'+value;
+            }
             this.setState({ value }, () => {
                 if (target) {
                     let tmp = this.state.value.length - rightpos
@@ -178,9 +205,14 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
     }
 }
 
-const formatThousandthNumber = function (num, { decimals }) {
+const formatThousandthNumber = function (num, { decimals },ov) {
     // number = number.replace(/\,/g,'');
     num = String(num).replace(/\,/g, '');
+    let isnegative = false;
+    if(num.indexOf('-')==0){
+        num = num.replace(/\-/gi,'');
+        isnegative = true;
+    }
     let arr = num.split('.');
     let number = arr[0]
     // let decimals  = arr.length>1 ?arr[1].length:0;
@@ -189,7 +221,7 @@ const formatThousandthNumber = function (num, { decimals }) {
         return '';
     } else {
         number = (number + '').replace(/[^0-9+-Ee.]/g, '');
-        let n = !isFinite(+number) ? 0 : +number,
+        let n = !isFinite(+number) ? ov : +number,
             prec = 0,
             sep = ',',
             dec = '.',
@@ -208,8 +240,11 @@ const formatThousandthNumber = function (num, { decimals }) {
         if (arr.length > 1) {
             str += '.' + arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
         }
+        if(isnegative){
+            return '-'+str;
+        }
         return str;
     }
 }
-const ThousandInput = FormatContainer(Base, formatThousandthNumber);
+const ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 export { Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };

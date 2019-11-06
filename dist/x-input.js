@@ -208,6 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	var InputContainer = function InputContainer(WrappedComponnet, reg) {
+	    var negative = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 	    return function (_Component2) {
 	        _inherits(_class, _Component2);
 
@@ -217,6 +218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this3 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
 	            _this3.decimals = props.decimals;
+	            _this3.negative = _this3.props.negative || negative;
 	            _this3.state = { value: typeof props.value === 'undefined' ? "" : _this3.format(props.value, true) };
 	            _this3.onChangeHandle = _this3.onChangeHandle.bind(_this3);
 	            return _this3;
@@ -236,6 +238,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var _this4 = this;
 
 	                var istriggerChange = true;
+	                if (/^\-/.test(value) && this.negative) {
+	                    this.isnegative = true;
+	                } else {
+	                    this.isnegative = false;
+	                }
+	                value = String(value).replace(/-/gi, '');
 	                if (reg) {
 	                    var oldvalue = value;
 	                    (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
@@ -251,6 +259,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        var res = value.match(reg);
 	                        value = res === null ? '' : res[0];
 	                    }
+	                }
+	                if (this.isnegative) {
+	                    value = '-' + value;
 	                }
 	                if (isinit) {
 	                    return value;
@@ -283,8 +294,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }(_react.Component);
 	};
 	var Input = InputContainer(Base);
-	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/); //数字
-	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)/); //整数
+	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/); //数字,含小数
+	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/); //整数
 	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/); //正整数
 	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
 
@@ -333,7 +344,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	            key: "onChangeHandle",
 	            value: function onChangeHandle(target) {
 	                var value = target.value;
+	                // if(this.negative){
+	                //     if(value =='-' ){
+	                //         return value;
+	                //     }
+	                // }else{
+	                //     return ''
+	                // }
 
+	                if (/^\-/.test(value)) {
+	                    //如果负号开始
+	                    value = value.replace(/\-/gi, '');
+	                    this.negative ? this.isnegative = true : null;
+	                } else {
+	                    this.isnegative = false;
+	                }
 	                this.format(value, false, target);
 	            }
 	        }, {
@@ -342,7 +367,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var _this6 = this;
 
 	                var oldvalue = value;
-	                value = _format(String(value).replace(/\,/g, ''), this.props);
+	                value = _format(String(value).replace(/\,/g, ''), this.props, this.state ? this.state.value : '', this.negative);
 	                var istriggerChange = true;
 	                if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
 	                    istriggerChange = false;
@@ -357,6 +382,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        rightpos = len - pos; //算出从右计算的光标位置
 	                    }
 	                    // console.log('right:',rightpos)
+	                    if (this.isnegative) {
+	                        value = '-' + value;
+	                    }
 	                    this.setState({ value: value }, function () {
 	                        if (target) {
 	                            var tmp = _this6.state.value.length - rightpos;
@@ -376,11 +404,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }(NumericInput), _class2.displayName = "HOC(" + getDisplayName(WrappedComponnet) + ")", _temp;
 	};
 
-	var formatThousandthNumber = function formatThousandthNumber(num, _ref) {
+	var formatThousandthNumber = function formatThousandthNumber(num, _ref, ov) {
 	    var decimals = _ref.decimals;
 
 	    // number = number.replace(/\,/g,'');
 	    num = String(num).replace(/\,/g, '');
+	    var isnegative = false;
+	    if (num.indexOf('-') == 0) {
+	        num = num.replace(/\-/gi, '');
+	        isnegative = true;
+	    }
 	    var arr = num.split('.');
 	    var number = arr[0];
 	    // let decimals  = arr.length>1 ?arr[1].length:0;
@@ -389,7 +422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return '';
 	    } else {
 	        number = (number + '').replace(/[^0-9+-Ee.]/g, '');
-	        var n = !isFinite(+number) ? 0 : +number,
+	        var n = !isFinite(+number) ? ov : +number,
 	            prec = 0,
 	            sep = ',',
 	            dec = '.',
@@ -408,10 +441,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (arr.length > 1) {
 	            str += '.' + arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
 	        }
+	        if (isnegative) {
+	            return '-' + str;
+	        }
 	        return str;
 	    }
 	};
-	var ThousandInput = FormatContainer(Base, formatThousandthNumber);
+	var ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 	exports.Input = Input;
 	exports.InputContainer = InputContainer;
 	exports.NumericInput = NumericInput;
