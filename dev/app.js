@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2019-11-06 17:35:01
+ * @LastEditTime: 2019-11-21 16:17:22
  * @github: https://github.com/tianxiangbing
  */
 import React,{Component} from 'react';
@@ -21,7 +21,7 @@ class App1 extends React.Component {
     console.log(value)
   }
   clickHandle(e){
-    this.setState({v:11.12355})
+    this.setState({v:11123457.12355})
   }
   getValueHandle=()=>{
     alert(ReactDOM.findDOMNode(this.txt).value)
@@ -38,7 +38,7 @@ class App1 extends React.Component {
         <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/>
         <Input value={this.state.v} ref={txt=>this.txt=txt}/>
         <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
-        <InterInput className="txb" placeholder="请输入数字" value={this.state.v} />
+        <Input.Inter className="txb" placeholder="请输入数字" value={this.state.v} />
         <InterInput className="txb" negative={false} placeholder="请输入正数" value={this.state.v} />
         <ThousandInput placeholder="负千分位数字" negative={true}  value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>
         <ThousandInput placeholder="千分位数字" negative={false}  value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>

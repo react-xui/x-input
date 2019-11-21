@@ -205,30 +205,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	//         return <Base reg={reg} />
 	//     }
 	// }
-
+	/**
+	 * @desc: 格式化输入框
+	 * @param {boolean}isNaN 是否为非数字，默认为false时是数字
+	 * @return: 
+	 */
 
 	var InputContainer = function InputContainer(WrappedComponnet, reg) {
 	    var negative = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+	    var isNaN = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 	    return function (_Component2) {
-	        _inherits(_class, _Component2);
+	        _inherits(_class2, _Component2);
 
-	        function _class(props) {
-	            _classCallCheck(this, _class);
+	        function _class2(props) {
+	            _classCallCheck(this, _class2);
 
 	            // this.decimals = props.decimals;
-	            var _this3 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+	            var _this3 = _possibleConstructorReturn(this, (_class2.__proto__ || Object.getPrototypeOf(_class2)).call(this, props));
 
+	            _this3.isNaN = isNaN;
 	            _this3.negative = _this3.props.negative || negative;
 	            _this3.state = { value: typeof props.value === 'undefined' ? "" : _this3.format(props.value, true) };
 	            _this3.onChangeHandle = _this3.onChangeHandle.bind(_this3);
 	            return _this3;
 	        }
 
-	        _createClass(_class, [{
+	        _createClass(_class2, [{
 	            key: "componentWillReceiveProps",
 	            value: function componentWillReceiveProps(newProps, newState) {
 	                if (newProps.value != this.state.value && typeof newProps.value !== 'undefined') {
-	                    this.format(newProps.value);
+	                    if (!this.isNaN) {
+	                        var value = Number(this.state.value.replace(/\,/gi, ''));
+	                        if (Number(String(newProps.value).replace(/\,/gi, '')) != value) {
+	                            this.format(newProps.value);
+	                        }
+	                    } else {
+	                        this.format(newProps.value);
+	                    }
 	                    // this.setState({ value: newProps.value });
 	                }
 	            }
@@ -267,6 +280,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return value;
 	                } else {
 	                    this.setState({ value: value }, function () {
+	                        if (!isNaN) {
+	                            value = Number(value.replace(/\,/gi, ''));
+	                        }
 	                        istriggerChange && _this4.props.onChange && _this4.props.onChange(value);
 	                    });
 	                }
@@ -290,14 +306,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }]);
 
-	        return _class;
+	        return _class2;
 	    }(_react.Component);
 	};
 	var Input = InputContainer(Base);
 	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/); //数字,含小数
 	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/); //整数
 	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/); //正整数
-	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
+	var LetterInput = InputContainer(Base, /[a-zA-Z]+/, true); //字母
 
 	var setCaretPosition = function setCaretPosition(tObj, sPos) {
 	    if (tObj.setSelectionRange) {
@@ -329,18 +345,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 	}
 	var FormatContainer = function FormatContainer(WrappedComponnet, _format) {
-	    var _class2, _temp;
+	    var _class3, _temp;
 
-	    return _temp = _class2 = function (_NumericInput) {
-	        _inherits(_class2, _NumericInput);
+	    return _temp = _class3 = function (_NumericInput) {
+	        _inherits(_class3, _NumericInput);
 
-	        function _class2() {
-	            _classCallCheck(this, _class2);
+	        function _class3() {
+	            _classCallCheck(this, _class3);
 
-	            return _possibleConstructorReturn(this, (_class2.__proto__ || Object.getPrototypeOf(_class2)).apply(this, arguments));
+	            return _possibleConstructorReturn(this, (_class3.__proto__ || Object.getPrototypeOf(_class3)).apply(this, arguments));
 	        }
 
-	        _createClass(_class2, [{
+	        _createClass(_class3, [{
 	            key: "onChangeHandle",
 	            value: function onChangeHandle(target) {
 	                var value = target.value;
@@ -392,7 +408,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            // console.log(tmp)
 	                            setCaretPosition(target, tmp);
 	                        }
-	                        istriggerChange && _this6.props.onChange && _this6.props.onChange(value.replace(/\,/g, ''));
+	                        if (!_this6.isNaN) {
+	                            value = Number(value.replace(/\,/gi, ''));
+	                        }
+	                        istriggerChange && _this6.props.onChange && _this6.props.onChange(value);
 	                    });
 	                } else {
 	                    return value;
@@ -400,8 +419,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }]);
 
-	        return _class2;
-	    }(NumericInput), _class2.displayName = "HOC(" + getDisplayName(WrappedComponnet) + ")", _temp;
+	        return _class3;
+	    }(NumericInput), _class3.displayName = "HOC(" + getDisplayName(WrappedComponnet) + ")", _temp;
 	};
 
 	var formatThousandthNumber = function formatThousandthNumber(num, _ref, ov) {
@@ -447,6 +466,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return str;
 	    }
 	};
+	Input.Numeric = NumericInput;
+	Input.Inter = InterInput;
+	Input.PosInter = PosInterInput;
+	Input.Letter = LetterInput;
+	Input.Thousand = ThousandInput;
 	var ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 	exports.Input = Input;
 	exports.InputContainer = InputContainer;
