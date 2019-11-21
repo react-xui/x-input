@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2019-11-06 11:54:55
+ * @LastEditTime: 2019-11-21 18:18:48
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
@@ -45,6 +45,8 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 正整数输入限制
 ## InputContainer (Input,regular)
 高阶组件，可以对input进行格式定制，第二个参数为格式化的正则表达式，如上面的数字输入框 `InputContainer(Input,/^-?(0|[1-9][0-9]*)$/);`
+## returnType 
+返回值类型,支持Number,String等
 ### 关于作者
 [https://github.com/tianxiangbing](https://github.com/tianxiangbing)
 

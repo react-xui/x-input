@@ -181,6 +181,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            delete newProps['className'];
 	            delete newProps['decimals'];
 	            delete newProps['onChange'];
+	            delete newProps['returnType'];
+	            delete newProps['negative'];
 	            // delete newProps['value'];
 	            var value = this.state.value;
 	            (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
@@ -283,6 +285,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        if (!isNaN) {
 	                            value = Number(value.replace(/\,/gi, ''));
 	                        }
+	                        _this4.props.returnType ? value = window[_this4.props.returnType](value) : String(value);
 	                        istriggerChange && _this4.props.onChange && _this4.props.onChange(value);
 	                    });
 	                }
@@ -411,6 +414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        if (!_this6.isNaN) {
 	                            value = Number(value.replace(/\,/gi, ''));
 	                        }
+	                        _this6.props.returnType ? value = window[_this6.props.returnType](value) : String(value);
 	                        istriggerChange && _this6.props.onChange && _this6.props.onChange(value);
 	                    });
 	                } else {
