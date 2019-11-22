@@ -6,5 +6,5 @@
  * Time: 20:00:00
  * Contact: 55342775@qq.com
  */
-import {Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer} from './components/Input';
-module.exports = {Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer};  //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
+import {Base,FormatContainer,Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer} from './components/Input';
+module.exports = {Base,FormatContainer,Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer};  //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.

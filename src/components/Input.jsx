@@ -274,5 +274,7 @@ Input.Inter = InterInput;
 Input.PosInter = PosInterInput;
 Input.Letter = LetterInput;
 Input.Thousand = ThousandInput;
+Input.Base=Base;
+Input.FormatContainer=FormatContainer;
 const ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
-export { Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
+export {Base,FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
