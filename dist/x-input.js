@@ -178,7 +178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function render() {
 	            var cls = (this.props.className || "") + ' x-input';
 	            var newProps = _extends({}, this.props);
-	            delete newProps['className'];
+	            // delete newProps['className'];
 	            delete newProps['decimals'];
 	            delete newProps['onChange'];
 	            delete newProps['returnType'];

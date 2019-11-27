@@ -29,7 +29,7 @@ class Base extends Component {
     render() {
         let cls = (this.props.className || "") + ' x-input';
         let newProps = { ...this.props };
-        delete newProps['className'];
+        // delete newProps['className'];
         delete newProps['decimals'];
         delete newProps['onChange'];
         delete newProps['returnType'];
