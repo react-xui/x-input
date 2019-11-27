@@ -59,7 +59,7 @@ class Base extends Component {
  * @param {boolean}isNaN 是否为非数字，默认为false时是数字
  * @return: 
  */
-const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = false) => class extends Component {
+const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) => class extends Component {
     isNaN = isNaN;
     constructor(props) {
         super(props);
@@ -82,6 +82,9 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = false) 
         }
     }
     format(value, isinit) {
+        if(this.props.beforeFormat){
+            value = this.props.beforeFormat(value);
+        }
         let istriggerChange = true;
         if (/^\-/.test(value) && this.negative) {
             this.isnegative = true;
@@ -112,8 +115,8 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = false) 
             return value;
         } else {
             this.setState({ value }, () => {
-                if (!isNaN) {
-                    value = Number(value.replace(/\,/gi, ''));
+                if (!isNaN && value !='') {
+                    value = Number(value.replace(/\,/gi, ''))||"";
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
                 istriggerChange && this.props.onChange && this.props.onChange(value);
@@ -133,11 +136,11 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = false) 
         return <WrappedComponnet {...props} />
     }
 }
-const Input = InputContainer(Base);
-const NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/);//数字,含小数
-const InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/);//整数
-const PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/);//正整数
-const LetterInput = InputContainer(Base, /[a-zA-Z]+/, true);//字母
+var Input = InputContainer(Base);
+var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/,true,false); //数字,含小数
+var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/,true,false); //整数
+var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/,false,false); //正整数
+var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
 
 const setCaretPosition = (tObj, sPos) => {
     if (tObj.setSelectionRange) {
@@ -190,6 +193,9 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         this.format(value, false, target);
     }
     format(value, isinit, target) {
+        if(this.props.beforeFormat){
+            value = this.props.beforeFormat(value);
+        }
         let oldvalue = value;
         value = format(String(value).replace(/\,/g, ''), this.props, this.state ? this.state.value : '', this.negative);
         let istriggerChange = true;
@@ -216,7 +222,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                     // console.log(tmp)
                     setCaretPosition(target, tmp);
                 }
-                if (!this.isNaN) {
+                if (!this.isNaN && value !='') {
                     value = Number(value.replace(/\,/gi, ''));
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
@@ -230,6 +236,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
 
 const formatThousandthNumber = function (num, { decimals }, ov) {
     // number = number.replace(/\,/g,'');
+    ov=ov.replace(/\,/g, '');
     num = String(num).replace(/\,/g, '');
     let isnegative = false;
     if (num.indexOf('-') == 0) {
@@ -277,4 +284,4 @@ Input.Thousand = ThousandInput;
 Input.Base=Base;
 Input.FormatContainer=FormatContainer;
 const ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
-export {Base,FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
+export {Base,formatThousandthNumber,FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };

@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Input = __webpack_require__(1);
 
-	module.exports = { Base: _Input.Base, FormatContainer: _Input.FormatContainer, Input: _Input.Input, NumericInput: _Input.NumericInput, InterInput: _Input.InterInput, PosInterInput: _Input.PosInterInput, LetterInput: _Input.LetterInput, ThousandInput: _Input.ThousandInput, InputContainer: _Input.InputContainer }; //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
+	module.exports = { Base: _Input.Base, formatThousandthNumber: _Input.formatThousandthNumber, FormatContainer: _Input.FormatContainer, Input: _Input.Input, NumericInput: _Input.NumericInput, InterInput: _Input.InterInput, PosInterInput: _Input.PosInterInput, LetterInput: _Input.LetterInput, ThousandInput: _Input.ThousandInput, InputContainer: _Input.InputContainer }; //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
 	/*
 	 * Created with Visual Studio Code.
 	 * github: https://github.com/React-Plugin/x-seed
@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ThousandInput = exports.LetterInput = exports.PosInterInput = exports.InterInput = exports.NumericInput = exports.InputContainer = exports.Input = exports.FormatContainer = exports.Base = undefined;
+	exports.ThousandInput = exports.LetterInput = exports.PosInterInput = exports.InterInput = exports.NumericInput = exports.InputContainer = exports.Input = exports.FormatContainer = exports.formatThousandthNumber = exports.Base = undefined;
 
 	var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
 	    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
@@ -215,7 +215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var InputContainer = function InputContainer(WrappedComponnet, reg) {
 	    var negative = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-	    var isNaN = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	    var isNaN = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 	    return function (_Component2) {
 	        _inherits(_class2, _Component2);
 
@@ -252,6 +252,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function format(value, isinit) {
 	                var _this4 = this;
 
+	                if (this.props.beforeFormat) {
+	                    value = this.props.beforeFormat(value);
+	                }
 	                var istriggerChange = true;
 	                if (/^\-/.test(value) && this.negative) {
 	                    this.isnegative = true;
@@ -282,8 +285,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return value;
 	                } else {
 	                    this.setState({ value: value }, function () {
-	                        if (!isNaN) {
-	                            value = Number(value.replace(/\,/gi, ''));
+	                        if (!isNaN && value != '') {
+	                            value = Number(value.replace(/\,/gi, '')) || "";
 	                        }
 	                        _this4.props.returnType ? value = window[_this4.props.returnType](value) : String(value);
 	                        istriggerChange && _this4.props.onChange && _this4.props.onChange(value);
@@ -313,10 +316,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }(_react.Component);
 	};
 	var Input = InputContainer(Base);
-	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/); //数字,含小数
-	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/); //整数
-	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/); //正整数
-	var LetterInput = InputContainer(Base, /[a-zA-Z]+/, true); //字母
+	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/, true, false); //数字,含小数
+	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/, true, false); //整数
+	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/, false, false); //正整数
+	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
 
 	var setCaretPosition = function setCaretPosition(tObj, sPos) {
 	    if (tObj.setSelectionRange) {
@@ -385,6 +388,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function format(value, isinit, target) {
 	                var _this6 = this;
 
+	                if (this.props.beforeFormat) {
+	                    value = this.props.beforeFormat(value);
+	                }
 	                var oldvalue = value;
 	                value = _format(String(value).replace(/\,/g, ''), this.props, this.state ? this.state.value : '', this.negative);
 	                var istriggerChange = true;
@@ -411,7 +417,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            // console.log(tmp)
 	                            setCaretPosition(target, tmp);
 	                        }
-	                        if (!_this6.isNaN) {
+	                        if (!_this6.isNaN && value != '') {
 	                            value = Number(value.replace(/\,/gi, ''));
 	                        }
 	                        _this6.props.returnType ? value = window[_this6.props.returnType](value) : String(value);
@@ -431,6 +437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var decimals = _ref.decimals;
 
 	    // number = number.replace(/\,/g,'');
+	    ov = ov.replace(/\,/g, '');
 	    num = String(num).replace(/\,/g, '');
 	    var isnegative = false;
 	    if (num.indexOf('-') == 0) {
@@ -479,6 +486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Input.FormatContainer = FormatContainer;
 	var ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 	exports.Base = Base;
+	exports.formatThousandthNumber = formatThousandthNumber;
 	exports.FormatContainer = FormatContainer;
 	exports.Input = Input;
 	exports.InputContainer = InputContainer;
