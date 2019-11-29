@@ -64,7 +64,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
     constructor(props) {
         super(props);
         // this.decimals = props.decimals;
-        this.negative = this.props.negative || negative;
+        this.negative = typeof this.props.negative==='undefined'? negative:this.props.negative;
         this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
