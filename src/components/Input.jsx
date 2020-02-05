@@ -116,7 +116,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
         } else {
             this.setState({ value }, () => {
                 if (!isNaN && value !='') {
-                    value = Number(value.replace(/\,/gi, ''))||"";
+                    value = Number(String(value).replace(/\,/gi, ''));
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
                 istriggerChange && this.props.onChange && this.props.onChange(value);
