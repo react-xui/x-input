@@ -233,6 +233,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        _createClass(_class2, [{
+	            key: "componentDidUpdate",
+	            value: function componentDidUpdate(prevProps) {
+	                if (prevProps.decimals != this.props.decimals) {
+	                    this.format(this.state.value, false);
+	                }
+	            }
+	        }, {
 	            key: "componentWillReceiveProps",
 	            value: function componentWillReceiveProps(newProps, newState) {
 	                if (newProps.value != this.state.value && typeof newProps.value !== 'undefined') {
@@ -266,9 +273,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var oldvalue = value;
 	                    (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
 	                    value = String(value).replace(/\,/g, '');
-	                    if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
-	                        istriggerChange = false;
-	                    }
 	                    if (reg && value != '') {
 	                        var arr = value.split('.');
 	                        if (arr.length > 1) {
@@ -276,6 +280,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        }
 	                        var res = value.match(reg);
 	                        value = res === null ? '' : res[0];
+	                    }
+	                    if (this.state && oldvalue == this.state.value && value == this.state.value) {
+	                        istriggerChange = false;
 	                    }
 	                }
 	                if (this.isnegative) {

@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2019-11-21 18:19:50
+ * @LastEditTime: 2020-03-03 15:43:24
  * @github: https://github.com/tianxiangbing
  */
 import React,{Component} from 'react';
@@ -27,14 +27,18 @@ class App1 extends React.Component {
     alert(ReactDOM.findDOMNode(this.txt).value)
   }
   changeDecimals=()=>{
-    this.setState({decimals:3})
+    this.setState({decimals:4})
+  }
+  changeDecimals2=()=>{
+    this.setState({decimals:2})
   }
   render() {
     return (
       <div>
+      <button onClick={this.changeDecimals}>4位小数</button>
+      <button onClick={this.changeDecimals2}>2位小数</button>
         <button onClick={this.clickHandle} >test</button>
         <button onClick={this.getValueHandle}>getvalue</button>
-        <button onClick={this.changeDecimals}>三位小数</button>
         <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/>
         <Input value={this.state.v} ref={txt=>this.txt=txt}/>
         <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
@@ -42,7 +46,7 @@ class App1 extends React.Component {
         <InterInput className="txb" negative={false} placeholder="请输入正数" value={this.state.v} />
         <ThousandInput placeholder="负千分位数字" negative={true}  value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>
         <ThousandInput placeholder="千分位数字" returnType="String" negative={false}  value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>
-        <NumericInput  placeholder="两位小数" value="2.123" negative={true} decimals={this.state.decimals} onChange={this.changeHandle.bind(this)}/>
+        <NumericInput  placeholder="两位小数" onChange={v=>console.error(v)} negative={true} decimals={this.state.decimals}/>
       </div>
     )
   }

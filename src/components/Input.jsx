@@ -15,7 +15,7 @@ class Base extends Component {
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
     componentWillReceiveProps(newProps, newState) {
-        if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value) {
+        if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value ) {
             this.setState({ value: newProps.value });
         }
     }
@@ -68,8 +68,13 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
         this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
+    componentDidUpdate(prevProps){
+        if(prevProps.decimals!=this.props.decimals){
+            this.format(this.state.value,false)
+        }
+    }
     componentWillReceiveProps(newProps, newState) {
-        if (newProps.value != this.state.value && typeof newProps.value !== 'undefined') {
+        if (newProps.value != this.state.value && typeof newProps.value !== 'undefined' ) {
             if (!this.isNaN) {
                 let value = Number(this.state.value.replace(/\,/gi, ''));
                 if (Number(String(newProps.value).replace(/\,/gi, '')) != value) {
@@ -96,9 +101,6 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
             let oldvalue = value;
             typeof value === 'object' ? value = JSON.stringify(value) : null;
             value = String(value).replace(/\,/g, '');
-            if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
-                istriggerChange = false;
-            }
             if (reg && value != '') {
                 let arr = value.split('.');
                 if (arr.length > 1) {
@@ -106,6 +108,9 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
                 }
                 let res = value.match(reg);
                 value = res === null ? '' : res[0];
+            }
+            if (this.state && (oldvalue == this.state.value && value == this.state.value)) {
+                istriggerChange = false;
             }
         }
         if (this.isnegative) {

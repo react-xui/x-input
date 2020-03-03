@@ -1,6 +1,6 @@
 {
   "name": "jsx-input",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "description": "react xui ",
   "main": "./lib/index.js",
   "repository": {
