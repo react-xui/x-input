@@ -293,7 +293,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                } else {
 	                    this.setState({ value: value }, function () {
 	                        if (!isNaN && value != '') {
-	                            value = Number(value.replace(/\,/gi, '')) || "";
+	                            value = Number(String(value).replace(/\,/gi, ''));
 	                        }
 	                        _this4.props.returnType ? value = window[_this4.props.returnType](value) : String(value);
 	                        istriggerChange && _this4.props.onChange && _this4.props.onChange(value);
