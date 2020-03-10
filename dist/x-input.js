@@ -183,6 +183,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            delete newProps['onChange'];
 	            delete newProps['returnType'];
 	            delete newProps['negative'];
+	            delete newProps['beforeFormat'];
+	            delete newProps['batchUpdate'];
+	            delete newProps['sync'];
 	            // delete newProps['value'];
 	            var value = this.state.value;
 	            (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
@@ -235,17 +238,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _createClass(_class2, [{
 	            key: "componentDidUpdate",
 	            value: function componentDidUpdate(prevProps) {
-	                if (prevProps.decimals != this.props.decimals) {
+	                if (prevProps.decimals !== this.props.decimals) {
 	                    this.format(this.state.value, false);
 	                }
 	            }
 	        }, {
 	            key: "componentWillReceiveProps",
 	            value: function componentWillReceiveProps(newProps, newState) {
-	                if (newProps.value != this.state.value && typeof newProps.value !== 'undefined') {
+	                if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined') {
 	                    if (!this.isNaN) {
-	                        var value = Number(this.state.value.replace(/\,/gi, ''));
-	                        if (Number(String(newProps.value).replace(/\,/gi, '')) != value) {
+	                        var value = this.state.value === '' ? '' : Number(this.state.value.replace(/\,/gi, ''));
+	                        if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
 	                            this.format(newProps.value);
 	                        }
 	                    } else {
@@ -277,6 +280,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        var arr = value.split('.');
 	                        if (arr.length > 1) {
 	                            value = arr[0] + '.' + arr[1].substr(0, this.props.decimals);
+	                        }
+	                        if (this.props.decimals === 0) {
+	                            value = value.split('.')[0];
 	                        }
 	                        var res = value.match(reg);
 	                        value = res === null ? '' : res[0];
@@ -477,6 +483,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var str = s.join(dec);
 	        if (arr.length > 1) {
 	            str += '.' + arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
+	        }
+	        if (decimals === 0) {
+	            str = str.split('.')[0];
 	        }
 	        if (isnegative) {
 	            return '-' + str;
