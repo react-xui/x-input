@@ -394,7 +394,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                } else {
 	                    this.isnegative = false;
 	                }
-	                this.format(value, false, target);
+	                if (value != "") {
+	                    this.format(value, false, target);
+	                }
 	            }
 	        }, {
 	            key: "format",
@@ -420,7 +422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        rightpos = len - pos; //算出从右计算的光标位置
 	                    }
 	                    // console.log('right:',rightpos)
-	                    if (this.isnegative) {
+	                    if (this.isnegative && String(value).indexOf('-') != 0) {
 	                        value = '-' + value;
 	                    }
 	                    this.setState({ value: value }, function () {
@@ -430,8 +432,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            // console.log(tmp)
 	                            setCaretPosition(target, tmp);
 	                        }
-	                        if (!_this6.isNaN && value != '') {
+	                        if (!_this6.isNaN && value != '' && value != "-") {
 	                            value = Number(value.replace(/\,/gi, ''));
+	                        } else {
+	                            value = value.replace(/\,/gi, '');
 	                        }
 	                        _this6.props.returnType ? value = window[_this6.props.returnType](value) : String(value);
 	                        istriggerChange && _this6.props.onChange && _this6.props.onChange(value);
@@ -493,6 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return str;
 	    }
 	};
+	var ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 	Input.Numeric = NumericInput;
 	Input.Inter = InterInput;
 	Input.PosInter = PosInterInput;
@@ -500,7 +505,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Input.Thousand = ThousandInput;
 	Input.Base = Base;
 	Input.FormatContainer = FormatContainer;
-	var ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 	exports.Base = Base;
 	exports.formatThousandthNumber = formatThousandthNumber;
 	exports.FormatContainer = FormatContainer;

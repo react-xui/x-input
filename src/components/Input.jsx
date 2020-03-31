@@ -201,7 +201,9 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         } else {
             this.isnegative = false;
         }
-        this.format(value, false, target);
+        if(value!=""){
+            this.format(value, false, target);
+        }
     }
     format(value, isinit, target) {
         if(this.props.beforeFormat){
@@ -223,7 +225,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                 rightpos = len - pos;//算出从右计算的光标位置
             }
             // console.log('right:',rightpos)
-            if (this.isnegative) {
+            if (this.isnegative&& String(value).indexOf('-')!=0) {
                 value = '-' + value;
             }
             this.setState({ value }, () => {
@@ -233,8 +235,10 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                     // console.log(tmp)
                     setCaretPosition(target, tmp);
                 }
-                if (!this.isNaN && value !='') {
+                if (!this.isNaN && value !='' && value!="-") {
                     value = Number(value.replace(/\,/gi, ''));
+                }else {
+                    value = value.replace(/\,/gi, '');
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
                 istriggerChange && this.props.onChange && this.props.onChange(value);
@@ -290,6 +294,7 @@ const formatThousandthNumber = function (num, { decimals }, ov) {
         return str;
     }
 }
+const ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 Input.Numeric = NumericInput;
 Input.Inter = InterInput;
 Input.PosInter = PosInterInput;
@@ -297,5 +302,4 @@ Input.Letter = LetterInput;
 Input.Thousand = ThousandInput;
 Input.Base=Base;
 Input.FormatContainer=FormatContainer;
-const ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 export {Base,formatThousandthNumber,FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
