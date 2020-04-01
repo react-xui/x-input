@@ -389,7 +389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                if (/^\-/.test(value)) {
 	                    //如果负号开始
-	                    value = value.replace(/\-/gi, '');
+	                    value = value.replace(/\-/i, '');
 	                    this.negative ? this.isnegative = true : null;
 	                } else {
 	                    this.isnegative = false;
