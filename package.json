@@ -1,6 +1,6 @@
 {
   "name": "jsx-input",
-  "version": "1.2.9",
+  "version": "1.3.0",
   "description": "react xui ",
   "main": "./lib/index.js",
   "repository": {
@@ -17,7 +17,8 @@
     "example": "npm-run-all prepublish exserver",
     "exserver": "node scripts/dev-examples",
     "start": "node scripts/dev-src",
-    "build": "webpack --config webpack.dist.config.js",
+    "build":"npm-run-all lib dist",
+    "dist":"webpack --config webpack.dist.config.js",
     "lib": "babel src -d lib && webpack --config webpack.css.config.js",
     "prepublish": "npm-run-all lib build",
     "docs": "npm-run-all docs:*",

@@ -64,12 +64,16 @@ class Base extends Component {
  */
 const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) => class extends Component {
     isNaN = isNaN;
+    static defaultProps={
+        autoFormat:true
+    }
     constructor(props) {
         super(props);
         // this.decimals = props.decimals;
         this.negative = typeof this.props.negative==='undefined'? negative:this.props.negative;
         this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
+        this.onBlur = this.onBlur.bind(this);
     }
     componentDidUpdate(prevProps){
         if(prevProps.decimals!==this.props.decimals){
@@ -81,7 +85,8 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
             if (!this.isNaN) {
                 let value =this.state.value ===''?'': Number(this.state.value.replace(/\,/gi, ''));
                 if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
-                    this.format(newProps.value)
+                    // this.format(newProps.value)
+                    this.blurFormat(newProps.value,false);
                 }
             } else {
                 this.format(newProps.value)
@@ -138,13 +143,46 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
         let { value } = target;
         this.format(value, false, target);
     }
+    onBlur(e){
+        // console.log(e)
+        if(this.props.autoFormat){
+           let value = e.target.value.replace(/\,/gi,'');
+           this.blurFormat(value);
+        }
+    }
+    blurFormat(value,istriggerChange=true){
+        value = number_format(value,this.props.decimals)
+        this.setState({ value }, () => {
+            if (!isNaN && value !='') {
+                value = Number(String(value).replace(/\,/gi, ''));
+            }
+            this.props.returnType ? value = window[this.props.returnType](value) : String(value);
+            istriggerChange&& this.props.onChange && this.props.onChange(value);
+       });
+    }
     render() {
         const newProps = {
             onChange: this.onChangeHandle,
             value: this.state.value
         }
         const props = Object.assign({}, this.props, newProps);
-        return <WrappedComponnet {...props} />
+        return <WrappedComponnet {...props}  onBlur={this.onBlur}/>
+    }
+}
+function number_format(number,n){
+    if(n){
+        n = Number(n)
+        number = String(number);
+        let num= number;
+        let arr = number.split('.');
+        let i = (arr[0] +'').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g,'$1,');
+        if(number.indexOf('.')>-1){
+            let de = arr[1]
+            num =  i+'.'+ (de+Array(n+1).join(0)).slice(0,n);
+        }else{
+            num =  i+'.'+ Array(n+1).join(0).slice(0,n);
+        }
+        return num
     }
 }
 var Input = InputContainer(Base);
@@ -203,6 +241,8 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         }
         if(value!=""){
             this.format(value, false, target);
+        }else{
+            this.props.onChange && this.props.onChange(value);
         }
     }
     format(value, isinit, target) {
