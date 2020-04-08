@@ -333,7 +333,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                var istriggerChange = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-	                value = number_format(value, this.props.decimals);
+	                if (value !== '') {
+	                    value = number_format(value, this.props.decimals);
+	                }
 	                this.setState({ value: value }, function () {
 	                    if (!isNaN && value != '') {
 	                        value = Number(String(value).replace(/\,/gi, ''));

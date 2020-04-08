@@ -151,7 +151,9 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
         }
     }
     blurFormat(value,istriggerChange=true){
-        value = number_format(value,this.props.decimals)
+        if(value!==''){
+            value = number_format(value,this.props.decimals)
+        }
         this.setState({ value }, () => {
             if (!isNaN && value !='') {
                 value = Number(String(value).replace(/\,/gi, ''));
