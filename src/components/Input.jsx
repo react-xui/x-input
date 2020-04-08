@@ -83,7 +83,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
     componentWillReceiveProps(newProps, newState) {
         if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined' ) {
             if (!this.isNaN) {
-                let value =this.state.value ===''?'': Number(this.state.value.replace(/\,/gi, ''));
+                let value =this.state.value ===''?'': Number(String(this.state.value).replace(/\,/gi, ''));
                 if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
                     // this.format(newProps.value)
                     this.blurFormat(newProps.value,false);
@@ -152,7 +152,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
     }
     blurFormat(value,istriggerChange=true){
         if(value!==''){
-            value = number_format(value,this.props.decimals)
+            value = number_format(value,this.props.decimals||0)
         }
         this.setState({ value }, () => {
             if (!isNaN && value !='') {

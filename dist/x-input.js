@@ -250,7 +250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value: function componentWillReceiveProps(newProps, newState) {
 	                if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined') {
 	                    if (!this.isNaN) {
-	                        var value = this.state.value === '' ? '' : Number(this.state.value.replace(/\,/gi, ''));
+	                        var value = this.state.value === '' ? '' : Number(String(this.state.value).replace(/\,/gi, ''));
 	                        if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
 	                            // this.format(newProps.value)
 	                            this.blurFormat(newProps.value, false);
@@ -334,7 +334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var istriggerChange = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 	                if (value !== '') {
-	                    value = number_format(value, this.props.decimals);
+	                    value = number_format(value, this.props.decimals || 0);
 	                }
 	                this.setState({ value: value }, function () {
 	                    if (!isNaN && value != '') {
