@@ -325,6 +325,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var value = e.target.value.replace(/\,/gi, '');
 	                    this.blurFormat(value);
 	                }
+	                this.props.onBlur && this.props.onBlur(e);
 	            }
 	        }, {
 	            key: "blurFormat",
@@ -376,6 +377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return num;
 	    }
+	    return number;
 	}
 	var Input = InputContainer(Base);
 	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/, true, false); //数字,含小数
@@ -505,7 +507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var decimals = _ref.decimals;
 
 	    // number = number.replace(/\,/g,'');
-	    ov = ov.replace(/\,/g, '');
+	    ov = String(ov).replace(/\,/g, '');
 	    num = String(num).replace(/\,/g, '');
 	    var isnegative = false;
 	    if (num.indexOf('-') == 0) {

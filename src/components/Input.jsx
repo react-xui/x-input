@@ -149,6 +149,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
            let value = e.target.value.replace(/\,/gi,'');
            this.blurFormat(value);
         }
+        this.props.onBlur && this.props.onBlur(e);
     }
     blurFormat(value,istriggerChange=true){
         if(value!==''){
@@ -186,6 +187,7 @@ function number_format(number,n){
         }
         return num
     }
+    return number;
 }
 var Input = InputContainer(Base);
 var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/,true,false); //数字,含小数
@@ -293,7 +295,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
 
 const formatThousandthNumber = function (num, { decimals }, ov) {
     // number = number.replace(/\,/g,'');
-    ov=ov.replace(/\,/g, '');
+    ov=String(ov).replace(/\,/g, '');
     num = String(num).replace(/\,/g, '');
     let isnegative = false;
     if (num.indexOf('-') == 0) {
