@@ -232,7 +232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            _this3.isNaN = isNaN;
 	            _this3.negative = typeof _this3.props.negative === 'undefined' ? negative : _this3.props.negative;
-	            _this3.state = { value: typeof props.value === 'undefined' ? "" : _this3.format(props.value, true) };
+	            _this3.state = { value: typeof props.value === 'undefined' ? "" : number_format(_this3.format(props.value, true), props.decimals || 0) };
 	            _this3.onChangeHandle = _this3.onChangeHandle.bind(_this3);
 	            _this3.onBlur = _this3.onBlur.bind(_this3);
 	            return _this3;

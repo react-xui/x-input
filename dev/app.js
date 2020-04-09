@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2020-04-08 19:58:57
+ * @LastEditTime: 2020-04-09 20:31:37
  * @github: https://github.com/tianxiangbing
  */
 import React,{Component} from 'react';
@@ -14,7 +14,7 @@ var appElement = document.getElementById('example');
 class App1 extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { v:'' ,decimals:2,visible:true};
+    this.state = { v:'1' ,decimals:2,visible:true};
     this.clickHandle = this.clickHandle.bind(this);
   }
   changeHandle(value){

@@ -71,7 +71,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
         super(props);
         // this.decimals = props.decimals;
         this.negative = typeof this.props.negative==='undefined'? negative:this.props.negative;
-        this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
+        this.state = { value: typeof props.value === 'undefined' ? "" :number_format( this.format(props.value, true),props.decimals||0) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
