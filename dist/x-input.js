@@ -248,12 +248,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	            key: "componentWillReceiveProps",
 	            value: function componentWillReceiveProps(newProps, newState) {
+	                var _this4 = this;
+
 	                if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined') {
 	                    if (!this.isNaN) {
 	                        var value = this.state.value === '' ? '' : Number(String(this.state.value).replace(/\,/gi, ''));
 	                        if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
 	                            // this.format(newProps.value)
-	                            this.blurFormat(newProps.value, false);
+	                            this.blurFormat(newProps.value);
+	                        }
+	                        if (newProps.value === '' && this.state.value !== '') {
+	                            this.setState({ value: '' }, function () {
+	                                _this4.props.onChange && _this4.props.onChange(_this4.state.value);
+	                            });
 	                        }
 	                    } else {
 	                        this.format(newProps.value);
@@ -264,7 +271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	            key: "format",
 	            value: function format(value, isinit) {
-	                var _this4 = this;
+	                var _this5 = this;
 
 	                if (this.props.beforeFormat) {
 	                    value = this.props.beforeFormat(value);
@@ -305,8 +312,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        if (!isNaN && value != '') {
 	                            value = Number(String(value).replace(/\,/gi, ''));
 	                        }
-	                        _this4.props.returnType ? value = window[_this4.props.returnType](value) : String(value);
-	                        istriggerChange && _this4.props.onChange && _this4.props.onChange(value);
+	                        _this5.props.returnType ? value = window[_this5.props.returnType](value) : String(value);
+	                        istriggerChange && _this5.props.onChange && _this5.props.onChange(value);
 	                    });
 	                }
 	            }
@@ -330,9 +337,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	            key: "blurFormat",
 	            value: function blurFormat(value) {
-	                var _this5 = this;
-
-	                var istriggerChange = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+	                var _this6 = this;
 
 	                if (value !== '') {
 	                    value = number_format(value, this.props.decimals || 0);
@@ -341,8 +346,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (!isNaN && value != '') {
 	                        value = Number(String(value).replace(/\,/gi, ''));
 	                    }
-	                    _this5.props.returnType ? value = window[_this5.props.returnType](value) : String(value);
-	                    istriggerChange && _this5.props.onChange && _this5.props.onChange(value);
+	                    _this6.props.returnType ? value = window[_this6.props.returnType](value) : String(value);
+	                    _this6.props.onChange && _this6.props.onChange(value);
 	                });
 	            }
 	        }, {
@@ -454,7 +459,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	            key: "format",
 	            value: function format(value, isinit, target) {
-	                var _this7 = this;
+	                var _this8 = this;
 
 	                if (this.props.beforeFormat) {
 	                    value = this.props.beforeFormat(value);
@@ -467,7 +472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	                if (!isinit) {
 	                    //计算出新值和旧值之间相差几个千分位
-	                    var ql = value.split(',').length - this.state.value.split(',').length;
+	                    var ql = value.split(',').length - String(this.state.value).split(',').length;
 	                    var rightpos = 0;
 	                    if (target) {
 	                        var pos = getPosition(target);
@@ -480,18 +485,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                    this.setState({ value: value }, function () {
 	                        if (target) {
-	                            var tmp = _this7.state.value.length - rightpos;
+	                            var tmp = String(_this8.state.value).length - rightpos;
 	                            // console.log(tmp,this.state.value.length,rightpos)
 	                            // console.log(tmp)
 	                            setCaretPosition(target, tmp);
 	                        }
-	                        if (!_this7.isNaN && value != '' && value != "-") {
+	                        if (!_this8.isNaN && value != '' && value != "-") {
 	                            value = Number(value.replace(/\,/gi, ''));
 	                        } else {
 	                            value = value.replace(/\,/gi, '');
 	                        }
-	                        _this7.props.returnType ? value = window[_this7.props.returnType](value) : String(value);
-	                        istriggerChange && _this7.props.onChange && _this7.props.onChange(value);
+	                        _this8.props.returnType ? value = window[_this8.props.returnType](value) : String(value);
+	                        istriggerChange && _this8.props.onChange && _this8.props.onChange(value);
 	                    });
 	                } else {
 	                    return value;

@@ -86,7 +86,12 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
                 let value =this.state.value ===''?'': Number(String(this.state.value).replace(/\,/gi, ''));
                 if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
                     // this.format(newProps.value)
-                    this.blurFormat(newProps.value,false);
+                    this.blurFormat(newProps.value);
+                }
+                if(newProps.value ==='' && this.state.value  !==''){
+                    this.setState({value:''},()=>{
+                        this.props.onChange && this.props.onChange(this.state.value)
+                    })
                 }
             } else {
                 this.format(newProps.value)
@@ -151,7 +156,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
         }
         this.props.onBlur && this.props.onBlur(e);
     }
-    blurFormat(value,istriggerChange=true){
+    blurFormat(value){
         if(value!==''){
             value = number_format(value,this.props.decimals||0)
         }
@@ -160,7 +165,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
                 value = Number(String(value).replace(/\,/gi, ''));
             }
             this.props.returnType ? value = window[this.props.returnType](value) : String(value);
-            istriggerChange&& this.props.onChange && this.props.onChange(value);
+            this.props.onChange && this.props.onChange(value);
        });
     }
     render() {
@@ -261,7 +266,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         }
         if (!isinit) {
             //计算出新值和旧值之间相差几个千分位
-            let ql = value.split(',').length - this.state.value.split(',').length;
+            let ql = value.split(',').length - String(this.state.value).split(',').length;
             let rightpos = 0;
             if (target) {
                 let pos = getPosition(target);
@@ -274,7 +279,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
             }
             this.setState({ value }, () => {
                 if (target) {
-                    let tmp = this.state.value.length - rightpos
+                    let tmp = String(this.state.value).length - rightpos
                     // console.log(tmp,this.state.value.length,rightpos)
                     // console.log(tmp)
                     setCaretPosition(target, tmp);
