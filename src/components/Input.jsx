@@ -84,7 +84,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
         this.onBlur = this.onBlur.bind(this);
     }
     componentDidUpdate(prevProps){
-        if(prevProps.decimals!==this.props.decimals){
+        if(prevProps.decimals!==this.props.decimals && prevProps.value!='' && this.props.value !="" && this.state.value!=""){
             this.blurFormat(this.state.value) 
         }
     }
@@ -187,21 +187,21 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
     }
 }
 function number_format(number,n=0){
+    if(number==='')return '';
     if(!isNaN(n)){
         n = Number(n)
         number = String(number);
         let num= number;
         let arr = number.split('.');
         let i = (arr[0] +'').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g,'$1,');
-        if(number.indexOf('.')>-1){
+        if(number.indexOf('.')>-1 && n !=0){
             let de = arr[1]
-            if(n!=0){
-                num =  i+'.'+ (de+Array(n+1).join(0)).slice(0,n);
-            }else{
-                num = i;
-            }
+            num =  i+'.'+ (de+Array(n+1).join(0)).slice(0,n);
         }else{
             num =  i+'.'+ Array(n+1).join(0).slice(0,n);
+        }
+        if(n == 0){
+            num = i;
         }
         return num
     }

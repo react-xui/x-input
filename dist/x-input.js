@@ -249,7 +249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _createClass(_class, [{
 	            key: "componentDidUpdate",
 	            value: function componentDidUpdate(prevProps) {
-	                if (prevProps.decimals !== this.props.decimals) {
+	                if (prevProps.decimals !== this.props.decimals && prevProps.value != '' && this.props.value != "" && this.state.value != "") {
 	                    this.blurFormat(this.state.value);
 	                }
 	            }
@@ -381,21 +381,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	function number_format(number) {
 	    var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
+	    if (number === '') return '';
 	    if (!isNaN(n)) {
 	        n = Number(n);
 	        number = String(number);
 	        var num = number;
 	        var arr = number.split('.');
 	        var i = (arr[0] + '').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
-	        if (number.indexOf('.') > -1) {
+	        if (number.indexOf('.') > -1 && n != 0) {
 	            var de = arr[1];
-	            if (n != 0) {
-	                num = i + '.' + (de + Array(n + 1).join(0)).slice(0, n);
-	            } else {
-	                num = i;
-	            }
+	            num = i + '.' + (de + Array(n + 1).join(0)).slice(0, n);
 	        } else {
 	            num = i + '.' + Array(n + 1).join(0).slice(0, n);
+	        }
+	        if (n == 0) {
+	            num = i;
 	        }
 	        return num;
 	    }
