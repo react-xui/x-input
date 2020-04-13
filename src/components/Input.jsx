@@ -7,6 +7,7 @@
  * Contact: 55342775@qq.com
  */
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 //文本输入框
 class Base extends Component {
     constructor(props) {
@@ -62,22 +63,29 @@ class Base extends Component {
  * @param {boolean}isNaN 是否为非数字，默认为false时是数字
  * @return: 
  */
-const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) => class extends Component {
-    isNaN = isNaN;
+const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true) => class extends Component {
+    isNaN = isNumber;
     static defaultProps={
         autoFormat:true
+    }
+    static propTypes = {
+        decimals:PropTypes.number
     }
     constructor(props) {
         super(props);
         // this.decimals = props.decimals;
         this.negative = typeof this.props.negative==='undefined'? negative:this.props.negative;
-        this.state = { value: typeof props.value === 'undefined' ? "" : this.format(props.value, true) };
+        let decimals = this.props.decimals;
+        if(isNaN(decimals)){
+            decimals = 0;
+        }
+        this.state = { value: typeof props.value === 'undefined' ? "" : number_format(this.format(props.value, true),decimals) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
     componentDidUpdate(prevProps){
         if(prevProps.decimals!==this.props.decimals){
-            this.format(this.state.value,false)
+            this.blurFormat(this.state.value) 
         }
     }
     componentWillReceiveProps(newProps, newState) {
@@ -158,7 +166,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
     }
     blurFormat(value){
         if(value!==''){
-            value = number_format(value,this.props.decimals||0)
+            value = number_format(value,this.props.decimals)
         }
         this.setState({ value }, () => {
             if (!isNaN && value !='') {
@@ -174,11 +182,12 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNaN = true) =
             value: this.state.value
         }
         const props = Object.assign({}, this.props, newProps);
+        delete props.autoFormat;
         return <WrappedComponnet {...props}  onBlur={this.onBlur}/>
     }
 }
-function number_format(number,n){
-    if(n){
+function number_format(number,n=0){
+    if(!isNaN(n)){
         n = Number(n)
         number = String(number);
         let num= number;
@@ -186,7 +195,11 @@ function number_format(number,n){
         let i = (arr[0] +'').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g,'$1,');
         if(number.indexOf('.')>-1){
             let de = arr[1]
-            num =  i+'.'+ (de+Array(n+1).join(0)).slice(0,n);
+            if(n!=0){
+                num =  i+'.'+ (de+Array(n+1).join(0)).slice(0,n);
+            }else{
+                num = i;
+            }
         }else{
             num =  i+'.'+ Array(n+1).join(0).slice(0,n);
         }
