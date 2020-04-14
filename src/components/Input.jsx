@@ -144,7 +144,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
             return value;
         } else {
             this.setState({ value }, () => {
-                if (!isNaN && value !='') {
+                if (!this.isNaN && value !='') {
                     value = Number(String(value).replace(/\,/gi, ''));
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
@@ -165,11 +165,11 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
         this.props.onBlur && this.props.onBlur(e);
     }
     blurFormat(value){
-        if(value!==''){
+        if(value!=='' && !this.isNaN){
             value = number_format(value,this.props.decimals)
         }
         this.setState({ value }, () => {
-            if (!isNaN && value !='') {
+            if (!this.isNaN && value !='') {
                 value = Number(String(value).replace(/\,/gi, ''));
             }
             this.props.returnType ? value = window[this.props.returnType](value) : String(value);
