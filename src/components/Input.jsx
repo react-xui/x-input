@@ -160,6 +160,9 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
         // console.log(e)
         if(this.props.autoFormat){
            let value = e.target.value.replace(/\,/gi,'');
+           if(value ==='-' && !this.isNaN){
+               value = '';
+           }
            this.blurFormat(value);
         }
         this.props.onBlur && this.props.onBlur(e);
@@ -261,11 +264,12 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
         } else {
             this.isnegative = false;
         }
-        if(value!=""){
+        // if(value!="" || this.isnegative){
             this.format(value, false, target);
-        }else{
-            this.props.onChange && this.props.onChange(value);
-        }
+        // }
+        // else{
+        //     this.props.onChange && this.props.onChange(value);
+        // }
     }
     format(value, isinit, target) {
         if(this.props.beforeFormat){
@@ -303,6 +307,9 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                     value = value.replace(/\,/gi, '');
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
+                if(!this.isNaN && value ==='-'){
+                    return;
+                }
                 istriggerChange && this.props.onChange && this.props.onChange(value);
             })
         } else {

@@ -338,6 +338,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // console.log(e)
 	                if (this.props.autoFormat) {
 	                    var value = e.target.value.replace(/\,/gi, '');
+	                    if (value === '-' && !this.isNaN) {
+	                        value = '';
+	                    }
 	                    this.blurFormat(value);
 	                }
 	                this.props.onBlur && this.props.onBlur(e);
@@ -467,11 +470,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                } else {
 	                    this.isnegative = false;
 	                }
-	                if (value != "") {
-	                    this.format(value, false, target);
-	                } else {
-	                    this.props.onChange && this.props.onChange(value);
-	                }
+	                // if(value!="" || this.isnegative){
+	                this.format(value, false, target);
+	                // }
+	                // else{
+	                //     this.props.onChange && this.props.onChange(value);
+	                // }
 	            }
 	        }, {
 	            key: "format",
@@ -513,6 +517,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            value = value.replace(/\,/gi, '');
 	                        }
 	                        _this8.props.returnType ? value = window[_this8.props.returnType](value) : String(value);
+	                        if (!_this8.isNaN && value === '-') {
+	                            return;
+	                        }
 	                        istriggerChange && _this8.props.onChange && _this8.props.onChange(value);
 	                    });
 	                } else {
