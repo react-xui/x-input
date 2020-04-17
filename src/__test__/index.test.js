@@ -1,3 +1,10 @@
+/*
+ * @Descripttion: 
+ * @Author: tianxiangbing
+ * @Date: 2019-09-06 17:20:04
+ * @LastEditTime: 2020-04-16 19:05:16
+ * @github: https://github.com/tianxiangbing
+ */
 import { shallow } from 'enzyme';
 import React from 'react';
 import { Input } from '../components/Input';
@@ -37,7 +44,7 @@ describe('Test Input', () => {
         const parentNode = shallow(<App/>);
         parentNode.setState({value:555});
         console.log(parentNode.find('input'))
-        expect(parentNode.find('div').children().prop('value')).toEqual('555');
+        expect(parentNode.find('div').children().prop('value')).toEqual(555);
 
     })
 });

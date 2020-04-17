@@ -7,4 +7,5 @@
  * Contact: 55342775@qq.com
  */
 import {Base,formatThousandthNumber,FormatContainer,Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer} from './components/Input';
-module.exports = {Base,formatThousandthNumber,FormatContainer,Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer};  //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
+import NumberInput from './components/NumberInput'
+module.exports = {NumberInput,Base,formatThousandthNumber,FormatContainer,Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput,InputContainer};  //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
