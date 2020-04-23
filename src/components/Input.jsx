@@ -318,7 +318,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
     }
 }
 
-const formatThousandthNumber = function (num, { decimals }, ov) {
+const formatThousandthNumber = function (num, { decimals=0 }, ov) {
     // number = number.replace(/\,/g,'');
     ov=String(ov).replace(/\,/g, '');
     num = String(num).replace(/\,/g, '');

@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2020-04-16 19:36:08
+ * @LastEditTime: 2020-04-23 18:24:53
  * @github: https://github.com/tianxiangbing
  */
 import React,{Component} from 'react';
@@ -14,7 +14,7 @@ var appElement = document.getElementById('example');
 class App1 extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { v:0 ,decimals:2,visible:true};
+    this.state = { v:0 ,decimals:2,visible:true,numberValue:'',returnType:'Number'};
     this.clickHandle = this.clickHandle.bind(this);
   }
   changeHandle(value){
@@ -42,6 +42,9 @@ class App1 extends React.Component {
   componentDidMount(){
     this.setState({decimals:4})
   }
+  setProps(){
+    this.setState({returnType:'Number',numberValue:'12345'})
+  }
   render() {
     return (
       <div>
@@ -56,7 +59,8 @@ class App1 extends React.Component {
         <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
         <Input.Inter className="txb" placeholder="请输入数字" value={this.state.v} />
         <InterInput className="txb" negative={false} placeholder="请输入正数" value={this.state.v} /> */}
-        <NumberInput/>
+        <NumberInput decimals={4} isFormat={true} returnType={this.state.returnType} value={this.state.numberValue}/>
+        <button onClick={this.setProps.bind(this)}>setProps</button>
        {this.state.visible ? <ThousandInput placeholder="负千分位数字" negative={true}  value={this.state.v}  decimals={this.state.decimals} onChange={this.changeHandle.bind(this)}/>:null}
         {/* <NumericInput placeholder="负千分位数字" negative={true}  value={this.state.v}  decimals={this.state.decimals} onChange={this.changeHandle.bind(this)}/> */}
        {/* <ThousandInput placeholder="千分位数字" returnType="String" negative={false}  value={this.state.v}  decimals={4} onChange={this.changeHandle.bind(this)}/> */}

@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-04-17 16:30:20
+ * @LastEditTime: 2020-04-23 19:21:46
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -16,8 +16,9 @@ const setup = (props={})=>{
 }
 
 describe('初始化测试',()=>{
+    let spy = sinon.spy(NumberInput.prototype,'componentWillReceiveProps')//监听生命周期
     it('init',()=>{
-        const {input} = setup({
+        let {input} = setup({
             value:"1234"
         });
         let displayName = NumberInput.displayName;
@@ -25,24 +26,138 @@ describe('初始化测试',()=>{
         expect(input.find('input').prop('value')).toEqual('1234')
     })
     it("传props值改变同步value",()=>{
-        const {input} = setup({
-            onChange:(v)=>{
-                console.log(v)
-            }
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            returnType:'Number'
         });
-        let spy = sinon.spy(NumberInput.prototype,'componentWillReceiveProps')
         input.setProps({'value':'12345'});
-        // expect(spy.calledOnce)
         expect(input.find('input').prop('value')).toEqual('12345');
-        // input.setProps({'value':'abcde'});
-        // expect(spy.calledOnce)
-        // expect(input.find('input').prop('value')).toEqual('abcde');
-        // input.find('input').simulate('change',{target:{value:'qqqq'}});
-        // // let spy2 = sinon.spy( input.find('input').prototype,'onChange');
-        // expect(spy.calledOnce)
-        // // expect(spy2).toBeCalled();
-        // // expect(spy2).toBeCalledWith('qqqq');
-        // expect(input.find('input').prop('value')).toEqual('qqqq')
-        // expect(NumberInput.prototype.componentWillReceiveProps.callCount).toBe(3)
+        expect(callback.calledOnce).toBe(true)
+        // console.log(callback.args[0])
+        // console.log(callback.returned(12345))
+        expect(spy.callCount).toEqual(1);//一次进willRecive
+        expect(callback.returned(12345)).toBe(true);//回调返回值判断
+      
+    })
+    it('事件模拟change,传入字符串',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback
+        });
+        input.find('input').simulate('change',{target:{value:'9999'}});//事件模拟
+        // let spy2 = sinon.spy( input.find('input').prototype,'onChange');
+        expect(spy.callCount).toEqual(1);//一次进willRecive
+        expect(callback.calledOnce).toBe(true)//被调用
+        expect(callback.returned(9999)).toBe(true);
+        expect(input.find('input').prop('value')).toEqual("9999")
+        expect(spy.callCount).toBe(1);
+       
+    })
+    it('传入数字类型的vlaue',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback
+        });
+        input.setProps({value:986.01});
+        expect(input.find('input').prop('value')).toEqual('986.01');
+        expect(callback.callCount).toBe(1)
+        expect(spy.callCount).toBe(2)//第二次进recive
+        expect(callback.returned(986.01)).toEqual(true)
+    })
+    it('returnType判断',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            returnType:'String'
+        });
+        input.setProps({'value':'abcde'});
+        console.log(spy.callCount)
+        expect(spy.callCount).toBe(3)//第三次进recive
+        expect(input.find('input').prop('value')).toEqual('');
+        expect(callback.returned('')).toBe(true);//回调返回值判断
+    })
+    it('初始化数字格式化千分位',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            value:12345,
+            isFormat:true,
+            onChange:callback
+        });
+        expect(input.find('input').prop('value')).toEqual('12,345');
+        input.setProps({value:5556789});
+        expect(input.find('input').prop('value')).toEqual('5,556,789');
+        expect(spy.callCount).toEqual(4);
+        expect(callback.returned(5556789)).toBe(true);
+        input.find('input').simulate('change',{target:{value:"88877"}});
+        expect(spy.callCount).toEqual(4);
+        expect(input.find('input').prop('value')).toEqual('88,877');
+        expect(callback.returned(88877)).toBe(true);
+    });
+    it('测试多次setProps同一个值，与change比较',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback
+        });
+        input.setProps({value:"4321"});//字符串
+        expect(input.find('input').prop('value')).toEqual('4,321');
+        expect(spy.callCount).toEqual(5);
+        expect(callback.returned(4321)).toBe(true);
+        input.setProps({value:4321});//number类型
+        expect(input.find('input').prop('value')).toEqual('4,321');
+        expect(spy.callCount).toEqual(6);
+        expect(callback.returned(4321)).toBe(true);
+        //通过change改变value
+        input.find('input').simulate('change',{target:{value:'6667'}});
+        expect(input.find('input').prop('value')).toEqual('6,667');
+        expect(spy.callCount).toEqual(6);
+        expect(callback.returned(6667)).toBe(true);
+        //再次set回原来的值.
+        input.setProps({value:4321});//number类型
+        expect(input.find('input').prop('value')).toEqual('4,321');
+        expect(spy.callCount).toEqual(7);
+        expect(callback.returned(4321)).toBe(true);
+    });
+    it('小数位相关测试',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:4,
+            value:55555
+        });
+        expect(input.find('input').prop('value')).toBe('55,555.0000');
+        input.setProps({value:5555.55});
+        expect(input.find('input').prop('value')).toEqual('5,555.5500');
+        expect(spy.callCount).toEqual(8);
     })
 })

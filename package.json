@@ -65,8 +65,6 @@
     "sinon": "^7.4.2"
   },
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.6.1",
-    "react-dom": "^0.14.0 || ^15.6.1"
   },
   "tags": [
     "react",
