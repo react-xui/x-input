@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-04-23 19:21:46
+ * @LastEditTime: 2020-04-30 11:22:36
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -90,8 +90,8 @@ describe('初始化测试',()=>{
         input.setProps({'value':'abcde'});
         console.log(spy.callCount)
         expect(spy.callCount).toBe(3)//第三次进recive
-        expect(input.find('input').prop('value')).toEqual('');
-        expect(callback.returned('')).toBe(true);//回调返回值判断
+        expect(input.find('input').prop('value')).toBe('');
+        expect(callback.callCount).toBe(0);//回调返回值判断
     })
     it('初始化数字格式化千分位',()=>{
         let onChange = (v)=>{
@@ -159,5 +159,99 @@ describe('初始化测试',()=>{
         input.setProps({value:5555.55});
         expect(input.find('input').prop('value')).toEqual('5,555.5500');
         expect(spy.callCount).toEqual(8);
+        input.simulate('change',{target:{value:3232}});
+        expect(input.find('input').prop('value')).toBe('3,232');
+        input.simulate('blur');
+        expect(input.find('input').prop('value')).toBe('3,232.0000');
+        expect(callback.returned(3232.0000));
+    });
+    it('科学计数返回字符串',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:0,
+            value:'111111111111111111'
+        });
+        expect(input.find('input').prop('value')).toEqual('111,111,111,111,111,111');
+        input.find('input').simulate('change',{target:{value:'1,111,111,111,111,111,122'}});
+        expect(callback.returned('1111111111111111122')).toBe(true);
+        expect(input.find('input').prop('value')).toEqual('1,111,111,111,111,111,122');
+        input.setProps({value:'1111111111111111225555'});
+        expect(input.find('input').prop('value')).toEqual('1,111,111,111,111,111,225,555');
+        expect(callback.returned('1111111111111111225555')).toBe(true);
+    });
+    it("正负数参数判断",()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:0,
+            negative:false,//正数
+        });
+        input.simulate('change',{target:{value:"-"}});
+        expect(input.find('input').prop('value')).toBe('');
+        input.setProps({value:1});
+        input.simulate('change',{target:{value:"-1"}});
+        expect(input.find('input').prop('value')).toBe('1');
+        input.setProps({negative:true,value:-1234});
+        expect(input.find('input').prop('value')).toBe("-1,234")
+        expect(callback.returned(-1234)).toBeTruthy();
+    })
+    it('非法输入内容测试',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:0,
+            negative:false,//正数
+        });
+        input.simulate('change',{target:{value:'a'}});
+        expect(input.find('input').prop('value')).toBe('');
+        input.setProps({value:12});
+        input.simulate('change',{target:{value:'1a2'}});
+        expect(input.find('input').prop('value')).toBe('12');
+        expect(callback.returned(12)).toBeTruthy();
+        input.setProps({value:'1b2'});
+        expect(input.find('input').prop('value')).toBe('12');
+        expect(callback.returned(12)).toBeTruthy();
+    });
+    it('长度的限制',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2,
+            negative:true,//正数
+            maxLength:4
+        });
+        input.setProps({value:1234})
+        input.simulate('change',{target:{value:'123456'}});
+        expect(input.state('value')).toBe("1234");
+        expect(input.find('input').prop('value')).toBe('1,234.00');
+        input.simulate('change',{target:{value:'-1234'}});
+        expect(input.find('input').prop('value')).toBe('-1,234');
+        input.simulate('change',{target:{value:'-13,234'}});
+        expect(input.find('input').prop('value')).toBe('-1,234');
+        input.simulate('blur');
+        expect(input.find('input').prop('value')).toBe('-1,234.00');
+        input.setProps({value:-12534});
+        expect(input.find('input').prop('value')).toBe('-1,234.00');
     })
 })
