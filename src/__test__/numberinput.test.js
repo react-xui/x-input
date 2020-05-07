@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-04-30 11:22:36
+ * @LastEditTime: 2020-05-07 16:35:12
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -165,6 +165,23 @@ describe('初始化测试',()=>{
         expect(input.find('input').prop('value')).toBe('3,232.0000');
         expect(callback.returned(3232.0000));
     });
+    
+    it('不设置decimals时或非数字decimals处理',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback
+        });
+        input.simulate('change',{target:{value:'1213.123'}})
+        expect(input.find('input').prop('value')).toBe('1,213');
+        expect(callback.returned(1213)).toBeTruthy();
+        input.setProps({value:111.222,decimals:'aaa'});
+        expect(input.find('input').prop('value')).toBe('111')
+    })
     it('科学计数返回字符串',()=>{
         let onChange = (v)=>{
             console.log(v)
@@ -205,6 +222,27 @@ describe('初始化测试',()=>{
         input.setProps({negative:true,value:-1234});
         expect(input.find('input').prop('value')).toBe("-1,234")
         expect(callback.returned(-1234)).toBeTruthy();
+    });
+    it('负数内容测试',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:0,
+            negative:true,//支持负数
+        });
+        input.simulate('change',{target:{value:"-"}});
+        expect(input.find('input').prop('value')).toBe('-');
+        expect(input.state('value')).toBe('-');
+        expect(callback.calledOnce).toBeFalsy();
+        input.simulate('change',{target:{value:"-1"}});
+        expect(callback.returned(-1)).toBeTruthy();
+        input.simulate('change',{target:{value:"-"}});
+        expect(callback.returned('')).toBeTruthy();
     })
     it('非法输入内容测试',()=>{
         let onChange = (v)=>{
@@ -242,8 +280,8 @@ describe('初始化测试',()=>{
             maxLength:4
         });
         input.setProps({value:1234})
-        input.simulate('change',{target:{value:'123456'}});
-        expect(input.state('value')).toBe("1234");
+        input.simulate('change',{target:{value:'123556'}});
+        expect(input.state('value')).toBe("1234.00");
         expect(input.find('input').prop('value')).toBe('1,234.00');
         input.simulate('change',{target:{value:'-1234'}});
         expect(input.find('input').prop('value')).toBe('-1,234');
@@ -253,5 +291,27 @@ describe('初始化测试',()=>{
         expect(input.find('input').prop('value')).toBe('-1,234.00');
         input.setProps({value:-12534});
         expect(input.find('input').prop('value')).toBe('-1,234.00');
+    });
+    it('delay优化onchange时机',(done)=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2,
+            delay:1000,
+        });
+        input.simulate('change',{target:{value:'1'}})
+        expect(callback.calledOnce).toBeFalsy();
+        input.simulate('change',{target:{value:'12'}})
+        expect(callback.calledOnce).toBeFalsy();
+        setTimeout(()=>{
+            expect(callback.calledOnce).toBeTruthy();
+            expect(callback.returned(12)).toBe(true);
+            done()
+        },1000);
     })
 })

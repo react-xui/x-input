@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-04-30 16:25:56
+ * @LastEditTime: 2020-05-07 16:38:02
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -45,18 +45,23 @@ export default class NumberInput extends React.PureComponent {
         isFormat: PropTypes.bool,//是否格式化
         negative: PropTypes.bool,//是否支持负数
         maxLength: PropTypes.number,//长度限制，只作整数部分的长度
+        delay: PropTypes.number,//事件延迟时间毫秒
     }
     static defaultProps = {
         returnType: 'Number',
         decimals: 0,
         isFormat: false,//默认不格式化
         negative: true,
-        value: '',
-        maxLength:0//0为不限制
+        // value: '',
+        maxLength: 0//0为不限制
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false) {
         let { decimals, isFormat } = this.props;
+        if (isNaN(decimals)) {
+            //当传入的小数位非数字时，不进行自动补0
+            isAutoZero = false;
+        }
         if (!isFormat) {
             return num;
         }
@@ -72,7 +77,7 @@ export default class NumberInput extends React.PureComponent {
         // let decimals  = arr.length>1 ?arr[1].length:0;
         if (typeof (number) == undefined) return '';
         if (!number && number !== 0) {
-            return '';
+            return isnegative ? '-' : '';
         } else {
             number = (number + '').replace(/[^0-9+-Ee.]/g, '');
             let n = +number,
@@ -92,7 +97,7 @@ export default class NumberInput extends React.PureComponent {
             }
             let str = s.join(dec);
             //这里根据isAutoZero进行补0，如果已经是小数，则分隔小数位补0，如果是整数，加小数点补
-            if (arr.length > 1) {
+            if (arr.length > 1 && !isNaN(decimals)) {
                 //add autozero
                 let decnum = arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
                 if (isAutoZero) {
@@ -115,18 +120,32 @@ export default class NumberInput extends React.PureComponent {
     }
     constructor(props) {
         super(props);
-        let { value, decimals } = props;
+        let { value, decimals, defaultValue } = props;
+        if (typeof value === 'undefined') {
+            if (typeof defaultValue !== 'undefined') {
+                value = defaultValue;
+            } else {
+                value = '';
+            }
+        }
+        this.defaultValue = value;//内置defaultValue为初始值.
         this.state = { value, displayValue: this.formatThousandthNumber(value, true) };
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
+        this.onFocus = this.onFocus.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         // console.log('willreceive被调用....')
         // console.log('########', nextProps.value, nextProps.negative)
-        let { value } = this.props;
-        if (nextProps.value !== value || nextProps.value !== this.state.value) {
-            // console.log(nextProps.value)
-            this.changeState(nextProps.value, true, nextProps)
+        let { value, decimals } = this.props;
+        if (typeof nextProps.value !== 'undefined') {
+            //只有在不为undefeined的情况下才处理接受值
+            if (nextProps.value !== value || decimals !== nextProps.decimals || nextProps.value !== this.state.value) {
+                // if ( nextProps.value !== this.state.value) {
+                // console.log(nextProps.value)
+                this.changeState(nextProps.value, true, nextProps)
+                // }
+            }
         }
     }
     //统一返回值
@@ -135,11 +154,26 @@ export default class NumberInput extends React.PureComponent {
         // console.log(value)
         // console.log(returnType)
         let newValue = value;
-        if (String(value).length <= 16) {
+        if (String(value).length <= 16 && value !== '-' && value !== '') {
             newValue = window[returnType](value);
         }
         // console.log(newValue)
-        onChange && onChange(newValue);
+        // onChange && this.debounce( onChange,1000 )(newValue)
+        // onChange && onChange(newValue);
+        this.newValue = newValue;
+        this.debounce(onChange)
+    }
+    debounce(fn) {
+        if (this.props.delay) {
+            let now = Date.now();
+            !this.timer ? this.timer = setTimeout(() => {
+                clearTimeout(this.timer);
+                this.timer = null;
+                fn && fn(this.newValue);
+            }, this.props.delay) : null;
+        } else {
+            fn && fn(this.newValue);
+        }
     }
     onChange(e) {
         let { target } = e;
@@ -158,6 +192,9 @@ export default class NumberInput extends React.PureComponent {
         });
 
     }
+    onFocus(e) {
+        this.props.onFocus && this.props.onFocus(e);
+    }
     onBlur(e) {
         //在blur里只作补0，然后调用props上的blur
         let displayValue = this.formatThousandthNumber(this.state.value, true);
@@ -174,29 +211,35 @@ export default class NumberInput extends React.PureComponent {
             v = v.replace(/\-/gi, '');
         }
         //判断是否为数字，不是则为上一次的值
-        if (isNaN(v)) {
+        if (isNaN(v) && v !== '-') {
             v = this.state.value;
-        }else{
+        } else {
             //判断maxLength长度
             let integer = v.split('.')[0].replace(/\-/gi, '');
-            if(props.maxLength && integer.length > props.maxLength){
+            if (props.maxLength && integer.length > props.maxLength) {
                 v = this.state.value;
             }
         }
         //转换为字符串进行比较，先去除逗号
         if (v !== String(this.state.value)) {
             //这里如果是科学计数了，就以字符串返回
+            let tmp = String(v).split('.');
             if (!isNaN(v)) {
                 //大于16位则返回字符串，是数字
-                let tmp = String(v).split('.');
                 let isScience = tmp[0].length > 16;
                 if (isScience) {
                     v = String(v);
                 }
             }
             let dv = this.formatThousandthNumber(v, isAutoZero);
+            let oldv = this.state.value;
+            v = dv.replace(/\,/gi, '');
             this.setState({ value: v, displayValue: dv }, () => {
-                this.returnValue(v);
+                if (oldv === '-') oldv = '';
+                if (v === '-') v = '';
+                if (oldv !== v) {
+                    this.returnValue(v);
+                }
                 fn && fn(v, dv);
             });
         } else {
@@ -206,7 +249,7 @@ export default class NumberInput extends React.PureComponent {
     render() {
         let { displayValue } = this.state;
         return (
-            <input type="text" onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
+            <input type="text" onFocus={this.onFocus} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
         )
     }
 }

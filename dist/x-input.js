@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-04-30 16:25:56
+	   * @LastEditTime: 2020-05-07 16:38:02
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1587,6 +1587,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                decimals = _props.decimals,
 	                isFormat = _props.isFormat;
 
+	            if (isNaN(decimals)) {
+	                //当传入的小数位非数字时，不进行自动补0
+	                isAutoZero = false;
+	            }
 	            if (!isFormat) {
 	                return num;
 	            }
@@ -1602,7 +1606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // let decimals  = arr.length>1 ?arr[1].length:0;
 	            if ((typeof number === 'undefined' ? 'undefined' : _typeof(number)) == undefined) return '';
 	            if (!number && number !== 0) {
-	                return '';
+	                return isnegative ? '-' : '';
 	            } else {
 	                number = (number + '').replace(/[^0-9+-Ee.]/g, '');
 	                var n = +number,
@@ -1622,7 +1626,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	                var str = s.join(dec);
 	                //这里根据isAutoZero进行补0，如果已经是小数，则分隔小数位补0，如果是整数，加小数点补
-	                if (arr.length > 1) {
+	                if (arr.length > 1 && !isNaN(decimals)) {
 	                    //add autozero
 	                    var decnum = arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
 	                    if (isAutoZero) {
@@ -1651,11 +1655,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).call(this, props));
 
 	        var value = props.value,
-	            decimals = props.decimals;
+	            decimals = props.decimals,
+	            defaultValue = props.defaultValue;
 
+	        if (typeof value === 'undefined') {
+	            if (typeof defaultValue !== 'undefined') {
+	                value = defaultValue;
+	            } else {
+	                value = '';
+	            }
+	        }
+	        _this.defaultValue = value; //内置defaultValue为初始值.
 	        _this.state = { value: value, displayValue: _this.formatThousandthNumber(value, true) };
 	        _this.onChange = _this.onChange.bind(_this);
 	        _this.onBlur = _this.onBlur.bind(_this);
+	        _this.onFocus = _this.onFocus.bind(_this);
 	        return _this;
 	    }
 
@@ -1664,11 +1678,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function componentWillReceiveProps(nextProps) {
 	            // console.log('willreceive被调用....')
 	            // console.log('########', nextProps.value, nextProps.negative)
-	            var value = this.props.value;
+	            var _props2 = this.props,
+	                value = _props2.value,
+	                decimals = _props2.decimals;
 
-	            if (nextProps.value !== value || nextProps.value !== this.state.value) {
-	                // console.log(nextProps.value)
-	                this.changeState(nextProps.value, true, nextProps);
+	            if (typeof nextProps.value !== 'undefined') {
+	                //只有在不为undefeined的情况下才处理接受值
+	                if (nextProps.value !== value || decimals !== nextProps.decimals || nextProps.value !== this.state.value) {
+	                    // if ( nextProps.value !== this.state.value) {
+	                    // console.log(nextProps.value)
+	                    this.changeState(nextProps.value, true, nextProps);
+	                    // }
+	                }
 	            }
 	        }
 	        //统一返回值
@@ -1676,24 +1697,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'returnValue',
 	        value: function returnValue(value) {
-	            var _props2 = this.props,
-	                _props2$returnType = _props2.returnType,
-	                returnType = _props2$returnType === undefined ? 'Number' : _props2$returnType,
-	                onChange = _props2.onChange;
+	            var _props3 = this.props,
+	                _props3$returnType = _props3.returnType,
+	                returnType = _props3$returnType === undefined ? 'Number' : _props3$returnType,
+	                onChange = _props3.onChange;
 	            // console.log(value)
 	            // console.log(returnType)
 
 	            var newValue = value;
-	            if (String(value).length <= 16) {
+	            if (String(value).length <= 16 && value !== '-' && value !== '') {
 	                newValue = window[returnType](value);
 	            }
 	            // console.log(newValue)
-	            onChange && onChange(newValue);
+	            // onChange && this.debounce( onChange,1000 )(newValue)
+	            // onChange && onChange(newValue);
+	            this.newValue = newValue;
+	            this.debounce(onChange);
+	        }
+	    }, {
+	        key: 'debounce',
+	        value: function debounce(fn) {
+	            var _this2 = this;
+
+	            if (this.props.delay) {
+	                var now = Date.now();
+	                !this.timer ? this.timer = setTimeout(function () {
+	                    clearTimeout(_this2.timer);
+	                    _this2.timer = null;
+	                    fn && fn(_this2.newValue);
+	                }, this.props.delay) : null;
+	            } else {
+	                fn && fn(this.newValue);
+	            }
 	        }
 	    }, {
 	        key: 'onChange',
 	        value: function onChange(e) {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var target = e.target;
 	            var value = target.value;
@@ -1706,10 +1746,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var pos = dv.length - rightpos;
 	                setCaretPosition(target, pos);
 	            }, function () {
-	                _this2.forceUpdate(function () {
+	                _this3.forceUpdate(function () {
 	                    setCaretPosition(target, pos - 1);
 	                });
 	            });
+	        }
+	    }, {
+	        key: 'onFocus',
+	        value: function onFocus(e) {
+	            this.props.onFocus && this.props.onFocus(e);
 	        }
 	    }, {
 	        key: 'onBlur',
@@ -1726,7 +1771,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'changeState',
 	        value: function changeState(value, isAutoZero, props, fn, nofn) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            var v = String(value).replace(/\,/gi, '');
 	            //如果不支持负数，去掉负号
@@ -1734,7 +1779,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                v = v.replace(/\-/gi, '');
 	            }
 	            //判断是否为数字，不是则为上一次的值
-	            if (isNaN(v)) {
+	            if (isNaN(v) && v !== '-') {
 	                v = this.state.value;
 	            } else {
 	                //判断maxLength长度
@@ -1746,17 +1791,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	            //转换为字符串进行比较，先去除逗号
 	            if (v !== String(this.state.value)) {
 	                //这里如果是科学计数了，就以字符串返回
+	                var tmp = String(v).split('.');
 	                if (!isNaN(v)) {
 	                    //大于16位则返回字符串，是数字
-	                    var tmp = String(v).split('.');
 	                    var isScience = tmp[0].length > 16;
 	                    if (isScience) {
 	                        v = String(v);
 	                    }
 	                }
 	                var dv = this.formatThousandthNumber(v, isAutoZero);
+	                var oldv = this.state.value;
+	                v = dv.replace(/\,/gi, '');
 	                this.setState({ value: v, displayValue: dv }, function () {
-	                    _this3.returnValue(v);
+	                    if (oldv === '-') oldv = '';
+	                    if (v === '-') v = '';
+	                    if (oldv !== v) {
+	                        _this4.returnValue(v);
+	                    }
 	                    fn && fn(v, dv);
 	                });
 	            } else {
@@ -1768,7 +1819,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function render() {
 	            var displayValue = this.state.displayValue;
 
-	            return _react2.default.createElement('input', { type: 'text', onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
+	            return _react2.default.createElement('input', { type: 'text', onFocus: this.onFocus, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }
 	    }]);
 
@@ -1783,14 +1834,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    decimals: _propTypes2.default.number,
 	    isFormat: _propTypes2.default.bool, //是否格式化
 	    negative: _propTypes2.default.bool, //是否支持负数
-	    maxLength: _propTypes2.default.number //长度限制，只作整数部分的长度
+	    maxLength: _propTypes2.default.number, //长度限制，只作整数部分的长度
+	    delay: _propTypes2.default.number //事件延迟时间毫秒
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
 	    decimals: 0,
 	    isFormat: false, //默认不格式化
 	    negative: true,
-	    value: '',
+	    // value: '',
 	    maxLength: 0 //0为不限制
 	};
 	exports.default = NumberInput;

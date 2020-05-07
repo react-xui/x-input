@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2019-11-21 18:18:48
+ * @LastEditTime: 2020-05-07 16:54:01
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
@@ -50,5 +50,20 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 ### 关于作者
 [https://github.com/tianxiangbing](https://github.com/tianxiangbing)
 
+# NumberInput
+主要针对数字型输入的组件优化。
+```
+onChange: PropTypes.func,
+value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+]),
+returnType: PropTypes.string,
+decimals: PropTypes.number,
+isFormat: PropTypes.bool,//是否格式化
+negative: PropTypes.bool,//是否支持负数
+maxLength: PropTypes.number,//长度限制，只作整数部分的长度
+delay: PropTypes.number,//事件延迟时间毫秒
+```
 ### xui
 react xui组件一直在持续更新中，欢迎大家关注[https://github.com/react-xui](https://github.com/react-xui)
