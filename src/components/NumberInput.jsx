@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-07 16:38:02
+ * @LastEditTime: 2020-05-08 11:27:54
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -46,6 +46,7 @@ export default class NumberInput extends React.PureComponent {
         negative: PropTypes.bool,//是否支持负数
         maxLength: PropTypes.number,//长度限制，只作整数部分的长度
         delay: PropTypes.number,//事件延迟时间毫秒
+        disabled:PropTypes.bool,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -53,6 +54,7 @@ export default class NumberInput extends React.PureComponent {
         isFormat: false,//默认不格式化
         negative: true,
         // value: '',
+        disabled:false,
         maxLength: 0//0为不限制
     }
     //千分位
@@ -132,7 +134,7 @@ export default class NumberInput extends React.PureComponent {
         this.state = { value, displayValue: this.formatThousandthNumber(value, true) };
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
-        this.onFocus = this.onFocus.bind(this);
+        // this.onFocus = this.onFocus.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         // console.log('willreceive被调用....')
@@ -140,7 +142,7 @@ export default class NumberInput extends React.PureComponent {
         let { value, decimals } = this.props;
         if (typeof nextProps.value !== 'undefined') {
             //只有在不为undefeined的情况下才处理接受值
-            if (nextProps.value !== value || decimals !== nextProps.decimals || nextProps.value !== this.state.value) {
+            if (nextProps.value !== value || decimals !== nextProps.decimals) {
                 // if ( nextProps.value !== this.state.value) {
                 // console.log(nextProps.value)
                 this.changeState(nextProps.value, true, nextProps)
@@ -176,25 +178,26 @@ export default class NumberInput extends React.PureComponent {
         }
     }
     onChange(e) {
-        let { target } = e;
-        let { value } = target;
-        let pos = getPosition(target);
-        let len = target.value.length;
-        let rightpos = len - pos;//算出从右计算的光标位置
-        this.changeState(value, false, this.props, (v, dv) => {
-            //重置光标位置
-            let pos = dv.length - rightpos;
-            setCaretPosition(target, pos)
-        }, () => {
-            this.forceUpdate(() => {
-                setCaretPosition(target, pos - 1);
-            })
-        });
-
+        if(!this.props.disabled){
+            let { target } = e;
+            let { value } = target;
+            let pos = getPosition(target);
+            let len = target.value.length;
+            let rightpos = len - pos;//算出从右计算的光标位置
+            this.changeState(value, false, this.props, (v, dv) => {
+                //重置光标位置
+                let pos = dv.length - rightpos;
+                setCaretPosition(target, pos)
+            }, () => {
+                this.forceUpdate(() => {
+                    setCaretPosition(target, pos - 1);
+                })
+            });
+        }
     }
-    onFocus(e) {
-        this.props.onFocus && this.props.onFocus(e);
-    }
+    // onFocus(e) {
+    //     this.props.onFocus && this.props.onFocus(e);
+    // }
     onBlur(e) {
         //在blur里只作补0，然后调用props上的blur
         let displayValue = this.formatThousandthNumber(this.state.value, true);
@@ -248,8 +251,9 @@ export default class NumberInput extends React.PureComponent {
     }
     render() {
         let { displayValue } = this.state;
+        let {onClick,disabled,onFocus} = this.props;
         return (
-            <input type="text" onFocus={this.onFocus} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
+            <input type="text" onFocus={onFocus} onClick={onClick} disabled={disabled} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
         )
     }
 }

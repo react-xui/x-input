@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-07 16:35:12
+ * @LastEditTime: 2020-05-08 11:31:02
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -139,9 +139,10 @@ describe('初始化测试',()=>{
         expect(callback.returned(6667)).toBe(true);
         //再次set回原来的值.
         input.setProps({value:4321});//number类型
-        expect(input.find('input').prop('value')).toEqual('4,321');
+        //这里由于props没有改变，不触发更新
+        expect(input.find('input').prop('value')).toEqual('6,667');
         expect(spy.callCount).toEqual(7);
-        expect(callback.returned(4321)).toBe(true);
+        expect(callback.returned(6667)).toBe(true);
     });
     it('小数位相关测试',()=>{
         let onChange = (v)=>{
@@ -313,5 +314,25 @@ describe('初始化测试',()=>{
             expect(callback.returned(12)).toBe(true);
             done()
         },1000);
+    });
+    it('设置disabled属性',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2,
+            value:1234,
+        });
+        input.setProps({disabled:true});
+        input.simulate('change',{target:{value:'12345'}});
+        expect(input.find('input').prop('value')).toBe('1,234.00');
+        input.setProps({disabled:false});
+        input.simulate('change',{target:{value:'12345'}})
+        expect(input.find('input').prop('value')).toBe('12,345');
+        expect(callback.returned(12345)).toBeTruthy();
     })
 })

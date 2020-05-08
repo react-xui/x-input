@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-07 16:38:02
+	   * @LastEditTime: 2020-05-08 11:27:54
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1669,7 +1669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.state = { value: value, displayValue: _this.formatThousandthNumber(value, true) };
 	        _this.onChange = _this.onChange.bind(_this);
 	        _this.onBlur = _this.onBlur.bind(_this);
-	        _this.onFocus = _this.onFocus.bind(_this);
+	        // this.onFocus = this.onFocus.bind(this);
 	        return _this;
 	    }
 
@@ -1684,7 +1684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (typeof nextProps.value !== 'undefined') {
 	                //只有在不为undefeined的情况下才处理接受值
-	                if (nextProps.value !== value || decimals !== nextProps.decimals || nextProps.value !== this.state.value) {
+	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
 	                    // if ( nextProps.value !== this.state.value) {
 	                    // console.log(nextProps.value)
 	                    this.changeState(nextProps.value, true, nextProps);
@@ -1735,27 +1735,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function onChange(e) {
 	            var _this3 = this;
 
-	            var target = e.target;
-	            var value = target.value;
+	            if (!this.props.disabled) {
+	                var target = e.target;
+	                var value = target.value;
 
-	            var pos = getPosition(target);
-	            var len = target.value.length;
-	            var rightpos = len - pos; //算出从右计算的光标位置
-	            this.changeState(value, false, this.props, function (v, dv) {
-	                //重置光标位置
-	                var pos = dv.length - rightpos;
-	                setCaretPosition(target, pos);
-	            }, function () {
-	                _this3.forceUpdate(function () {
-	                    setCaretPosition(target, pos - 1);
+	                var pos = getPosition(target);
+	                var len = target.value.length;
+	                var rightpos = len - pos; //算出从右计算的光标位置
+	                this.changeState(value, false, this.props, function (v, dv) {
+	                    //重置光标位置
+	                    var pos = dv.length - rightpos;
+	                    setCaretPosition(target, pos);
+	                }, function () {
+	                    _this3.forceUpdate(function () {
+	                        setCaretPosition(target, pos - 1);
+	                    });
 	                });
-	            });
+	            }
 	        }
-	    }, {
-	        key: 'onFocus',
-	        value: function onFocus(e) {
-	            this.props.onFocus && this.props.onFocus(e);
-	        }
+	        // onFocus(e) {
+	        //     this.props.onFocus && this.props.onFocus(e);
+	        // }
+
 	    }, {
 	        key: 'onBlur',
 	        value: function onBlur(e) {
@@ -1818,8 +1819,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'render',
 	        value: function render() {
 	            var displayValue = this.state.displayValue;
+	            var _props4 = this.props,
+	                onClick = _props4.onClick,
+	                disabled = _props4.disabled,
+	                onFocus = _props4.onFocus;
 
-	            return _react2.default.createElement('input', { type: 'text', onFocus: this.onFocus, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
+	            return _react2.default.createElement('input', { type: 'text', onFocus: onFocus, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }
 	    }]);
 
@@ -1835,7 +1840,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    isFormat: _propTypes2.default.bool, //是否格式化
 	    negative: _propTypes2.default.bool, //是否支持负数
 	    maxLength: _propTypes2.default.number, //长度限制，只作整数部分的长度
-	    delay: _propTypes2.default.number //事件延迟时间毫秒
+	    delay: _propTypes2.default.number, //事件延迟时间毫秒
+	    disabled: _propTypes2.default.bool
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -1843,6 +1849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    isFormat: false, //默认不格式化
 	    negative: true,
 	    // value: '',
+	    disabled: false,
 	    maxLength: 0 //0为不限制
 	};
 	exports.default = NumberInput;
