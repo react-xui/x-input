@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-08 11:27:54
+	   * @LastEditTime: 2020-05-09 15:33:40
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1669,7 +1669,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.state = { value: value, displayValue: _this.formatThousandthNumber(value, true) };
 	        _this.onChange = _this.onChange.bind(_this);
 	        _this.onBlur = _this.onBlur.bind(_this);
-	        // this.onFocus = this.onFocus.bind(this);
+	        _this.onFocus = _this.onFocus.bind(_this);
+	        _this.isFocus = false; //判断是否是当前焦点框 ，用来判断是否需要格式化
 	        return _this;
 	    }
 
@@ -1682,7 +1683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                value = _props2.value,
 	                decimals = _props2.decimals;
 
-	            if (typeof nextProps.value !== 'undefined') {
+	            if (typeof nextProps.value !== 'undefined' && !this.isFocus) {
 	                //只有在不为undefeined的情况下才处理接受值
 	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
 	                    // if ( nextProps.value !== this.state.value) {
@@ -1735,7 +1736,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function onChange(e) {
 	            var _this3 = this;
 
-	            if (!this.props.disabled) {
+	            // console.log(this.props.readOnly,e.target.value)
+	            this.isFocus = true;
+	            if (!this.props.disabled && !this.props.readOnly) {
 	                var target = e.target;
 	                var value = target.value;
 
@@ -1753,14 +1756,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	                });
 	            }
 	        }
-	        // onFocus(e) {
-	        //     this.props.onFocus && this.props.onFocus(e);
-	        // }
-
+	    }, {
+	        key: 'onFocus',
+	        value: function onFocus(e) {
+	            this.isFocus = true;
+	            // console.log('进了focus')
+	            this.props.onFocus && this.props.onFocus(e);
+	        }
 	    }, {
 	        key: 'onBlur',
 	        value: function onBlur(e) {
 	            //在blur里只作补0，然后调用props上的blur
+	            this.isFocus = false;
 	            var displayValue = this.formatThousandthNumber(this.state.value, true);
 	            if (displayValue !== this.state.displayValue) {
 	                this.setState({ displayValue: displayValue });
@@ -1775,6 +1782,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this4 = this;
 
 	            var v = String(value).replace(/\,/gi, '');
+	            //这里不再接收传递的isAutoZero参数，只根据是否获取的焦点判断。
+	            this.isFocus ? isAutoZero = false : isAutoZero = true;
 	            //如果不支持负数，去掉负号
 	            if (!props.negative) {
 	                v = v.replace(/\-/gi, '');
@@ -1822,9 +1831,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _props4 = this.props,
 	                onClick = _props4.onClick,
 	                disabled = _props4.disabled,
-	                onFocus = _props4.onFocus;
+	                onFocus = _props4.onFocus,
+	                readOnly = _props4.readOnly;
 
-	            return _react2.default.createElement('input', { type: 'text', onFocus: onFocus, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
+	            return _react2.default.createElement('input', { onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }
 	    }]);
 
@@ -1841,7 +1851,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    negative: _propTypes2.default.bool, //是否支持负数
 	    maxLength: _propTypes2.default.number, //长度限制，只作整数部分的长度
 	    delay: _propTypes2.default.number, //事件延迟时间毫秒
-	    disabled: _propTypes2.default.bool
+	    disabled: _propTypes2.default.bool,
+	    readOnly: _propTypes2.default.bool
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -1850,6 +1861,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    negative: true,
 	    // value: '',
 	    disabled: false,
+	    readOnly: false,
 	    maxLength: 0 //0为不限制
 	};
 	exports.default = NumberInput;

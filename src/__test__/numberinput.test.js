@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-08 11:31:02
+ * @LastEditTime: 2020-05-09 11:45:43
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -312,6 +312,8 @@ describe('初始化测试',()=>{
         setTimeout(()=>{
             expect(callback.calledOnce).toBeTruthy();
             expect(callback.returned(12)).toBe(true);
+            input.simulate('change',{target:{value:'1.'}})
+            console.log('==========='+input.find('input').prop('value'))
             done()
         },1000);
     });
@@ -331,6 +333,26 @@ describe('初始化测试',()=>{
         input.simulate('change',{target:{value:'12345'}});
         expect(input.find('input').prop('value')).toBe('1,234.00');
         input.setProps({disabled:false});
+        input.simulate('change',{target:{value:'12345'}})
+        expect(input.find('input').prop('value')).toBe('12,345');
+        expect(callback.returned(12345)).toBeTruthy();
+    })
+    it('设置readOnly属性',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2,
+            value:1234,
+        });
+        input.setProps({readOnly:true});
+        input.simulate('change',{target:{value:'12345'}});
+        expect(input.find('input').prop('value')).toBe('1,234.00');
+        input.setProps({readOnly:false});
         input.simulate('change',{target:{value:'12345'}})
         expect(input.find('input').prop('value')).toBe('12,345');
         expect(callback.returned(12345)).toBeTruthy();
