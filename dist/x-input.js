@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-09 15:33:40
+	   * @LastEditTime: 2020-05-09 17:49:59
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1671,6 +1671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.onBlur = _this.onBlur.bind(_this);
 	        _this.onFocus = _this.onFocus.bind(_this);
 	        _this.isFocus = false; //判断是否是当前焦点框 ，用来判断是否需要格式化
+	        _this.onKeyUp = _this.onKeyUp.bind(_this);
 	        return _this;
 	    }
 
@@ -1678,7 +1679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
 	            // console.log('willreceive被调用....')
-	            // console.log('########', nextProps.value, nextProps.negative)
+	            // console.log('########', nextProps.value, this.isFocus)
 	            var _props2 = this.props,
 	                value = _props2.value,
 	                decimals = _props2.decimals;
@@ -1774,6 +1775,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            this.props.onBlur && this.props.onBlur(e);
 	        }
+	    }, {
+	        key: 'onKeyUp',
+	        value: function onKeyUp(e) {
+	            //k,m判断//keycode 75 k,77 m
+	            // console.log(e.keyCode)
+	            this.isFocus = true;
+	            var value = this.state.value;
+	            if (value) {
+	                switch (e.keyCode) {
+	                    case 75:
+	                        {
+	                            value = +value * 1000;
+	                            break;
+	                        }
+	                    case 77:
+	                        {
+	                            value = +value * 1000000;
+	                            break;
+	                        }
+	                }
+	                this.changeState(value, false, this.props);
+	            }
+	        }
 	        //统一修改value值
 
 	    }, {
@@ -1834,7 +1858,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                onFocus = _props4.onFocus,
 	                readOnly = _props4.readOnly;
 
-	            return _react2.default.createElement('input', { onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
+	            return _react2.default.createElement('input', { onKeyUp: this.onKeyUp, onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }
 	    }]);
 

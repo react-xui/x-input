@@ -1,6 +1,6 @@
 {
   "name": "jsx-input",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "react xui ",
   "main": "./lib/index.js",
   "repository": {
@@ -21,7 +21,7 @@
     "build":"npm-run-all lib dist",
     "dist":"webpack --config webpack.dist.config.js",
     "lib": "babel src -d lib && webpack --config webpack.css.config.js",
-    "prepublish": "npm-run-all lib build",
+    "prepublish": "npm-run-all test lib build",
     "docs": "npm-run-all docs:*",
     "doc-dev": "npm-run-all docs:clean docs:prepare docs:build:watch",
     "docs:clean": "rimraf _book",

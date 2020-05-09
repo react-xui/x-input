@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-09 15:33:40
+ * @LastEditTime: 2020-05-09 17:49:59
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -138,10 +138,11 @@ export default class NumberInput extends React.PureComponent {
         this.onBlur = this.onBlur.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.isFocus = false;//判断是否是当前焦点框 ，用来判断是否需要格式化
+        this.onKeyUp = this.onKeyUp.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         // console.log('willreceive被调用....')
-        // console.log('########', nextProps.value, nextProps.negative)
+        // console.log('########', nextProps.value, this.isFocus)
         let { value, decimals } = this.props;
         if (typeof nextProps.value !== 'undefined' && !this.isFocus) {
             //只有在不为undefeined的情况下才处理接受值
@@ -214,6 +215,25 @@ export default class NumberInput extends React.PureComponent {
         }
         this.props.onBlur && this.props.onBlur(e);
     }
+    onKeyUp(e){
+        //k,m判断//keycode 75 k,77 m
+        // console.log(e.keyCode)
+        this.isFocus= true;
+        let value = this.state.value;
+        if(value){
+            switch(e.keyCode){
+                case 75:{
+                    value = +value * 1000;
+                    break;
+                }
+                case 77:{
+                    value = +value * 1000000;
+                    break;
+                }
+            }
+            this.changeState(value,false,this.props);
+        }
+    }
     //统一修改value值
     changeState(value, isAutoZero, props, fn, nofn) {
         let v = String(value).replace(/\,/gi, '');
@@ -263,7 +283,7 @@ export default class NumberInput extends React.PureComponent {
         let { displayValue } = this.state;
         let { onClick, disabled, onFocus, readOnly } = this.props;
         return (
-            <input onFocus={this.onFocus} type="text" readOnly={readOnly} onClick={onClick} disabled={disabled} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
+            <input onKeyUp={this.onKeyUp} onFocus={this.onFocus} type="text" readOnly={readOnly} onClick={onClick} disabled={disabled} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
         )
     }
 }

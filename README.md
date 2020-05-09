@@ -2,11 +2,11 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2020-05-07 16:54:01
+ * @LastEditTime: 2020-05-09 17:53:26
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
-react.js文本输入框，限制输入内容为数字、字母、千分位等
+react.js文本输入框，限制输入内容为数字、字母、千分位等,支持输入K、M快捷键.
 ***
 ## npm安装
 
