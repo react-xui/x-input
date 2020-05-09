@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-09 17:49:59
+	   * @LastEditTime: 2020-05-09 18:00:24
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1856,9 +1856,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                onClick = _props4.onClick,
 	                disabled = _props4.disabled,
 	                onFocus = _props4.onFocus,
-	                readOnly = _props4.readOnly;
+	                readOnly = _props4.readOnly,
+	                onMouseEnter = _props4.onMouseEnter,
+	                onMouseLeave = _props4.onMouseLeave;
 
-	            return _react2.default.createElement('input', { onKeyUp: this.onKeyUp, onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
+	            return _react2.default.createElement('input', { onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave, onKeyUp: this.onKeyUp, onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }
 	    }]);
 
