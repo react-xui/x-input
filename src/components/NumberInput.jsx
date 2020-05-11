@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-09 18:00:24
+ * @LastEditTime: 2020-05-11 15:25:12
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -60,11 +60,13 @@ export default class NumberInput extends React.PureComponent {
         maxLength: 0//0为不限制
     }
     //千分位
-    formatThousandthNumber(num, isAutoZero = false) {
-        let { decimals, isFormat } = this.props;
+    formatThousandthNumber(num, isAutoZero = false,props=this.props) {
+        let { decimals, isFormat } = props;
         if (isNaN(decimals)) {
             //当传入的小数位非数字时，不进行自动补0
             isAutoZero = false;
+        }else{
+            decimals = +decimals;//转为数字类型 
         }
         if (!isFormat) {
             return num;
@@ -146,6 +148,7 @@ export default class NumberInput extends React.PureComponent {
         let { value, decimals } = this.props;
         if (typeof nextProps.value !== 'undefined' && !this.isFocus) {
             //只有在不为undefeined的情况下才处理接受值
+            // console.log('########', nextProps.value,nextProps.decimals,decimals)
             if (nextProps.value !== value || decimals !== nextProps.decimals) {
                 // if ( nextProps.value !== this.state.value) {
                 // console.log(nextProps.value)
@@ -233,6 +236,7 @@ export default class NumberInput extends React.PureComponent {
             }
             this.changeState(value,false,this.props);
         }
+        this.props.onKeyUp && this.props.onKeyUp(e,this.state.value);
     }
     //统一修改value值
     changeState(value, isAutoZero, props, fn, nofn) {
@@ -253,10 +257,11 @@ export default class NumberInput extends React.PureComponent {
                 v = this.state.value;
             }
         }
+        let tmp = String(v).split('.');
+        let len = tmp.length>1 ?len = tmp[1].length :0;
         //转换为字符串进行比较，先去除逗号
-        if (v !== String(this.state.value)) {
+        if (v !== String(this.state.value) || +props.decimals!==len) {
             //这里如果是科学计数了，就以字符串返回
-            let tmp = String(v).split('.');
             if (!isNaN(v)) {
                 //大于16位则返回字符串，是数字
                 let isScience = tmp[0].length > 16;
@@ -264,7 +269,7 @@ export default class NumberInput extends React.PureComponent {
                     v = String(v);
                 }
             }
-            let dv = this.formatThousandthNumber(v, isAutoZero);
+            let dv = this.formatThousandthNumber(v, isAutoZero,props);
             let oldv = this.state.value;
             v = dv.replace(/\,/gi, '');
             this.setState({ value: v, displayValue: dv }, () => {

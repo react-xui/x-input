@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-09 18:00:24
+	   * @LastEditTime: 2020-05-11 15:25:12
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1583,13 +1583,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //千分位
 	        value: function formatThousandthNumber(num) {
 	            var isAutoZero = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-	            var _props = this.props,
-	                decimals = _props.decimals,
-	                isFormat = _props.isFormat;
+	            var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.props;
+	            var decimals = props.decimals,
+	                isFormat = props.isFormat;
 
 	            if (isNaN(decimals)) {
 	                //当传入的小数位非数字时，不进行自动补0
 	                isAutoZero = false;
+	            } else {
+	                decimals = +decimals; //转为数字类型 
 	            }
 	            if (!isFormat) {
 	                return num;
@@ -1680,12 +1682,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function componentWillReceiveProps(nextProps) {
 	            // console.log('willreceive被调用....')
 	            // console.log('########', nextProps.value, this.isFocus)
-	            var _props2 = this.props,
-	                value = _props2.value,
-	                decimals = _props2.decimals;
+	            var _props = this.props,
+	                value = _props.value,
+	                decimals = _props.decimals;
 
 	            if (typeof nextProps.value !== 'undefined' && !this.isFocus) {
 	                //只有在不为undefeined的情况下才处理接受值
+	                // console.log('########', nextProps.value,nextProps.decimals,decimals)
 	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
 	                    // if ( nextProps.value !== this.state.value) {
 	                    // console.log(nextProps.value)
@@ -1699,10 +1702,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'returnValue',
 	        value: function returnValue(value) {
-	            var _props3 = this.props,
-	                _props3$returnType = _props3.returnType,
-	                returnType = _props3$returnType === undefined ? 'Number' : _props3$returnType,
-	                onChange = _props3.onChange;
+	            var _props2 = this.props,
+	                _props2$returnType = _props2.returnType,
+	                returnType = _props2$returnType === undefined ? 'Number' : _props2$returnType,
+	                onChange = _props2.onChange;
 	            // console.log(value)
 	            // console.log(returnType)
 
@@ -1797,6 +1800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	                this.changeState(value, false, this.props);
 	            }
+	            this.props.onKeyUp && this.props.onKeyUp(e, this.state.value);
 	        }
 	        //统一修改value值
 
@@ -1822,10 +1826,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    v = this.state.value;
 	                }
 	            }
+	            var tmp = String(v).split('.');
+	            var len = tmp.length > 1 ? len = tmp[1].length : 0;
 	            //转换为字符串进行比较，先去除逗号
-	            if (v !== String(this.state.value)) {
+	            if (v !== String(this.state.value) || +props.decimals !== len) {
 	                //这里如果是科学计数了，就以字符串返回
-	                var tmp = String(v).split('.');
 	                if (!isNaN(v)) {
 	                    //大于16位则返回字符串，是数字
 	                    var isScience = tmp[0].length > 16;
@@ -1833,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        v = String(v);
 	                    }
 	                }
-	                var dv = this.formatThousandthNumber(v, isAutoZero);
+	                var dv = this.formatThousandthNumber(v, isAutoZero, props);
 	                var oldv = this.state.value;
 	                v = dv.replace(/\,/gi, '');
 	                this.setState({ value: v, displayValue: dv }, function () {
@@ -1852,13 +1857,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'render',
 	        value: function render() {
 	            var displayValue = this.state.displayValue;
-	            var _props4 = this.props,
-	                onClick = _props4.onClick,
-	                disabled = _props4.disabled,
-	                onFocus = _props4.onFocus,
-	                readOnly = _props4.readOnly,
-	                onMouseEnter = _props4.onMouseEnter,
-	                onMouseLeave = _props4.onMouseLeave;
+	            var _props3 = this.props,
+	                onClick = _props3.onClick,
+	                disabled = _props3.disabled,
+	                onFocus = _props3.onFocus,
+	                readOnly = _props3.readOnly,
+	                onMouseEnter = _props3.onMouseEnter,
+	                onMouseLeave = _props3.onMouseLeave;
 
 	            return _react2.default.createElement('input', { onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave, onKeyUp: this.onKeyUp, onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }

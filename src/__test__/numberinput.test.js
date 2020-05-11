@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-09 17:52:49
+ * @LastEditTime: 2020-05-11 15:19:21
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -182,7 +182,14 @@ describe('初始化测试',()=>{
         expect(callback.returned(1213)).toBeTruthy();
         input.simulate('blur');
         input.setProps({value:111.222,decimals:'aaa'});
-        expect(input.find('input').prop('value')).toBe('111')
+        expect(input.find('input').prop('value')).toBe('111');
+        input.setProps({value:12,decimals:'2'});
+        input.simulate('change',{target:{value:'22'}});
+        input.simulate('blur');
+        expect(input.find('input').prop('value')).toBe('22.00');
+        //动态更改小数位测试
+        input.setProps({decimals:4,value:'22.00'});
+        expect(input.find('input').prop('value')).toBe('22.0000');
     })
     it('科学计数返回字符串',()=>{
         let onChange = (v)=>{
