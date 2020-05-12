@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-11 15:25:12
+ * @LastEditTime: 2020-05-12 18:07:48
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -85,6 +85,10 @@ export default class NumberInput extends React.PureComponent {
         if (!number && number !== 0) {
             return isnegative ? '-' : '';
         } else {
+            number =  (number + '').replace(/^0+/g, '0');
+            if(/^0\d+/.test(number)){
+                number = number.replace(/^0+/g, '');
+            }
             number = (number + '').replace(/[^0-9+-Ee.]/g, '');
             let n = +number,
                 prec = 0,
@@ -118,8 +122,11 @@ export default class NumberInput extends React.PureComponent {
             if (decimals === 0) {
                 str = str.split('.')[0];
             }
+            if(str!="" && isAutoZero && +str===0){
+                return str;
+            }
             if (isnegative) {
-                return '-' + str;
+                str ='-' + str;
             }
             return str;
         }

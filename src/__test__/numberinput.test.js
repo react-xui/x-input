@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-11 15:19:21
+ * @LastEditTime: 2020-05-12 18:34:37
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -191,6 +191,7 @@ describe('初始化测试',()=>{
         input.setProps({decimals:4,value:'22.00'});
         expect(input.find('input').prop('value')).toBe('22.0000');
     })
+
     it('科学计数返回字符串',()=>{
         let onChange = (v)=>{
             console.log(v)
@@ -387,5 +388,39 @@ describe('初始化测试',()=>{
         input.simulate('keyUp',{keyCode:77});
         expect(input.find('input').prop('value')).toBe("2,000,000,000");
         expect(callback.returned(2000000000)).toBeTruthy();
+    });
+    it('前面输入00',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2
+        });
+        input.simulate('change',{target:{value:'001'}});
+        expect(input.find('input').prop('value')).toBe("1");
+        input.simulate('blur');
+        expect(input.find('input').prop('value')).toBe("1.00");
+    })
+    it('-0的展示',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2,
+        });
+        input.simulate('change',{target:{value:'-0'}});
+        expect(input.find('input').prop('value')).toBe("-0");
+        input.simulate('blur');
+        expect(input.find('input').prop('value')).toBe("0.00");
+        input.simulate('change',{target:{value:'-01'}});
+        expect(input.find('input').prop('value')).toBe("-1");
     })
 })
