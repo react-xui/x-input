@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-12 18:07:48
+ * @LastEditTime: 2020-05-12 18:56:16
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -48,6 +48,7 @@ export default class NumberInput extends React.PureComponent {
         delay: PropTypes.number,//事件延迟时间毫秒
         disabled: PropTypes.bool,
         readOnly: PropTypes.bool,
+        showTitle:PropTypes.bool,//是否展示title
     }
     static defaultProps = {
         returnType: 'Number',
@@ -57,7 +58,8 @@ export default class NumberInput extends React.PureComponent {
         // value: '',
         disabled: false,
         readOnly: false,
-        maxLength: 0//0为不限制
+        maxLength: 0,//0为不限制
+        showTitle:false,
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false,props=this.props) {
@@ -293,9 +295,10 @@ export default class NumberInput extends React.PureComponent {
     }
     render() {
         let { displayValue } = this.state;
-        let { onClick, disabled, onFocus, readOnly,onMouseEnter,onMouseLeave } = this.props;
+        let { onClick, disabled, onFocus, readOnly,onMouseEnter,onMouseLeave,showTitle } = this.props;
+        let title = showTitle ? displayValue:'';
         return (
-            <input onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onKeyUp={this.onKeyUp} onFocus={this.onFocus} type="text" readOnly={readOnly} onClick={onClick} disabled={disabled} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
+            <input title={title} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onKeyUp={this.onKeyUp} onFocus={this.onFocus} type="text" readOnly={readOnly} onClick={onClick} disabled={disabled} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
         )
     }
 }

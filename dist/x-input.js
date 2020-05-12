@@ -1544,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-12 18:07:48
+	   * @LastEditTime: 2020-05-12 18:56:16
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1870,9 +1870,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                onFocus = _props3.onFocus,
 	                readOnly = _props3.readOnly,
 	                onMouseEnter = _props3.onMouseEnter,
-	                onMouseLeave = _props3.onMouseLeave;
+	                onMouseLeave = _props3.onMouseLeave,
+	                showTitle = _props3.showTitle;
 
-	            return _react2.default.createElement('input', { onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave, onKeyUp: this.onKeyUp, onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
+	            var title = showTitle ? displayValue : '';
+	            return _react2.default.createElement('input', { title: title, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave, onKeyUp: this.onKeyUp, onFocus: this.onFocus, type: 'text', readOnly: readOnly, onClick: onClick, disabled: disabled, onBlur: this.onBlur, className: 'x-input', value: displayValue, onChange: this.onChange });
 	        }
 	    }]);
 
@@ -1890,7 +1892,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    maxLength: _propTypes2.default.number, //长度限制，只作整数部分的长度
 	    delay: _propTypes2.default.number, //事件延迟时间毫秒
 	    disabled: _propTypes2.default.bool,
-	    readOnly: _propTypes2.default.bool
+	    readOnly: _propTypes2.default.bool,
+	    showTitle: _propTypes2.default.bool //是否展示title
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -1900,8 +1903,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // value: '',
 	    disabled: false,
 	    readOnly: false,
-	    maxLength: 0 //0为不限制
-	};
+	    maxLength: 0, //0为不限制
+	    showTitle: false };
 	exports.default = NumberInput;
 
 /***/ })
