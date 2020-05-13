@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-12 18:34:37
+ * @LastEditTime: 2020-05-12 19:31:24
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -423,4 +423,5 @@ describe('初始化测试',()=>{
         input.simulate('change',{target:{value:'-01'}});
         expect(input.find('input').prop('value')).toBe("-1");
     })
+    //TODO:测title，测传入classname
 })

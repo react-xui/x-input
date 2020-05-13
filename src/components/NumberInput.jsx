@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-12 18:56:16
+ * @LastEditTime: 2020-05-12 19:29:49
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -49,6 +49,7 @@ export default class NumberInput extends React.PureComponent {
         disabled: PropTypes.bool,
         readOnly: PropTypes.bool,
         showTitle:PropTypes.bool,//是否展示title
+        className:PropTypes.string,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -60,6 +61,7 @@ export default class NumberInput extends React.PureComponent {
         readOnly: false,
         maxLength: 0,//0为不限制
         showTitle:false,
+        className:'',
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false,props=this.props) {
@@ -295,10 +297,24 @@ export default class NumberInput extends React.PureComponent {
     }
     render() {
         let { displayValue } = this.state;
-        let { onClick, disabled, onFocus, readOnly,onMouseEnter,onMouseLeave,showTitle } = this.props;
+        let { onClick, disabled, onFocus, readOnly,onMouseEnter,onMouseLeave,showTitle,className } = this.props;
         let title = showTitle ? displayValue:'';
+        let cls = className+ ' x-input';
         return (
-            <input title={title} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onKeyUp={this.onKeyUp} onFocus={this.onFocus} type="text" readOnly={readOnly} onClick={onClick} disabled={disabled} onBlur={this.onBlur} className="x-input" value={displayValue} onChange={this.onChange} />
+            <input 
+            className={cls} 
+            title={title} 
+            onMouseEnter={onMouseEnter} 
+            onMouseLeave={onMouseLeave} 
+            onKeyUp={this.onKeyUp} 
+            onFocus={this.onFocus} 
+            type="text" 
+            readOnly={readOnly} 
+            onClick={onClick} 
+            disabled={disabled} 
+            onBlur={this.onBlur}
+            value={displayValue} 
+            onChange={this.onChange} />
         )
     }
 }
