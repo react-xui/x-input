@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-15 11:44:38
+ * @LastEditTime: 2020-05-15 18:22:44
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -233,6 +233,7 @@ export default class NumberInput extends React.PureComponent {
         }
         this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
         this.props.onBlur && this.props.onBlur(e);
+        this.timer && clearTimeout(this.timer);
     }
     onKeyUp(e){
         //k,m判断//keycode 75 k,77 m
