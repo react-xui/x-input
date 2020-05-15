@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-12 19:29:49
+ * @LastEditTime: 2020-05-15 11:44:38
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -170,6 +170,14 @@ export default class NumberInput extends React.PureComponent {
     }
     //统一返回值
     returnValue(value) {
+        // console.log(newValue)
+        // onChange && this.debounce( onChange,1000 )(newValue)
+        // onChange && onChange(newValue);
+        let { onChange } = this.props;
+        this.newValue = this.getReturnValue(value);
+        this.debounce(onChange)
+    }
+    getReturnValue(value){
         let { returnType = 'Number', onChange } = this.props;
         // console.log(value)
         // console.log(returnType)
@@ -177,11 +185,7 @@ export default class NumberInput extends React.PureComponent {
         if (String(value).length <= 16 && value !== '-' && value !== '') {
             newValue = window[returnType](value);
         }
-        // console.log(newValue)
-        // onChange && this.debounce( onChange,1000 )(newValue)
-        // onChange && onChange(newValue);
-        this.newValue = newValue;
-        this.debounce(onChange)
+        return newValue;
     }
     debounce(fn) {
         if (this.props.delay) {
@@ -227,6 +231,7 @@ export default class NumberInput extends React.PureComponent {
         if (displayValue !== this.state.displayValue) {
             this.setState({ displayValue })
         }
+        this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
         this.props.onBlur && this.props.onBlur(e);
     }
     onKeyUp(e){

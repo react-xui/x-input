@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-12 19:31:24
+ * @LastEditTime: 2020-05-15 11:45:39
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -424,4 +424,36 @@ describe('初始化测试',()=>{
         expect(input.find('input').prop('value')).toBe("-1");
     })
     //TODO:测title，测传入classname
+    it('测试传入showtitle属性显示title',()=>{
+        let {input} = setup({
+            isFormat:true,
+            decimals:2,
+            showTitle:true,
+            className:'cls-input'
+        });
+        input.simulate('change',{target:{value:'-0123'}});
+        expect(input.find('input').prop('title')).toBe('-123')
+        console.log(input.find('input').prop('className'))
+        expect(input.find('input').prop('className')).toContain('cls-input');
+    });
+    it('blur时是否把最新值传给了外层',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            decimals:2,
+            showTitle:true,
+            className:'cls-input',
+            onChange:callback,
+            delay:1000
+        });
+        input.simulate('change',{target:{value:"1"}})
+        input.simulate('blur')
+        console.log(input.find('input').prop('value'))
+        console.log('=========')
+        expect(callback.returned(1)).toBeTruthy();
+    })
 })
