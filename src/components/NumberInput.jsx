@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-15 18:22:44
+ * @LastEditTime: 2020-05-25 11:26:02
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -50,6 +50,7 @@ export default class NumberInput extends React.PureComponent {
         readOnly: PropTypes.bool,
         showTitle:PropTypes.bool,//是否展示title
         className:PropTypes.string,
+        changeEvent:PropTypes.string,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -62,6 +63,7 @@ export default class NumberInput extends React.PureComponent {
         maxLength: 0,//0为不限制
         showTitle:false,
         className:'',
+        changeEvent:'change'
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false,props=this.props) {
@@ -175,7 +177,8 @@ export default class NumberInput extends React.PureComponent {
         // onChange && onChange(newValue);
         let { onChange } = this.props;
         this.newValue = this.getReturnValue(value);
-        this.debounce(onChange)
+        //changeEvent为change时触发
+        this.props.changeEvent ==='change' && this.debounce(onChange);
     }
     getReturnValue(value){
         let { returnType = 'Number', onChange } = this.props;
@@ -225,6 +228,7 @@ export default class NumberInput extends React.PureComponent {
         this.props.onFocus && this.props.onFocus(e);
     }
     onBlur(e) {
+        this.timer && clearTimeout(this.timer);
         //在blur里只作补0，然后调用props上的blur
         this.isFocus = false;
         let displayValue = this.formatThousandthNumber(this.state.value, true);
@@ -233,7 +237,6 @@ export default class NumberInput extends React.PureComponent {
         }
         this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
         this.props.onBlur && this.props.onBlur(e);
-        this.timer && clearTimeout(this.timer);
     }
     onKeyUp(e){
         //k,m判断//keycode 75 k,77 m

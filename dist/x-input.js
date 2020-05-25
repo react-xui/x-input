@@ -1808,7 +1808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-05-15 18:22:44
+	   * @LastEditTime: 2020-05-25 11:26:02
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1979,7 +1979,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var onChange = this.props.onChange;
 
 	            this.newValue = this.getReturnValue(value);
-	            this.debounce(onChange);
+	            //changeEvent为change时触发
+	            this.props.changeEvent === 'change' && this.debounce(onChange);
 	        }
 	    }, {
 	        key: 'getReturnValue',
@@ -2048,6 +2049,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'onBlur',
 	        value: function onBlur(e) {
+	            this.timer && clearTimeout(this.timer);
 	            //在blur里只作补0，然后调用props上的blur
 	            this.isFocus = false;
 	            var displayValue = this.formatThousandthNumber(this.state.value, true);
@@ -2056,7 +2058,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
 	            this.props.onBlur && this.props.onBlur(e);
-	            this.timer && clearTimeout(this.timer);
 	        }
 	    }, {
 	        key: 'onKeyUp',
@@ -2182,7 +2183,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    disabled: _propTypes2.default.bool,
 	    readOnly: _propTypes2.default.bool,
 	    showTitle: _propTypes2.default.bool, //是否展示title
-	    className: _propTypes2.default.string
+	    className: _propTypes2.default.string,
+	    changeEvent: _propTypes2.default.string
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -2194,7 +2196,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    readOnly: false,
 	    maxLength: 0, //0为不限制
 	    showTitle: false,
-	    className: '' };
+	    className: '',
+	    changeEvent: 'change' };
 	exports.default = NumberInput;
 
 /***/ })

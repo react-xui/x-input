@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-15 11:45:39
+ * @LastEditTime: 2020-05-25 11:25:15
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
@@ -454,6 +454,26 @@ describe('初始化测试',()=>{
         input.simulate('blur')
         console.log(input.find('input').prop('value'))
         console.log('=========')
+        expect(callback.returned(1)).toBeTruthy();
+    })
+    it('chage时不触发change，仅blur会触发change',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            isFormat:true,
+            onChange:callback,
+            decimals:2,
+            changeEvent:'blur'
+        });
+        input.simulate('change',{target:{value:'1'}});
+        expect(input.find('input').prop('value')).toBe("1");
+        expect(callback.calledOnce).toBeFalsy();
+        input.simulate('blur');
+        expect(callback.calledOnce).toBeTruthy();
+        expect(input.find('input').prop('value')).toBe("1.00");
         expect(callback.returned(1)).toBeTruthy();
     })
 })
