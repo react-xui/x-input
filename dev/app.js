@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2020-05-12 19:04:42
+ * @LastEditTime: 2020-06-01 17:17:37
  * @github: https://github.com/tianxiangbing
  */
 import React,{Component} from 'react';
@@ -54,9 +54,9 @@ class App1 extends React.Component {
         <button onClick={this.clickHandle} >test</button>
         <button onClick={this.getValueHandle}>getvalue</button>
         <button onClick={this.toggleVisible}>toggleVisible</button>
-        {/* <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/>
+        <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/>
         <Input value={this.state.v} ref={txt=>this.txt=txt}/>
-        <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
+        {/* <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
         <Input.Inter className="txb" placeholder="请输入数字" value={this.state.v} />
         <InterInput className="txb" negative={false} placeholder="请输入正数" value={this.state.v} /> */}
         <NumberInput delay={true} onChange={v=>{console.log(v);this.setState({numberValue:v})}}  negative={true} maxLength={17} decimals={this.state.decimals} isFormat={true}  returnType={this.state.returnType} value={this.state.numberValue} showTitle={true}/>

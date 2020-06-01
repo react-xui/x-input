@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-05-25 11:26:02
+ * @LastEditTime: 2020-06-01 18:48:14
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -43,35 +43,37 @@ export default class NumberInput extends React.PureComponent {
         returnType: PropTypes.string,
         decimals: PropTypes.number,
         isFormat: PropTypes.bool,//是否格式化
+        formatEvent: PropTypes.string,//格式化的事件
         negative: PropTypes.bool,//是否支持负数
         maxLength: PropTypes.number,//长度限制，只作整数部分的长度
         delay: PropTypes.number,//事件延迟时间毫秒
         disabled: PropTypes.bool,
         readOnly: PropTypes.bool,
-        showTitle:PropTypes.bool,//是否展示title
-        className:PropTypes.string,
-        changeEvent:PropTypes.string,
+        showTitle: PropTypes.bool,//是否展示title
+        className: PropTypes.string,
+        changeEvent: PropTypes.string,
     }
     static defaultProps = {
         returnType: 'Number',
         decimals: 0,
         isFormat: false,//默认不格式化
+        formatEvent: 'change',
         negative: true,
         // value: '',
         disabled: false,
         readOnly: false,
         maxLength: 0,//0为不限制
-        showTitle:false,
-        className:'',
-        changeEvent:'change'
+        showTitle: false,
+        className: '',
+        changeEvent: 'change'
     }
     //千分位
-    formatThousandthNumber(num, isAutoZero = false,props=this.props) {
+    formatThousandthNumber(num, isAutoZero = false, props = this.props) {
         let { decimals, isFormat } = props;
         if (isNaN(decimals)) {
             //当传入的小数位非数字时，不进行自动补0
             isAutoZero = false;
-        }else{
+        } else {
             decimals = +decimals;//转为数字类型 
         }
         if (!isFormat) {
@@ -91,8 +93,8 @@ export default class NumberInput extends React.PureComponent {
         if (!number && number !== 0) {
             return isnegative ? '-' : '';
         } else {
-            number =  (number + '').replace(/^0+/g, '0');
-            if(/^0\d+/.test(number)){
+            number = (number + '').replace(/^0+/g, '0');
+            if (/^0\d+/.test(number)) {
                 number = number.replace(/^0+/g, '');
             }
             number = (number + '').replace(/[^0-9+-Ee.]/g, '');
@@ -128,11 +130,11 @@ export default class NumberInput extends React.PureComponent {
             if (decimals === 0) {
                 str = str.split('.')[0];
             }
-            if(str!="" && isAutoZero && +str===0){
+            if (str != "" && isAutoZero && +str === 0) {
                 return str;
             }
             if (isnegative) {
-                str ='-' + str;
+                str = '-' + str;
             }
             return str;
         }
@@ -154,6 +156,8 @@ export default class NumberInput extends React.PureComponent {
         this.onFocus = this.onFocus.bind(this);
         this.isFocus = false;//判断是否是当前焦点框 ，用来判断是否需要格式化
         this.onKeyUp = this.onKeyUp.bind(this);
+        this.node = React.createRef();
+        // this.onInput = this.onInput.bind(this);
     }
     componentWillReceiveProps(nextProps) {
         // console.log('willreceive被调用....')
@@ -178,9 +182,9 @@ export default class NumberInput extends React.PureComponent {
         let { onChange } = this.props;
         this.newValue = this.getReturnValue(value);
         //changeEvent为change时触发
-        this.props.changeEvent ==='change' && this.debounce(onChange);
+        this.props.changeEvent === 'change' && this.debounce(onChange);
     }
-    getReturnValue(value){
+    getReturnValue(value) {
         let { returnType = 'Number', onChange } = this.props;
         // console.log(value)
         // console.log(returnType)
@@ -204,6 +208,7 @@ export default class NumberInput extends React.PureComponent {
     }
     onChange(e) {
         // console.log(this.props.readOnly,e.target.value)
+        if(this.cpLock) return false;
         this.isFocus = true;
         if (!this.props.disabled && !this.props.readOnly) {
             let { target } = e;
@@ -228,6 +233,7 @@ export default class NumberInput extends React.PureComponent {
         this.props.onFocus && this.props.onFocus(e);
     }
     onBlur(e) {
+        this.cpLock = false;
         this.timer && clearTimeout(this.timer);
         //在blur里只作补0，然后调用props上的blur
         this.isFocus = false;
@@ -238,25 +244,25 @@ export default class NumberInput extends React.PureComponent {
         this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
         this.props.onBlur && this.props.onBlur(e);
     }
-    onKeyUp(e){
+    onKeyUp(e) {
         //k,m判断//keycode 75 k,77 m
         // console.log(e.keyCode)
-        this.isFocus= true;
+        this.isFocus = true;
         let value = this.state.value;
-        if(value){
-            switch(e.keyCode){
-                case 75:{
+        if (value) {
+            switch (e.keyCode) {
+                case 75: {
                     value = +value * 1000;
                     break;
                 }
-                case 77:{
+                case 77: {
                     value = +value * 1000000;
                     break;
                 }
             }
-            this.changeState(value,false,this.props);
+            this.changeState(value, false, this.props);
         }
-        this.props.onKeyUp && this.props.onKeyUp(e,this.state.value);
+        this.props.onKeyUp && this.props.onKeyUp(e, this.state.value);
     }
     //统一修改value值
     changeState(value, isAutoZero, props, fn, nofn) {
@@ -278,9 +284,9 @@ export default class NumberInput extends React.PureComponent {
             }
         }
         let tmp = String(v).split('.');
-        let len = tmp.length>1 ?len = tmp[1].length :0;
+        let len = tmp.length > 1 ? len = tmp[1].length : 0;
         //转换为字符串进行比较，先去除逗号
-        if (v !== String(this.state.value) || +props.decimals!==len) {
+        if (v !== String(this.state.value) || +props.decimals !== len) {
             //这里如果是科学计数了，就以字符串返回
             if (!isNaN(v)) {
                 //大于16位则返回字符串，是数字
@@ -289,7 +295,7 @@ export default class NumberInput extends React.PureComponent {
                     v = String(v);
                 }
             }
-            let dv = this.formatThousandthNumber(v, isAutoZero,props);
+            let dv = this.formatThousandthNumber(v, isAutoZero, props);
             let oldv = this.state.value;
             v = dv.replace(/\,/gi, '');
             this.setState({ value: v, displayValue: dv }, () => {
@@ -304,26 +310,61 @@ export default class NumberInput extends React.PureComponent {
             nofn && nofn();
         }
     }
+    componentDidMount() {
+        this.cpLock = false;
+        this.node.addEventListener('compositionstart',this.compositionstart);
+        this.node.addEventListener('compositionend',this.compositionend);
+        // this.node.addEventListener('compositionstart', ()=> {
+        //     this.cpLock = true;
+        //     // console.log('中文输入开始');
+        // })
+        // this.node.addEventListener('compositionend', ()=> {
+        //     this.cpLock = false;
+        //     // console.log('中文输入结束');
+        // })
+        // this.node.addEventListener('blur', ()=> {
+        //     this.cpLock = false;
+        //     console.log('中文输入结束');
+        // })
+        // this.node.addEventListener('input',this.onInput)
+    }
+    compositionend=()=>{
+        this.cpLock = false;
+    }
+    compositionstart=()=>{
+        this.cpLock = true;
+    }
+    // onInput=(e)=>{
+    //     // console.log('input',this.cpLock)
+    //     !this.cpLock &&this.onChange(e);
+    // }
+    componentWillUnmount() {
+        // this.node.removeEventListener('input', this.onChange);
+        this.node.removeEventListener('compositionend', this.compositionend);
+        this.node.removeEventListener('compositionstart', this.compositionstart);
+    }
     render() {
         let { displayValue } = this.state;
-        let { onClick, disabled, onFocus, readOnly,onMouseEnter,onMouseLeave,showTitle,className } = this.props;
-        let title = showTitle ? displayValue:'';
-        let cls = className+ ' x-input';
+        let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className } = this.props;
+        let title = showTitle ? displayValue : '';
+        let cls = className + ' x-input';
         return (
-            <input 
-            className={cls} 
-            title={title} 
-            onMouseEnter={onMouseEnter} 
-            onMouseLeave={onMouseLeave} 
-            onKeyUp={this.onKeyUp} 
-            onFocus={this.onFocus} 
-            type="text" 
-            readOnly={readOnly} 
-            onClick={onClick} 
-            disabled={disabled} 
-            onBlur={this.onBlur}
-            value={displayValue} 
-            onChange={this.onChange} />
+            <input
+                ref={ref => this.node = ref}
+                className={cls}
+                title={title}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onKeyUp={this.onKeyUp}
+                onFocus={this.onFocus}
+                type="text"
+                readOnly={readOnly}
+                onClick={onClick}
+                disabled={disabled}
+                onBlur={this.onBlur}
+                value={displayValue}
+                onChange={this.onChange}
+            />
         )
     }
 }

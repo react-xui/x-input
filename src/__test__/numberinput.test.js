@@ -2,16 +2,16 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-05-25 11:25:15
+ * @LastEditTime: 2020-06-01 18:27:39
  * @github: https://github.com/tianxiangbing
  */
-import { shallow } from 'enzyme';
+import { shallow,mount } from 'enzyme';
 import React from 'react';
 import { NumberInput } from '../index';
 import  sinon from 'sinon';
 const setup = (props={})=>{
     return {
-        input:shallow(<NumberInput {...props}/>),
+        input:mount(<NumberInput {...props}/>),
         props}
 }
 
