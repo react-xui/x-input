@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-01 18:48:14
+ * @LastEditTime: 2020-06-05 10:59:17
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -329,11 +329,18 @@ export default class NumberInput extends React.PureComponent {
         // this.node.addEventListener('input',this.onInput)
     }
     compositionend=()=>{
+        console.log('end')
         this.cpLock = false;
     }
     compositionstart=()=>{
+        // console.log('start')
         this.cpLock = true;
+        this.node.blur();
+        this.node.focus();
     }
+    // compositionupdate=()=>{
+    //     // console.log('update')
+    // }
     // onInput=(e)=>{
     //     // console.log('input',this.cpLock)
     //     !this.cpLock &&this.onChange(e);
@@ -341,6 +348,7 @@ export default class NumberInput extends React.PureComponent {
     componentWillUnmount() {
         // this.node.removeEventListener('input', this.onChange);
         this.node.removeEventListener('compositionend', this.compositionend);
+        // this.node.removeEventListener('compositionupdate', this.compositionupdate);
         this.node.removeEventListener('compositionstart', this.compositionstart);
     }
     render() {
