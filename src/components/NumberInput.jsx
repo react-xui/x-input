@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-05 10:59:17
+ * @LastEditTime: 2020-06-05 16:28:25
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -207,8 +207,12 @@ export default class NumberInput extends React.PureComponent {
         }
     }
     onChange(e) {
-        // console.log(this.props.readOnly,e.target.value)
-        if(this.cpLock) return false;
+        console.log(this.cpLock,e.target.value)
+        if(this.cpLock){
+            //拼音输入法,直接展示
+            this.setState({displayValue:e.target.value})
+            return false;
+        }
         this.isFocus = true;
         if (!this.props.disabled && !this.props.readOnly) {
             let { target } = e;
@@ -249,7 +253,7 @@ export default class NumberInput extends React.PureComponent {
         // console.log(e.keyCode)
         this.isFocus = true;
         let value = this.state.value;
-        if (value) {
+        if (value && (e.keyCode ==75|| e.keyCode ==77)) {
             switch (e.keyCode) {
                 case 75: {
                     value = +value * 1000;
@@ -328,15 +332,16 @@ export default class NumberInput extends React.PureComponent {
         // })
         // this.node.addEventListener('input',this.onInput)
     }
-    compositionend=()=>{
-        console.log('end')
+    compositionend=(e)=>{
+        // console.log('end')
         this.cpLock = false;
+        this.onChange(e)
     }
     compositionstart=()=>{
         // console.log('start')
         this.cpLock = true;
-        this.node.blur();
-        this.node.focus();
+        // this.node.blur();
+        // this.node.focus();
     }
     // compositionupdate=()=>{
     //     // console.log('update')

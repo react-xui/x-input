@@ -1808,7 +1808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-06-05 10:59:17
+	   * @LastEditTime: 2020-06-05 16:28:25
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1927,16 +1927,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).call(this, props));
 
-	        _this.compositionend = function () {
-	            console.log('end');
+	        _this.compositionend = function (e) {
+	            // console.log('end')
 	            _this.cpLock = false;
+	            _this.onChange(e);
 	        };
 
 	        _this.compositionstart = function () {
 	            // console.log('start')
 	            _this.cpLock = true;
-	            _this.node.blur();
-	            _this.node.focus();
+	            // this.node.blur();
+	            // this.node.focus();
 	        };
 
 	        var value = props.value,
@@ -2033,8 +2034,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function onChange(e) {
 	            var _this3 = this;
 
-	            // console.log(this.props.readOnly,e.target.value)
-	            if (this.cpLock) return false;
+	            console.log(this.cpLock, e.target.value);
+	            if (this.cpLock) {
+	                //拼音输入法,直接展示
+	                this.setState({ displayValue: e.target.value });
+	                return false;
+	            }
 	            this.isFocus = true;
 	            if (!this.props.disabled && !this.props.readOnly) {
 	                var target = e.target;
@@ -2082,7 +2087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // console.log(e.keyCode)
 	            this.isFocus = true;
 	            var value = this.state.value;
-	            if (value) {
+	            if (value && (e.keyCode == 75 || e.keyCode == 77)) {
 	                switch (e.keyCode) {
 	                    case 75:
 	                        {
