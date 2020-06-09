@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-05 16:28:25
+ * @LastEditTime: 2020-06-09 11:49:09
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -163,7 +163,7 @@ export default class NumberInput extends React.PureComponent {
         // console.log('willreceive被调用....')
         // console.log('########', nextProps.value, this.isFocus)
         let { value, decimals } = this.props;
-        if (typeof nextProps.value !== 'undefined' && !this.isFocus) {
+        if (typeof nextProps.value !== 'undefined') {
             //只有在不为undefeined的情况下才处理接受值
             // console.log('########', nextProps.value,nextProps.decimals,decimals)
             if (nextProps.value !== value || decimals !== nextProps.decimals) {
