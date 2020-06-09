@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-06-01 18:27:39
+ * @LastEditTime: 2020-06-09 15:18:10
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -475,5 +475,31 @@ describe('初始化测试',()=>{
         expect(callback.calledOnce).toBeTruthy();
         expect(input.find('input').prop('value')).toBe("1.00");
         expect(callback.returned(1)).toBeTruthy();
+    })
+    it('在delay的情况下，焦点中输入数字到小数位点同步props.value',(done)=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            decimals:2,
+            delay:100,
+            value:1,
+            returnType:'Number',
+            isFormat:true
+        });
+        input.simulate('change',{target:{value:'2.'}})
+        expect(input.find('input').prop('value')).toBe('2.');
+        setTimeout(()=>{
+            expect(callback.returned(2)).toBeTruthy();
+            expect(input.state('displayValue')).toBe('2.');
+            input.setProps({value:2})
+            expect(input.find('input').prop('value')).toBe('2.');
+            input.setProps({value:'2',returnType:'String'})
+            expect(input.find('input').prop('value')).toBe('2');
+            done();
+        },101)
     })
 })

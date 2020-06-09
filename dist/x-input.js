@@ -1808,7 +1808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-06-09 11:49:09
+	   * @LastEditTime: 2020-06-09 15:27:40
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1975,11 +1975,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof nextProps.value !== 'undefined') {
 	                //只有在不为undefeined的情况下才处理接受值
 	                // console.log('########', nextProps.value,nextProps.decimals,decimals)
-	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
-	                    // if ( nextProps.value !== this.state.value) {
-	                    // console.log(nextProps.value)
-	                    this.changeState(nextProps.value, true, nextProps);
-	                    // }
+	                if (nextProps.value !== value) {
+	                    if (nextProps.value !== this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
+	                        // if ( nextProps.value !== this.state.value) {
+	                        // console.log(nextProps.value)
+	                        this.changeState(nextProps.value, true, nextProps);
+	                        // }
+	                    }
 	                }
 	            }
 	        }
@@ -2034,7 +2036,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function onChange(e) {
 	            var _this3 = this;
 
-	            console.log(this.cpLock, e.target.value);
+	            // console.log(this.cpLock,e.target.value)
 	            if (this.cpLock) {
 	                //拼音输入法,直接展示
 	                this.setState({ displayValue: e.target.value });
