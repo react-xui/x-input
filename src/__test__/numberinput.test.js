@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-06-09 15:18:10
+ * @LastEditTime: 2020-06-10 11:51:01
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -502,4 +502,37 @@ describe('初始化测试',()=>{
             done();
         },101)
     })
+    it('在delay的情况下，针对0的判断',(done)=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            decimals:2,
+            delay:100,
+            returnType:'Number',
+            value:0
+        });
+        expect(input.find('input').prop('value')).toBe(0);
+        //change value ''
+        input.simulate('change',{target:{value:''}});
+        setTimeout(()=>{
+            expect(callback.returned('')).toBeTruthy();
+            expect(input.find('input').prop('value')).toBe('');
+            //change value 0
+            input.simulate('change',{target:{value:'0'}});
+            setTimeout(()=>{
+                expect(callback.returned(0)).toBeTruthy();
+                //清空，set props.value =0 
+                input.simulate('change',{target:{value:''}});
+                 setTimeout(()=>{
+                    expect(input.find('input').prop('value')).toBe('');
+                 },101);
+                done();
+            },101);
+        },101);
+    })
+
 })
