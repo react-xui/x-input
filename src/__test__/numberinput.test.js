@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-06-10 11:51:01
+ * @LastEditTime: 2020-06-11 11:00:55
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -519,6 +519,10 @@ describe('初始化测试',()=>{
         //change value ''
         input.simulate('change',{target:{value:''}});
         setTimeout(()=>{
+            console.log(input.find('input').prop('value'));
+            console.log(input.state('value'))
+            console.log(input.state('displayValue'))
+            expect(callback.callCount).toBe(1);
             expect(callback.returned('')).toBeTruthy();
             expect(input.find('input').prop('value')).toBe('');
             //change value 0
@@ -532,7 +536,29 @@ describe('初始化测试',()=>{
                  },101);
                 done();
             },101);
-        },101);
+        },111);
     })
-
+    it('初始化小数位格式化',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            isFormat:true,
+            decimals:2,
+            delay:100,
+            returnType:'Number',
+            value:1.1
+        });
+        expect(input.find('input').prop('value')).toBe("1.10")
+        expect(input.state('displayValue')).toBe("1.10")
+        input.setProps({value:2.2});
+        expect(input.find('input').prop('value')).toBe("2.20")
+        expect(input.state('displayValue')).toBe("2.20")
+        expect(callback.calledOnce).toBeFalsy();
+        input.setProps({decimals:3});
+        expect(input.state('displayValue')).toBe("2.200")
+    })
 })

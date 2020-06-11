@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-09 15:27:40
+ * @LastEditTime: 2020-06-11 10:58:22
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -166,7 +166,7 @@ export default class NumberInput extends React.PureComponent {
         if (typeof nextProps.value !== 'undefined' ) {
             //只有在不为undefeined的情况下才处理接受值
             // console.log('########', nextProps.value,nextProps.decimals,decimals)
-            if(nextProps.value !== value){
+            if(nextProps.value !== value || decimals !== nextProps.decimals){
                 if (nextProps.value !==  this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
                     // if ( nextProps.value !== this.state.value) {
                     // console.log(nextProps.value)
@@ -182,7 +182,9 @@ export default class NumberInput extends React.PureComponent {
         // onChange && this.debounce( onChange,1000 )(newValue)
         // onChange && onChange(newValue);
         let { onChange } = this.props;
+        // console.log('vvvvv',value)
         this.newValue = this.getReturnValue(value);
+        // console.log('进入change')
         //changeEvent为change时触发
         this.props.changeEvent === 'change' && this.debounce(onChange);
     }
@@ -199,10 +201,12 @@ export default class NumberInput extends React.PureComponent {
     debounce(fn) {
         if (this.props.delay) {
             let now = Date.now();
+            let _this = this;
             !this.timer ? this.timer = setTimeout(() => {
-                clearTimeout(this.timer);
-                this.timer = null;
-                fn && fn(this.newValue);
+                // console.log('delay...',_this.newValue)
+                clearTimeout(_this.timer);
+                _this.timer = null;
+                fn && fn(_this.newValue);
             }, this.props.delay) : null;
         } else {
             fn && fn(this.newValue);
@@ -307,6 +311,7 @@ export default class NumberInput extends React.PureComponent {
             this.setState({ value: v, displayValue: dv }, () => {
                 if (oldv === '-') oldv = '';
                 if (v === '-') v = '';
+                // console.log(oldv,v)
                 if (oldv !== v) {
                     this.returnValue(v);
                 }

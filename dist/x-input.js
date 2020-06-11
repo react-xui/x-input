@@ -1808,7 +1808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-06-09 15:27:40
+	   * @LastEditTime: 2020-06-11 10:58:22
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1925,17 +1925,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function NumberInput(props) {
 	        _classCallCheck(this, NumberInput);
 
-	        var _this = _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).call(this, props));
+	        var _this2 = _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).call(this, props));
 
-	        _this.compositionend = function (e) {
+	        _this2.compositionend = function (e) {
 	            // console.log('end')
-	            _this.cpLock = false;
-	            _this.onChange(e);
+	            _this2.cpLock = false;
+	            _this2.onChange(e);
 	        };
 
-	        _this.compositionstart = function () {
+	        _this2.compositionstart = function () {
 	            // console.log('start')
-	            _this.cpLock = true;
+	            _this2.cpLock = true;
 	            // this.node.blur();
 	            // this.node.focus();
 	        };
@@ -1951,16 +1951,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                value = '';
 	            }
 	        }
-	        _this.defaultValue = value; //内置defaultValue为初始值.
-	        _this.state = { value: value, displayValue: _this.formatThousandthNumber(value, true) };
-	        _this.onChange = _this.onChange.bind(_this);
-	        _this.onBlur = _this.onBlur.bind(_this);
-	        _this.onFocus = _this.onFocus.bind(_this);
-	        _this.isFocus = false; //判断是否是当前焦点框 ，用来判断是否需要格式化
-	        _this.onKeyUp = _this.onKeyUp.bind(_this);
-	        _this.node = _react2.default.createRef();
+	        _this2.defaultValue = value; //内置defaultValue为初始值.
+	        _this2.state = { value: value, displayValue: _this2.formatThousandthNumber(value, true) };
+	        _this2.onChange = _this2.onChange.bind(_this2);
+	        _this2.onBlur = _this2.onBlur.bind(_this2);
+	        _this2.onFocus = _this2.onFocus.bind(_this2);
+	        _this2.isFocus = false; //判断是否是当前焦点框 ，用来判断是否需要格式化
+	        _this2.onKeyUp = _this2.onKeyUp.bind(_this2);
+	        _this2.node = _react2.default.createRef();
 	        // this.onInput = this.onInput.bind(this);
-	        return _this;
+	        return _this2;
 	    }
 
 	    _createClass(NumberInput, [{
@@ -1975,7 +1975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof nextProps.value !== 'undefined') {
 	                //只有在不为undefeined的情况下才处理接受值
 	                // console.log('########', nextProps.value,nextProps.decimals,decimals)
-	                if (nextProps.value !== value) {
+	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
 	                    if (nextProps.value !== this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
 	                        // if ( nextProps.value !== this.state.value) {
 	                        // console.log(nextProps.value)
@@ -1994,8 +1994,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // onChange && this.debounce( onChange,1000 )(newValue)
 	            // onChange && onChange(newValue);
 	            var onChange = this.props.onChange;
+	            // console.log('vvvvv',value)
 
 	            this.newValue = this.getReturnValue(value);
+	            // console.log('进入change')
 	            //changeEvent为change时触发
 	            this.props.changeEvent === 'change' && this.debounce(onChange);
 	        }
@@ -2018,14 +2020,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'debounce',
 	        value: function debounce(fn) {
-	            var _this2 = this;
-
 	            if (this.props.delay) {
 	                var now = Date.now();
+	                var _this = this;
 	                !this.timer ? this.timer = setTimeout(function () {
-	                    clearTimeout(_this2.timer);
-	                    _this2.timer = null;
-	                    fn && fn(_this2.newValue);
+	                    // console.log('delay...',_this.newValue)
+	                    clearTimeout(_this.timer);
+	                    _this.timer = null;
+	                    fn && fn(_this.newValue);
 	                }, this.props.delay) : null;
 	            } else {
 	                fn && fn(this.newValue);
@@ -2148,6 +2150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.setState({ value: v, displayValue: dv }, function () {
 	                    if (oldv === '-') oldv = '';
 	                    if (v === '-') v = '';
+	                    // console.log(oldv,v)
 	                    if (oldv !== v) {
 	                        _this4.returnValue(v);
 	                    }
