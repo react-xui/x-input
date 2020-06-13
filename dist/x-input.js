@@ -1808,7 +1808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-06-11 10:58:22
+	   * @LastEditTime: 2020-06-13 19:15:53
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2135,7 +2135,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var tmp = String(v).split('.');
 	            var len = tmp.length > 1 ? len = tmp[1].length : 0;
 	            //转换为字符串进行比较，先去除逗号
-	            if (v !== String(this.state.value) || +props.decimals !== len) {
+	            var odv = String(this.state.displayValue).replace(/\,/gi, '');
+	            if (v !== String(this.state.value) || +props.decimals !== len || String(this.state.value) !== odv) {
 	                //这里如果是科学计数了，就以字符串返回
 	                if (!isNaN(v)) {
 	                    //大于16位则返回字符串，是数字
