@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-06-11 11:00:55
+ * @LastEditTime: 2020-06-19 10:42:59
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -560,5 +560,38 @@ describe('初始化测试',()=>{
         expect(callback.calledOnce).toBeFalsy();
         input.setProps({decimals:3});
         expect(input.state('displayValue')).toBe("2.200")
+    });
+    it('返回-验证',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            isFormat:true,
+            decimals:2,
+            delay:100,
+            returnType:'Number',
+            value:""
+        });
+        input.simulate('change',{
+            target:{
+                value:'-'
+            }
+        });
+        input.simulate('blur');
+        expect(callback.callCount).toBe(1);
+        expect(callback.returned('')).toBeTruthy();
+        input.simulate('change',{
+            target:{
+                value:''
+            }
+        })
+        input .setProps({
+            delay:0,
+            value:'-'
+        });
+        expect(callback.returned('')).toBeTruthy();
     })
 })

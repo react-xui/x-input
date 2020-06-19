@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-13 19:15:53
+ * @LastEditTime: 2020-06-19 10:27:54
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -195,6 +195,9 @@ export default class NumberInput extends React.PureComponent {
         let newValue = value;
         if (String(value).length <= 16 && value !== '-' && value !== '') {
             newValue = window[returnType](value);
+        }
+        if(value ==='-'){
+            newValue ='';
         }
         return newValue;
     }
