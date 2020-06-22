@@ -1808,7 +1808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-06-19 10:27:54
+	   * @LastEditTime: 2020-06-22 10:07:49
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2023,6 +2023,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'debounce',
 	        value: function debounce(fn) {
+	            var _this3 = this;
+
 	            if (this.props.delay) {
 	                var now = Date.now();
 	                var _this = this;
@@ -2030,16 +2032,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    // console.log('delay...',_this.newValue)
 	                    clearTimeout(_this.timer);
 	                    _this.timer = null;
-	                    fn && fn(_this.newValue);
+	                    fn && fn.call(_this3, _this.newValue);
 	                }, this.props.delay) : null;
 	            } else {
-	                fn && fn(this.newValue);
+	                fn && fn.call(this, this.newValue);
 	            }
 	        }
 	    }, {
 	        key: 'onChange',
 	        value: function onChange(e) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            // console.log(this.cpLock,e.target.value)
 	            if (this.cpLock) {
@@ -2060,7 +2062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var pos = dv.length - rightpos;
 	                    setCaretPosition(target, pos);
 	                }, function () {
-	                    _this3.forceUpdate(function () {
+	                    _this4.forceUpdate(function () {
 	                        setCaretPosition(target, pos - 1);
 	                    });
 	                });
@@ -2084,8 +2086,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (displayValue !== this.state.displayValue) {
 	                this.setState({ displayValue: displayValue });
 	            }
-	            this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
-	            this.props.onBlur && this.props.onBlur(e);
+	            var rv = this.getReturnValue(this.state.value);
+	            this.props.onChange && this.props.onChange.call(this, rv);
+	            this.props.onBlur && this.props.onBlur.call(this, e, rv);
 	        }
 	    }, {
 	        key: 'onKeyUp',
@@ -2116,7 +2119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'changeState',
 	        value: function changeState(value, isAutoZero, props, fn, nofn) {
-	            var _this4 = this;
+	            var _this5 = this;
 
 	            var v = String(value).replace(/\,/gi, '');
 	            //这里不再接收传递的isAutoZero参数，只根据是否获取的焦点判断。
@@ -2156,7 +2159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (v === '-') v = '';
 	                    // console.log(oldv,v)
 	                    if (oldv !== v) {
-	                        _this4.returnValue(v);
+	                        _this5.returnValue(v);
 	                    }
 	                    fn && fn(v, dv);
 	                });
@@ -2203,7 +2206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this5 = this;
+	            var _this6 = this;
 
 	            var displayValue = this.state.displayValue;
 	            var _props3 = this.props,
@@ -2220,7 +2223,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var cls = className + ' x-input';
 	            return _react2.default.createElement('input', {
 	                ref: function ref(_ref) {
-	                    return _this5.node = _ref;
+	                    return _this6.node = _ref;
 	                },
 	                className: cls,
 	                title: title,

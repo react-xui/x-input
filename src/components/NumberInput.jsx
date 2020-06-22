@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-19 10:27:54
+ * @LastEditTime: 2020-06-22 10:07:49
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -209,10 +209,10 @@ export default class NumberInput extends React.PureComponent {
                 // console.log('delay...',_this.newValue)
                 clearTimeout(_this.timer);
                 _this.timer = null;
-                fn && fn(_this.newValue);
+                fn && fn.call(this,_this.newValue);
             }, this.props.delay) : null;
         } else {
-            fn && fn(this.newValue);
+            fn && fn.call(this,this.newValue);
         }
     }
     onChange(e) {
@@ -254,8 +254,9 @@ export default class NumberInput extends React.PureComponent {
         if (displayValue !== this.state.displayValue) {
             this.setState({ displayValue })
         }
-        this.props.onChange && this.props.onChange(this.getReturnValue(this.state.value));
-        this.props.onBlur && this.props.onBlur(e);
+        let rv = this.getReturnValue(this.state.value);
+        this.props.onChange && this.props.onChange.call(this,rv);
+        this.props.onBlur && this.props.onBlur.call(this,e,rv);
     }
     onKeyUp(e) {
         //k,m判断//keycode 75 k,77 m
