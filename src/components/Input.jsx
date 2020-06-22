@@ -210,7 +210,15 @@ function number_format(number,n=0){
     }
     return number;
 }
-var Input = InputContainer(Base);
+class Input extends Base {
+    onChangeHandle(e) {
+        let { value } = e.target;
+        let { target } = e;
+        this.setState({ value }, () => {
+            this.props.onChange && this.props.onChange(value);
+        });
+    }
+}
 var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/,true,false); //数字,含小数
 var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/,true,false); //整数
 var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/,false,false); //正整数
