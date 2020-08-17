@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-06-19 10:42:59
+ * @LastEditTime: 2020-08-17 15:51:51
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -593,5 +593,8 @@ describe('初始化测试',()=>{
             value:'-'
         });
         expect(callback.returned('')).toBeTruthy();
+    });
+    it('传入isAutoZero为false',()=>{
+        
     })
 })

@@ -1834,7 +1834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-06-22 10:07:49
+	   * @LastEditTime: 2020-08-17 17:57:32
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1876,7 +1876,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.props;
 	            var decimals = props.decimals,
 	                isFormat = props.isFormat;
+	            //如果传入参数isAutoZero为false，则固定不补0;
 
+	            this.props.isAutoZero === false ? isAutoZero = false : null;
 	            if (isNaN(decimals)) {
 	                //当传入的小数位非数字时，不进行自动补0
 	                isAutoZero = false;
@@ -2286,7 +2288,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    readOnly: _propTypes2.default.bool,
 	    showTitle: _propTypes2.default.bool, //是否展示title
 	    className: _propTypes2.default.string,
-	    changeEvent: _propTypes2.default.string
+	    changeEvent: _propTypes2.default.string,
+	    isAutoZero: _propTypes2.default.bool
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -2300,7 +2303,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    maxLength: 0, //0为不限制
 	    showTitle: false,
 	    className: '',
-	    changeEvent: 'change' };
+	    changeEvent: 'change',
+	    isAutoZero: true };
 	exports.default = NumberInput;
 
 /***/ })

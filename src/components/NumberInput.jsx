@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-06-22 10:07:49
+ * @LastEditTime: 2020-08-17 17:57:32
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -52,6 +52,7 @@ export default class NumberInput extends React.PureComponent {
         showTitle: PropTypes.bool,//是否展示title
         className: PropTypes.string,
         changeEvent: PropTypes.string,
+        isAutoZero:PropTypes.bool,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -65,11 +66,14 @@ export default class NumberInput extends React.PureComponent {
         maxLength: 0,//0为不限制
         showTitle: false,
         className: '',
-        changeEvent: 'change'
+        changeEvent: 'change',
+        isAutoZero: true,
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false, props = this.props) {
         let { decimals, isFormat } = props;
+        //如果传入参数isAutoZero为false，则固定不补0;
+        this.props.isAutoZero===false ?isAutoZero = false:null;
         if (isNaN(decimals)) {
             //当传入的小数位非数字时，不进行自动补0
             isAutoZero = false;
