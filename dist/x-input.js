@@ -351,7 +351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                    this.blurFormat(value);
 	                }
-	                this.props.onBlur && this.props.onBlur(e);
+	                this.props.onBlur && this.props.onBlur.call(this, e);
 	            }
 	        }, {
 	            key: "blurFormat",

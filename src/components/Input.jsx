@@ -165,7 +165,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
            }
            this.blurFormat(value);
         }
-        this.props.onBlur && this.props.onBlur(e);
+        this.props.onBlur && this.props.onBlur.call(this,e);
     }
     blurFormat(value){
         if(value!=='' && !this.isNaN){
