@@ -1834,7 +1834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-09-07 15:22:31
+	   * @LastEditTime: 2020-11-16 11:06:43
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2246,7 +2246,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                onMouseLeave = _props3.onMouseLeave,
 	                showTitle = _props3.showTitle,
 	                className = _props3.className,
-	                placeholder = _props3.placeholder;
+	                placeholder = _props3.placeholder,
+	                autoFocus = _props3.autoFocus;
 
 	            var title = showTitle ? displayValue : '';
 	            var cls = className + ' x-input';
@@ -2267,7 +2268,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                onBlur: this.onBlur,
 	                value: displayValue,
 	                onChange: this.onChange,
-	                placeholder: placeholder
+	                placeholder: placeholder,
+	                autoFocus: autoFocus
 	            });
 	        }
 	    }]);
@@ -2296,7 +2298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
 	    decimals: 0,
-	    isFormat: false, //默认不格式化
+	    isFormat: true, //默认不格式化
 	    formatEvent: 'change',
 	    negative: true,
 	    // value: '',

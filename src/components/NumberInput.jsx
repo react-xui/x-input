@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-09-07 15:22:31
+ * @LastEditTime: 2020-11-16 11:06:43
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -57,7 +57,7 @@ export default class NumberInput extends React.PureComponent {
     static defaultProps = {
         returnType: 'Number',
         decimals: 0,
-        isFormat: false,//默认不格式化
+        isFormat: true,//默认不格式化
         formatEvent: 'change',
         negative: true,
         // value: '',
@@ -374,7 +374,7 @@ export default class NumberInput extends React.PureComponent {
     }
     render() {
         let { displayValue } = this.state;
-        let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className,placeholder } = this.props;
+        let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className,placeholder,autoFocus } = this.props;
         let title = showTitle ? displayValue : '';
         let cls = className + ' x-input';
         return (
@@ -394,6 +394,7 @@ export default class NumberInput extends React.PureComponent {
                 value={displayValue}
                 onChange={this.onChange}
                 placeholder={placeholder}
+                autoFocus={autoFocus}
             />
         )
     }

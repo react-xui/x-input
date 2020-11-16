@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-08-17 15:51:51
+ * @LastEditTime: 2020-11-16 11:56:38
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -23,7 +23,7 @@ describe('初始化测试',()=>{
         });
         let displayName = NumberInput.displayName;
         expect(displayName).toBe('NumberInput');
-        expect(input.find('input').prop('value')).toEqual('1234')
+        expect(input.find('input').prop('value')).toEqual('1,234')
     })
     it("传props值改变同步value",()=>{
         let onChange = (v)=>{
@@ -36,7 +36,7 @@ describe('初始化测试',()=>{
             returnType:'Number'
         });
         input.setProps({'value':'12345'});
-        expect(input.find('input').prop('value')).toEqual('12345');
+        expect(input.find('input').prop('value')).toEqual('12,345');
         expect(callback.calledOnce).toBe(true)
         // console.log(callback.args[0])
         // console.log(callback.returned(12345))
@@ -58,7 +58,7 @@ describe('初始化测试',()=>{
         expect(spy.callCount).toEqual(1);//一次进willRecive
         expect(callback.calledOnce).toBe(true)//被调用
         expect(callback.returned(9999)).toBe(true);
-        expect(input.find('input').prop('value')).toEqual("9999")
+        expect(input.find('input').prop('value')).toEqual("9,999")
         expect(spy.callCount).toBe(1);
        
     })
@@ -69,7 +69,8 @@ describe('初始化测试',()=>{
         }
         let callback = sinon.spy(onChange);//监听callback
         let {input} = setup({
-            onChange:callback
+            onChange:callback,
+            decimals:2
         });
         input.setProps({value:986.01});
         expect(input.find('input').prop('value')).toEqual('986.01');
@@ -515,7 +516,7 @@ describe('初始化测试',()=>{
             returnType:'Number',
             value:0
         });
-        expect(input.find('input').prop('value')).toBe(0);
+        expect(input.find('input').prop('value')).toBe("0.00");
         //change value ''
         input.simulate('change',{target:{value:''}});
         setTimeout(()=>{
