@@ -1,3 +1,10 @@
+/*
+ * @Author: 田想兵
+ * @Date: 2018-11-27 18:08:06
+ * @LastEditTime: 2020-12-14 15:32:49
+ * @github: https://github.com/tianxiangbing
+ * @Contact: 55342775@qq.com
+ */
 var webpack = require('webpack');
 var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
@@ -32,7 +39,7 @@ module.exports = {
     path: 'dist',
     publicPath: '/',
     libraryTarget: 'umd',
-    library: 'Dialog'
+    library: 'Input'
   },
 
   plugins: [

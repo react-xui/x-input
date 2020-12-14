@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-11-16 11:06:43
+ * @LastEditTime: 2020-12-14 15:30:57
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -284,7 +284,7 @@ export default class NumberInput extends React.PureComponent {
     }
     //统一修改value值
     changeState(value, isAutoZero, props, fn, nofn) {
-        let v = String(value).replace(/\,/gi, '');
+        let v = String(value).replace(/[\,\+]/gi, '');
         //这里不再接收传递的isAutoZero参数，只根据是否获取的焦点判断。
         this.isFocus ? isAutoZero = false : isAutoZero = true;
         //如果不支持负数，去掉负号

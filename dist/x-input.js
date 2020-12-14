@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define(["react"], factory);
 	else if(typeof exports === 'object')
-		exports["Dialog"] = factory(require("react"));
+		exports["Input"] = factory(require("react"));
 	else
-		root["Dialog"] = factory(root["React"]);
+		root["Input"] = factory(root["React"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -1834,7 +1834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-11-16 11:06:43
+	   * @LastEditTime: 2020-12-14 15:30:57
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2149,7 +2149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function changeState(value, isAutoZero, props, fn, nofn) {
 	            var _this5 = this;
 
-	            var v = String(value).replace(/\,/gi, '');
+	            var v = String(value).replace(/[\,\+]/gi, '');
 	            //这里不再接收传递的isAutoZero参数，只根据是否获取的焦点判断。
 	            this.isFocus ? isAutoZero = false : isAutoZero = true;
 	            //如果不支持负数，去掉负号

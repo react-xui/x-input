@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-11-16 11:56:38
+ * @LastEditTime: 2020-12-14 15:31:53
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -597,5 +597,15 @@ describe('初始化测试',()=>{
     });
     it('传入isAutoZero为false',()=>{
         
+    })
+    it('输入正号的情况',()=>{
+        let {input} = setup({
+            decimals:2,
+            delay:100,
+            returnType:'Number',
+            value:123
+        });
+        input.setProps({value:'+123'})
+        expect(input.state('displayValue')).toBe("123.00")
     })
 })
