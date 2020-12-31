@@ -1,8 +1,53 @@
 .x-input {
   background-color: #ffffff;
   border: 1px solid #dcdfe6;
-  border-radius: 5px;
-  padding: 0 15px;
+  border-radius: 4px;
+  padding: 0 14px;
   height: 30px;
   line-height: 30px;
+}
+.x-input-container {
+  position: relative;
+  display: inline-block;
+}
+.x-input-container input {
+  padding-right: 16px;
+}
+.x-input-step {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 15px;
+}
+.x-input-step span {
+  height: 50%;
+  display: block;
+  width: 15px;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.x-input-step span:hover {
+  opacity: 0.7;
+}
+.x-input-step-up i {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 6px solid #666666;
+  position: absolute;
+  bottom: 1px;
+}
+.x-input-step-down i {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #666666;
+  position: absolute;
+  top: 1px;
 }

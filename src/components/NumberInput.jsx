@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-12-14 15:30:57
+ * @LastEditTime: 2020-12-30 20:07:04
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -53,6 +53,11 @@ export default class NumberInput extends React.PureComponent {
         className: PropTypes.string,
         changeEvent: PropTypes.string,
         isAutoZero:PropTypes.bool,
+        spinner:PropTypes.bool,
+        max:PropTypes.number,
+        min:PropTypes.number,
+        step:PropTypes.number,
+        onStep:PropTypes.func,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -68,6 +73,10 @@ export default class NumberInput extends React.PureComponent {
         className: '',
         changeEvent: 'change',
         isAutoZero: true,
+        spinner:false,
+        max:Number.MAX_SAFE_INTEGER,
+        min:Number.MIN_SAFE_INTEGER,
+        step:1,
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false, props = this.props) {
@@ -161,6 +170,7 @@ export default class NumberInput extends React.PureComponent {
         this.isFocus = false;//判断是否是当前焦点框 ，用来判断是否需要格式化
         this.onKeyUp = this.onKeyUp.bind(this);
         this.node = React.createRef();
+        this.onStep = this.onStep.bind(this);
         // this.onInput = this.onInput.bind(this);
     }
     componentWillReceiveProps(nextProps) {
@@ -174,7 +184,10 @@ export default class NumberInput extends React.PureComponent {
                 if (nextProps.value !==  this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
                     // if ( nextProps.value !== this.state.value) {
                     // console.log(nextProps.value)
-                    this.changeState(nextProps.value, true, nextProps)
+                    if(this.checkMaxMin(nextProps.value,null,nextProps)){
+                        this.changeState(nextProps.value, true, nextProps)
+                    }
+                    // this.checkMaxMin(nextProps.value,null,nextProps)
                     // }
                 }
             }
@@ -188,7 +201,7 @@ export default class NumberInput extends React.PureComponent {
         let { onChange } = this.props;
         // console.log('vvvvv',value)
         this.newValue = this.getReturnValue(value);
-        // console.log('进入change')
+        // console.log('进入change',this.newValue)
         //changeEvent为change时触发
         this.props.changeEvent === 'change' && this.debounce(onChange);
     }
@@ -249,18 +262,35 @@ export default class NumberInput extends React.PureComponent {
         // console.log('进了focus')
         this.props.onFocus && this.props.onFocus(e);
     }
+    checkMaxMin(value,fn,props=this.props){
+        let num =  Number(value);
+        let {max,min} = this.props;
+        if(num<min){
+            this.changeState(min, true, props,fn);
+            return false;
+        }
+        if(num>max){
+            this.changeState(max, true, props,fn);
+            return false;
+        }
+        fn && fn ()
+        return true;
+    }
     onBlur(e) {
         this.cpLock = false;
         this.timer && clearTimeout(this.timer);
-        //在blur里只作补0，然后调用props上的blur
-        this.isFocus = false;
-        let displayValue = this.formatThousandthNumber(this.state.value, true);
-        if (displayValue !== this.state.displayValue) {
-            this.setState({ displayValue })
-        }
-        let rv = this.getReturnValue(this.state.value);
-        this.props.onChange && this.props.onChange.call(this,rv);
-        this.props.onBlur && this.props.onBlur.call(this,e,rv);
+        //判断max和min范围
+        this.checkMaxMin(this.state.value,()=>{
+            //在blur里只作补0，然后调用props上的blur
+            this.isFocus = false;
+            let displayValue = this.formatThousandthNumber(this.state.value, true);
+            if (displayValue !== this.state.displayValue) {
+                this.setState({ displayValue })
+            }
+            let rv = this.getReturnValue(this.state.value);
+            this.props.onChange && this.props.onChange.call(this,rv);
+            this.props.onBlur && this.props.onBlur.call(this,e,rv);
+        });
     }
     onKeyUp(e) {
         //k,m判断//keycode 75 k,77 m
@@ -372,30 +402,83 @@ export default class NumberInput extends React.PureComponent {
         // this.node.removeEventListener('compositionupdate', this.compositionupdate);
         this.node.removeEventListener('compositionstart', this.compositionstart);
     }
-    render() {
+    //微调点击
+    onStep(type,event){
+        // this.node.focus();
+        let value = Number(this.state.value);
+        let {step=0} = this.props;
+        if(type==='up'){
+            value += Number(step);
+        }else{
+            value -= Number(step);
+        }
+        // let displayValue = this.formatThousandthNumber(value, true);
+        // if (displayValue !== this.state.displayValue) {
+        //     this.setState({ displayValue })
+        // }
+        // this.isFocus =false;
+        if( this.checkMaxMin(value)){
+            this.changeState(value, true, this.props);
+        }
+        this.props.onStep && this.props.onStep(value,{offset:step,type});
+    }
+    renderInput(){
         let { displayValue } = this.state;
         let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className,placeholder,autoFocus } = this.props;
         let title = showTitle ? displayValue : '';
         let cls = className + ' x-input';
-        return (
-            <input
-                ref={ref => this.node = ref}
-                className={cls}
-                title={title}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                onKeyUp={this.onKeyUp}
-                onFocus={this.onFocus}
-                type="text"
-                readOnly={readOnly}
-                onClick={onClick}
-                disabled={disabled}
-                onBlur={this.onBlur}
-                value={displayValue}
-                onChange={this.onChange}
-                placeholder={placeholder}
-                autoFocus={autoFocus}
-            />
-        )
+        if(this.props.spinner){
+            //打开微调器
+            return ( 
+            <div className="x-input-container">
+                <input
+                    ref={ref => this.node = ref}
+                    className={cls}
+                    title={title}
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}
+                    onKeyUp={this.onKeyUp}
+                    onFocus={this.onFocus}
+                    type="text"
+                    readOnly={readOnly}
+                    onClick={onClick}
+                    disabled={disabled}
+                    onBlur={this.onBlur}
+                    value={displayValue}
+                    onChange={this.onChange}
+                    placeholder={placeholder}
+                    autoFocus={autoFocus}
+                />
+                <div className="x-input-step">
+                <span className="x-input-step-up" onClick={this.onStep.bind(this,'up')}><i/></span>
+                <span className="x-input-step-down" onClick={this.onStep.bind(this,'down')}><i/></span>
+                </div>
+            </div>
+            )
+        }else{
+            return (
+                <input
+                    ref={ref => this.node = ref}
+                    className={cls}
+                    title={title}
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}
+                    onKeyUp={this.onKeyUp}
+                    onFocus={this.onFocus}
+                    type="text"
+                    readOnly={readOnly}
+                    onClick={onClick}
+                    disabled={disabled}
+                    onBlur={this.onBlur}
+                    value={displayValue}
+                    onChange={this.onChange}
+                    placeholder={placeholder}
+                    autoFocus={autoFocus}
+                />
+            )
+        }
+    }
+    render() {
+        return  this.renderInput();
     }
 }

@@ -2,13 +2,13 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-12-14 15:31:53
+ * @LastEditTime: 2020-12-31 09:06:53
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
 import React from 'react';
 import { NumberInput } from '../index';
-import  sinon from 'sinon';
+import  sinon, { expectation } from 'sinon';
 const setup = (props={})=>{
     return {
         input:mount(<NumberInput {...props}/>),
@@ -211,8 +211,8 @@ describe('初始化测试',()=>{
         expect(input.find('input').prop('value')).toEqual('1,111,111,111,111,111,122');
         input.simulate('blur');
         input.setProps({value:'1111111111111111225555'});
-        expect(input.find('input').prop('value')).toEqual('1,111,111,111,111,111,225,555');
-        expect(callback.returned('1111111111111111225555')).toBe(true);
+        expect(input.find('input').prop('value')).toEqual("9,007,199,254,740,991");
+        expect(callback.returned(Number.MAX_SAFE_INTEGER)).toBe(true);
     });
     it("正负数参数判断",()=>{
         let onChange = (v)=>{
@@ -609,3 +609,77 @@ describe('初始化测试',()=>{
         expect(input.state('displayValue')).toBe("123.00")
     })
 })
+
+describe('微调器的测试',()=>{
+    it('初始化',()=>{
+        let {input} = setup({
+            spinner:true,
+            step:1,
+            value:1
+        });
+        console.log(input.find('.x-input-step').length)
+        expect(input.find('.x-input-step').length).toBe(1);
+    })
+    it('调整上下',()=>{
+        let {input} = setup({
+            spinner:true,
+            step:1,
+            value:1
+        });
+        let up = input.find('.x-input-step-up');
+        let down = input.find('.x-input-step-down');
+        up.simulate('click');
+        expect(input.state('value')).toBe("2");
+        expect(input.state('displayValue')).toBe('2');
+        down.simulate('click');
+        expect(input.state('value')).toBe("1");
+        expect(input.state('displayValue')).toBe('1');
+    });
+    it('调整上下',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return Number(v);
+        }
+        let {input} = setup({
+            spinner:true,
+            step:0.01,
+            value:1,
+            decimals:2,
+            onChange:onChange
+        });
+        let callback = sinon.spy(onChange);//监听callback
+        let up = input.find('.x-input-step-up');
+        let down = input.find('.x-input-step-down');
+        up.simulate('click');
+        expect(input.state('value')).toBe("1.01");
+        expect(input.state('displayValue')).toBe('1.01');
+        console.log(callback.returned(1.01))
+        // expect(callback.returned(1.01)).toBe(true);
+        down.simulate('click');
+        expect(input.state('value')).toBe("1.00");
+        expect(input.state('displayValue')).toBe('1.00');
+    })
+    it('设置最大最小值',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let {input} = setup({
+            spinner:true,
+            step:0.01,
+            value:2,
+            decimals:2,
+            max:5,
+            min:1,
+            onChange:onChange
+        });
+        let callback = sinon.spy(onChange);//监听callback
+        input.setProps({value:6});
+        expect(input.state('value')).toBe('5.00');
+        console.log(callback.returned(5))
+        // expect(callback.returned(5)).toBe(true);
+        input.setProps({value:0});
+        expect(input.state('value')).toBe("1.00");
+        // expect(callback.returned(1)).toBe(true);
+    })
+});

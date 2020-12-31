@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2020-05-09 17:53:26
+ * @LastEditTime: 2020-12-31 09:10:58
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
@@ -47,6 +47,16 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 高阶组件，可以对input进行格式定制，第二个参数为格式化的正则表达式，如上面的数字输入框 `InputContainer(Input,/^-?(0|[1-9][0-9]*)$/);`
 ## returnType 
 返回值类型,支持Number,String等
+## spinner [bool]
+是否打开微调器
+## step
+微调器步数
+## onStep(value,{offset:step,'up'||'down})
+微调点击回调
+## max
+最大值
+## min
+最小值
 ### 关于作者
 [https://github.com/tianxiangbing](https://github.com/tianxiangbing)
 
