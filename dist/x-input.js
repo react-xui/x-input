@@ -1834,7 +1834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-12-30 20:07:04
+	   * @LastEditTime: 2020-12-31 15:11:26
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2266,6 +2266,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'onStep',
 	        value: function onStep(type, event) {
+	            var _props4 = this.props,
+	                disabled = _props4.disabled,
+	                readOnly = _props4.readOnly;
+
+	            if (disabled || readOnly) {
+	                //只读
+	                return false;
+	            }
 	            // this.node.focus();
 	            var value = Number(this.state.value);
 	            var _props$step = this.props.step,
@@ -2292,21 +2300,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this7 = this;
 
 	            var displayValue = this.state.displayValue;
-	            var _props4 = this.props,
-	                onClick = _props4.onClick,
-	                disabled = _props4.disabled,
-	                onFocus = _props4.onFocus,
-	                readOnly = _props4.readOnly,
-	                onMouseEnter = _props4.onMouseEnter,
-	                onMouseLeave = _props4.onMouseLeave,
-	                showTitle = _props4.showTitle,
-	                className = _props4.className,
-	                placeholder = _props4.placeholder,
-	                autoFocus = _props4.autoFocus;
+	            var _props5 = this.props,
+	                onClick = _props5.onClick,
+	                disabled = _props5.disabled,
+	                onFocus = _props5.onFocus,
+	                readOnly = _props5.readOnly,
+	                onMouseEnter = _props5.onMouseEnter,
+	                onMouseLeave = _props5.onMouseLeave,
+	                showTitle = _props5.showTitle,
+	                className = _props5.className,
+	                placeholder = _props5.placeholder,
+	                autoFocus = _props5.autoFocus;
 
 	            var title = showTitle ? displayValue : '';
 	            var cls = className + ' x-input';
 	            if (this.props.spinner) {
+	                var spinnerCls = 'x-input-step';
+	                if (disabled || readOnly) {
+	                    spinnerCls += ' disabled';
+	                }
 	                //打开微调器
 	                return _react2.default.createElement('div', { className: 'x-input-container' }, _react2.default.createElement('input', {
 	                    ref: function ref(_ref) {
@@ -2327,7 +2339,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    onChange: this.onChange,
 	                    placeholder: placeholder,
 	                    autoFocus: autoFocus
-	                }), _react2.default.createElement('div', { className: 'x-input-step' }, _react2.default.createElement('span', { className: 'x-input-step-up', onClick: this.onStep.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onClick: this.onStep.bind(this, 'down') }, _react2.default.createElement('i', null))));
+	                }), _react2.default.createElement('div', { className: spinnerCls }, _react2.default.createElement('span', { className: 'x-input-step-up', onClick: this.onStep.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onClick: this.onStep.bind(this, 'down') }, _react2.default.createElement('i', null))));
 	            } else {
 	                return _react2.default.createElement('input', {
 	                    ref: function ref(_ref2) {

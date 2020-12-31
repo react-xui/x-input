@@ -12,6 +12,7 @@
 }
 .x-input-container input{
     padding-right: 16px;
+    outline: none;
 }
 .x-input-step{
     position: absolute;
@@ -19,6 +20,12 @@
     top:0;
     bottom:0;
     width:15px;
+}
+.x-input-step.disabled span{
+    cursor:no-drop;
+}
+.x-input-step.disabled span i{
+    opacity: .5;
 }
 .x-input-step span{
     height: 50%;
@@ -39,7 +46,7 @@
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-bottom: 6px solid #666666;
+    border-bottom: 5px solid #666666;
     position: absolute;
     bottom:1px;
 }
@@ -48,7 +55,7 @@
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: 6px solid #666666;
+    border-top: 5px solid #666666;
     position: absolute;
     top:1px;
 }

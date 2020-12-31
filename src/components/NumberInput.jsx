@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-12-30 20:07:04
+ * @LastEditTime: 2020-12-31 15:11:26
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -404,6 +404,11 @@ export default class NumberInput extends React.PureComponent {
     }
     //微调点击
     onStep(type,event){
+        let {disabled,readOnly} = this.props;
+        if(disabled || readOnly){
+            //只读
+            return false;
+        }
         // this.node.focus();
         let value = Number(this.state.value);
         let {step=0} = this.props;
@@ -428,6 +433,10 @@ export default class NumberInput extends React.PureComponent {
         let title = showTitle ? displayValue : '';
         let cls = className + ' x-input';
         if(this.props.spinner){
+            let spinnerCls = 'x-input-step';
+            if(disabled || readOnly){
+                spinnerCls += ' disabled'
+            }
             //打开微调器
             return ( 
             <div className="x-input-container">
@@ -449,7 +458,7 @@ export default class NumberInput extends React.PureComponent {
                     placeholder={placeholder}
                     autoFocus={autoFocus}
                 />
-                <div className="x-input-step">
+                <div className={spinnerCls}>
                 <span className="x-input-step-up" onClick={this.onStep.bind(this,'up')}><i/></span>
                 <span className="x-input-step-down" onClick={this.onStep.bind(this,'down')}><i/></span>
                 </div>
