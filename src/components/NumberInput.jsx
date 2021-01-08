@@ -2,11 +2,12 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2020-12-31 15:11:26
+ * @LastEditTime: 2021-01-08 13:51:02
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import toFixed from 'js-tofixed';
 
 //设置光标位置
 const setCaretPosition = (tObj, sPos) => {
@@ -58,6 +59,7 @@ export default class NumberInput extends React.PureComponent {
         min:PropTypes.number,
         step:PropTypes.number,
         onStep:PropTypes.func,
+        stepDecimals:PropTypes.number,//微调步数精度
     }
     static defaultProps = {
         returnType: 'Number',
@@ -77,6 +79,7 @@ export default class NumberInput extends React.PureComponent {
         max:Number.MAX_SAFE_INTEGER,
         min:Number.MIN_SAFE_INTEGER,
         step:1,
+        stepDecimals:Number.NaN
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false, props = this.props) {
@@ -413,9 +416,11 @@ export default class NumberInput extends React.PureComponent {
         let value = Number(this.state.value);
         let {step=0} = this.props;
         if(type==='up'){
-            value += Number(step);
+            // value += Number(step);
+            value = Number.floatAdd(value,Number(step));
         }else{
-            value -= Number(step);
+            // value -= Number(step);
+            value = Number.floatSub(value,Number(step));
         }
         // let displayValue = this.formatThousandthNumber(value, true);
         // if (displayValue !== this.state.displayValue) {

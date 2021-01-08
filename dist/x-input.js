@@ -1810,6 +1810,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
+	var _jsTofixed = __webpack_require__(13);
+
+	var _jsTofixed2 = _interopRequireDefault(_jsTofixed);
+
 	function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : { default: obj };
 	}
@@ -1834,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2020-12-31 15:11:26
+	   * @LastEditTime: 2021-01-08 13:51:02
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2280,9 +2284,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                step = _props$step === undefined ? 0 : _props$step;
 
 	            if (type === 'up') {
-	                value += Number(step);
+	                // value += Number(step);
+	                value = Number.floatAdd(value, Number(step));
 	            } else {
-	                value -= Number(step);
+	                // value -= Number(step);
+	                value = Number.floatSub(value, Number(step));
 	            }
 	            // let displayValue = this.formatThousandthNumber(value, true);
 	            // if (displayValue !== this.state.displayValue) {
@@ -2394,7 +2400,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    max: _propTypes2.default.number,
 	    min: _propTypes2.default.number,
 	    step: _propTypes2.default.number,
-	    onStep: _propTypes2.default.func
+	    onStep: _propTypes2.default.func,
+	    stepDecimals: _propTypes2.default.number //微调步数精度
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -2413,8 +2420,155 @@ return /******/ (function(modules) { // webpackBootstrap
 	    spinner: false,
 	    max: Number.MAX_SAFE_INTEGER,
 	    min: Number.MIN_SAFE_INTEGER,
-	    step: 1 };
+	    step: 1,
+	    stepDecimals: Number.NaN };
 	exports.default = NumberInput;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	/*
+	 * Created with Visual Studio Code.
+	 * github: https://github.com/tianxiangbing/toFixed.git
+	 * User: 田想兵
+	 * Date: 2017-07-31
+	 * Time: 20:00:00
+	 * Contact: 55342775@qq.com
+	 * desc: 对小数位的四舍五入处理。浮点数计算的处理
+	 * 请使用https://github.com/tianxiangbing/toFixed.git 上的代码
+	 */
+	(function () {
+	    _extends(Number.prototype, {
+	        toFixedMax: function toFixedMax(max) {
+	            var ps = String(this).split('.');
+	            var len = 0;
+	            if (ps.length > 1) {
+	                len = ps[1].length;
+	            }
+	            max = Math.min(len, max);
+	            return this.toFixed(max);
+	        },
+	        toFixed: function toFixed(d) {
+	            var s = this + "";
+	            if (!d) d = 0;
+	            d = parseInt(d);
+	            if (s.indexOf(".") == -1) s += ".";
+	            s += new Array(d + 1).join("0");
+	            if (new RegExp("^(-|\\+)?(\\d+(\\.\\d{0," + (d + 1) + "})?)\\d*$").test(s)) {
+	                var s = "0" + RegExp.$2,
+	                    pm = RegExp.$1,
+	                    a = RegExp.$3.length,
+	                    b = true;
+	                if (a == d + 2) {
+	                    a = s.match(/\d/g);
+	                    if (pm !== '-' && parseInt(a[a.length - 1]) > 4 || pm === "-" && parseInt(a[a.length - 1]) > 5) {
+	                        for (var i = a.length - 2; i >= 0; i--) {
+	                            a[i] = parseInt(a[i]) + 1;
+	                            if (a[i] == 10) {
+	                                a[i] = 0;
+	                                b = i != 1;
+	                            } else break;
+	                        }
+	                    }
+	                    s = a.join("").replace(new RegExp("(\\d+)(\\d{" + d + "})\\d$"), "$1.$2");
+	                }if (b) s = s.substr(1);
+	                return (pm + s).replace(/\.$/, "");
+	            }return this + "";
+	        }
+	    });
+	    var mul = function mul(a, b) {
+	        var c = 0,
+	            d = a.toString(),
+	            e = b.toString();
+	        try {
+	            c += d.split(".")[1].length;
+	        } catch (f) {}
+	        try {
+	            c += e.split(".")[1].length;
+	        } catch (f) {}
+	        return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
+	    };
+	    //运算符
+	    _extends(Number, {
+	        //加法
+	        floatAdd: function floatAdd(a, b) {
+	            var c, d, e;
+	            try {
+	                c = a.toString().split(".")[1].length;
+	            } catch (f) {
+	                c = 0;
+	            }
+	            try {
+	                d = b.toString().split(".")[1].length;
+	            } catch (f) {
+	                d = 0;
+	            }
+	            e = Math.pow(10, Math.max(c, d));
+	            return (mul(a, e) + mul(b, e)) / e;
+	        },
+
+	        //减法
+	        floatSub: function floatSub(a, b) {
+	            var c, d, e;
+	            try {
+	                c = a.toString().split(".")[1].length;
+	            } catch (f) {
+	                c = 0;
+	            }
+	            try {
+	                d = b.toString().split(".")[1].length;
+	            } catch (f) {
+	                d = 0;
+	            }
+	            e = Math.pow(10, Math.max(c, d));
+	            return (mul(a, e) - mul(b, e)) / e;
+	        },
+
+	        //乘法
+	        floatMul: function floatMul(a, b) {
+	            return mul(a, b);
+	        },
+
+	        //除法
+	        floatDiv: function floatDiv(a, b) {
+	            var c,
+	                d,
+	                e = 0,
+	                f = 0;
+	            try {
+	                e = a.toString().split(".")[1].length;
+	            } catch (g) {}
+	            try {
+	                f = b.toString().split(".")[1].length;
+	            } catch (g) {}
+	            c = Number(a.toString().replace(".", ""));
+	            d = Number(b.toString().replace(".", ""));
+	            return mul(c / d, Math.pow(10, f - e));
+	        },
+	        mod: function mod(a, b) {
+	            var c,
+	                d,
+	                e = 0,
+	                f = 0;
+	            try {
+	                e = a.toString().split(".")[1].length;
+	            } catch (g) {}
+	            try {
+	                f = b.toString().split(".")[1].length;
+	            } catch (g) {}
+	            c = Number(a.toString().replace(".", ""));
+	            d = Number(b.toString().replace(".", ""));
+	            var m = Math.max(e, f);
+	            var p = Math.pow(10, m);
+	            return this.floatDiv(mul(p, a) % mul(p, b), p);
+	        }
+	    });
+	})();
 
 /***/ })
 /******/ ])
