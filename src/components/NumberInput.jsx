@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-01-08 13:51:02
+ * @LastEditTime: 2021-01-09 11:31:03
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -281,7 +281,10 @@ export default class NumberInput extends React.PureComponent {
     }
     onBlur(e) {
         this.cpLock = false;
-        this.timer && clearTimeout(this.timer);
+        if(this.timer){
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
         //判断max和min范围
         this.checkMaxMin(this.state.value,()=>{
             //在blur里只作补0，然后调用props上的blur
@@ -407,7 +410,7 @@ export default class NumberInput extends React.PureComponent {
     }
     //微调点击
     onStep(type,event){
-        let {disabled,readOnly} = this.props;
+        let {disabled,readOnly,negative,min} = this.props;
         if(disabled || readOnly){
             //只读
             return false;
@@ -421,6 +424,10 @@ export default class NumberInput extends React.PureComponent {
         }else{
             // value -= Number(step);
             value = Number.floatSub(value,Number(step));
+            if(value <0 && !negative){
+                //不支持负数时，返回0或最小值 ;
+                value  =Math.max(min,0);
+            }
         }
         // let displayValue = this.formatThousandthNumber(value, true);
         // if (displayValue !== this.state.displayValue) {

@@ -1838,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-01-08 13:51:02
+	   * @LastEditTime: 2021-01-09 11:31:03
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2138,7 +2138,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this5 = this;
 
 	            this.cpLock = false;
-	            this.timer && clearTimeout(this.timer);
+	            if (this.timer) {
+	                clearTimeout(this.timer);
+	                this.timer = null;
+	            }
 	            //判断max和min范围
 	            this.checkMaxMin(this.state.value, function () {
 	                //在blur里只作补0，然后调用props上的blur
@@ -2272,7 +2275,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function onStep(type, event) {
 	            var _props4 = this.props,
 	                disabled = _props4.disabled,
-	                readOnly = _props4.readOnly;
+	                readOnly = _props4.readOnly,
+	                negative = _props4.negative,
+	                min = _props4.min;
 
 	            if (disabled || readOnly) {
 	                //只读
@@ -2289,6 +2294,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	                // value -= Number(step);
 	                value = Number.floatSub(value, Number(step));
+	                if (value < 0 && !negative) {
+	                    //不支持负数时，返回0或最小值 ;
+	                    value = Math.max(min, 0);
+	                }
 	            }
 	            // let displayValue = this.formatThousandthNumber(value, true);
 	            // if (displayValue !== this.state.displayValue) {
