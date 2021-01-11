@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2020-12-31 09:06:53
+ * @LastEditTime: 2021-01-11 20:39:20
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -165,7 +165,7 @@ describe('初始化测试',()=>{
         expect(input.find('input').prop('value')).toBe('3,232');
         input.simulate('blur');
         expect(input.find('input').prop('value')).toBe('3,232.0000');
-        expect(callback.returned(3232.0000));
+        expect(callback.returned(3232.0000)).toBe(true);
     });
     
     it('不设置decimals时或非数字decimals处理',()=>{
@@ -499,7 +499,9 @@ describe('初始化测试',()=>{
             input.setProps({value:2})
             expect(input.find('input').prop('value')).toBe('2.');
             input.setProps({value:'2',returnType:'String'})
-            expect(input.find('input').prop('value')).toBe('2');
+            expect(input.find('input').prop('value')).toBe('2.');
+            input.setProps({value:'3',returnType:'String'})
+            expect(input.find('input').prop('value')).toBe('3');
             done();
         },101)
     })
@@ -607,6 +609,36 @@ describe('初始化测试',()=>{
         });
         input.setProps({value:'+123'})
         expect(input.state('displayValue')).toBe("123.00")
+    });
+    
+    it('在delay的情况下，焦点中输入数字到小数位点同步props.value',(done)=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            onChange:callback,
+            decimals:2,
+            delay:100,
+            value:1,
+            returnType:'String',
+            isFormat:true
+        });
+        input.simulate('change',{target:{value:'2.'}})
+        expect(input.find('input').prop('value')).toBe('2.');
+        setTimeout(()=>{
+            expect(callback.returned('2.')).toBeTruthy();
+            expect(input.state('displayValue')).toBe('2.');
+            expect(input.find('input').prop('value')).toBe('2.');
+            input.simulate('change',{target:{value:'2'}})
+            setTimeout(()=>{
+                expect(callback.returned('2')).toBeTruthy();
+                expect(input.state('displayValue')).toBe('2');
+                expect(input.state('value')).toBe('2');
+                done();
+            },101)
+        },101)
     })
 })
 
@@ -640,14 +672,14 @@ describe('微调器的测试',()=>{
             console.log(v)
             return Number(v);
         }
+        let callback = sinon.spy(onChange);//监听callback
         let {input} = setup({
             spinner:true,
             step:0.01,
             value:1,
             decimals:2,
-            onChange:onChange
+            onChange:callback
         });
-        let callback = sinon.spy(onChange);//监听callback
         let up = input.find('.x-input-step-up');
         let down = input.find('.x-input-step-down');
         up.simulate('click');
@@ -664,6 +696,7 @@ describe('微调器的测试',()=>{
             console.log(v)
             return v;
         }
+        let callback = sinon.spy(onChange);//监听callback
         let {input} = setup({
             spinner:true,
             step:0.01,
@@ -671,9 +704,8 @@ describe('微调器的测试',()=>{
             decimals:2,
             max:5,
             min:1,
-            onChange:onChange
+            onChange:callback
         });
-        let callback = sinon.spy(onChange);//监听callback
         input.setProps({value:6});
         expect(input.state('value')).toBe('5.00');
         console.log(callback.returned(5))
@@ -681,5 +713,29 @@ describe('微调器的测试',()=>{
         input.setProps({value:0});
         expect(input.state('value')).toBe("1.00");
         // expect(callback.returned(1)).toBe(true);
+    });
+    it('设置精度步数的测试',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            spinner:true,
+            step:0.01,
+            stepDecimals:4,
+            value:2,
+            decimals:4,
+            max:5,
+            min:1,
+            onChange:callback,
+        });
+        let up = input.find('.x-input-step-up');
+        up.simulate('click');
+        let down = input.find('.x-input-step-down');
+        down.simulate('click');
+        expect(input.state('value')).toBe("2.0000");
+        down.simulate('click');
+        expect(callback.returned(1.9999)).toBe(true);
     })
 });

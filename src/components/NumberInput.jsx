@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-01-09 11:31:03
+ * @LastEditTime: 2021-01-11 20:10:44
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -179,12 +179,12 @@ export default class NumberInput extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
         // console.log('willreceive被调用....')
         // console.log('########', nextProps.value, this.isFocus)
-        let { value, decimals } = this.props;
+        let { value, decimals,returnType } = this.props;
         if (typeof nextProps.value !== 'undefined' ) {
             //只有在不为undefeined的情况下才处理接受值
             // console.log('########', nextProps.value,nextProps.decimals,decimals)
             if(nextProps.value !== value || decimals !== nextProps.decimals){
-                if (nextProps.value !==  this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
+                if ( window[returnType](nextProps.value) !==  this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
                     // if ( nextProps.value !== this.state.value) {
                     // console.log(nextProps.value)
                     if(this.checkMaxMin(nextProps.value,null,nextProps)){
@@ -417,13 +417,18 @@ export default class NumberInput extends React.PureComponent {
         }
         // this.node.focus();
         let value = Number(this.state.value);
-        let {step=0} = this.props;
+        let {step=0,stepDecimals} = this.props;
+        let tiny = step;
+        //如果有精度步数就以精度优先
+        if(stepDecimals){
+            tiny = 1/Math.pow(10, stepDecimals);
+        }
         if(type==='up'){
             // value += Number(step);
-            value = Number.floatAdd(value,Number(step));
+            value = Number.floatAdd(value,Number(tiny));
         }else{
             // value -= Number(step);
-            value = Number.floatSub(value,Number(step));
+            value = Number.floatSub(value,Number(tiny));
             if(value <0 && !negative){
                 //不支持负数时，返回0或最小值 ;
                 value  =Math.max(min,0);
@@ -437,7 +442,7 @@ export default class NumberInput extends React.PureComponent {
         if( this.checkMaxMin(value)){
             this.changeState(value, true, this.props);
         }
-        this.props.onStep && this.props.onStep(value,{offset:step,type});
+        this.props.onStep && this.props.onStep(value,{offset:tiny,type});
     }
     renderInput(){
         let { displayValue } = this.state;

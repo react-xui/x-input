@@ -1838,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-01-09 11:31:03
+	   * @LastEditTime: 2021-01-11 20:10:44
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2003,13 +2003,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // console.log('########', nextProps.value, this.isFocus)
 	            var _props = this.props,
 	                value = _props.value,
-	                decimals = _props.decimals;
+	                decimals = _props.decimals,
+	                returnType = _props.returnType;
 
 	            if (typeof nextProps.value !== 'undefined') {
 	                //只有在不为undefeined的情况下才处理接受值
 	                // console.log('########', nextProps.value,nextProps.decimals,decimals)
 	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
-	                    if (nextProps.value !== this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
+	                    if (window[returnType](nextProps.value) !== this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
 	                        // if ( nextProps.value !== this.state.value) {
 	                        // console.log(nextProps.value)
 	                        if (this.checkMaxMin(nextProps.value, null, nextProps)) {
@@ -2285,15 +2286,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            // this.node.focus();
 	            var value = Number(this.state.value);
-	            var _props$step = this.props.step,
-	                step = _props$step === undefined ? 0 : _props$step;
+	            var _props5 = this.props,
+	                _props5$step = _props5.step,
+	                step = _props5$step === undefined ? 0 : _props5$step,
+	                stepDecimals = _props5.stepDecimals;
 
+	            var tiny = step;
+	            //如果有精度步数就以精度优先
+	            if (stepDecimals) {
+	                tiny = 1 / Math.pow(10, stepDecimals);
+	            }
 	            if (type === 'up') {
 	                // value += Number(step);
-	                value = Number.floatAdd(value, Number(step));
+	                value = Number.floatAdd(value, Number(tiny));
 	            } else {
 	                // value -= Number(step);
-	                value = Number.floatSub(value, Number(step));
+	                value = Number.floatSub(value, Number(tiny));
 	                if (value < 0 && !negative) {
 	                    //不支持负数时，返回0或最小值 ;
 	                    value = Math.max(min, 0);
@@ -2307,7 +2315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (this.checkMaxMin(value)) {
 	                this.changeState(value, true, this.props);
 	            }
-	            this.props.onStep && this.props.onStep(value, { offset: step, type: type });
+	            this.props.onStep && this.props.onStep(value, { offset: tiny, type: type });
 	        }
 	    }, {
 	        key: 'renderInput',
@@ -2315,17 +2323,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this7 = this;
 
 	            var displayValue = this.state.displayValue;
-	            var _props5 = this.props,
-	                onClick = _props5.onClick,
-	                disabled = _props5.disabled,
-	                onFocus = _props5.onFocus,
-	                readOnly = _props5.readOnly,
-	                onMouseEnter = _props5.onMouseEnter,
-	                onMouseLeave = _props5.onMouseLeave,
-	                showTitle = _props5.showTitle,
-	                className = _props5.className,
-	                placeholder = _props5.placeholder,
-	                autoFocus = _props5.autoFocus;
+	            var _props6 = this.props,
+	                onClick = _props6.onClick,
+	                disabled = _props6.disabled,
+	                onFocus = _props6.onFocus,
+	                readOnly = _props6.readOnly,
+	                onMouseEnter = _props6.onMouseEnter,
+	                onMouseLeave = _props6.onMouseLeave,
+	                showTitle = _props6.showTitle,
+	                className = _props6.className,
+	                placeholder = _props6.placeholder,
+	                autoFocus = _props6.autoFocus;
 
 	            var title = showTitle ? displayValue : '';
 	            var cls = className + ' x-input';

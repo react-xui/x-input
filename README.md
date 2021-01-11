@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2020-12-31 09:10:58
+ * @LastEditTime: 2021-01-11 20:12:57
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
@@ -57,6 +57,8 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 最大值
 ## min
 最小值
+## stepDecimals  [Number]
+精度步数，如果是设置4，则每次调整步数为0.0001
 ### 关于作者
 [https://github.com/tianxiangbing](https://github.com/tianxiangbing)
 
