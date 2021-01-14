@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-01-11 20:10:44
+ * @LastEditTime: 2021-01-14 11:45:21
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -167,6 +167,7 @@ export default class NumberInput extends React.PureComponent {
         }
         this.defaultValue = value;//内置defaultValue为初始值.
         this.state = { value, displayValue: this.formatThousandthNumber(value, true) };
+        this.preValue = this.getReturnValue(value);//记录上一次的值，用来判断change触发条件
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onFocus = this.onFocus.bind(this);
@@ -183,16 +184,25 @@ export default class NumberInput extends React.PureComponent {
         if (typeof nextProps.value !== 'undefined' ) {
             //只有在不为undefeined的情况下才处理接受值
             // console.log('########', nextProps.value,nextProps.decimals,decimals)
-            if(nextProps.value !== value || decimals !== nextProps.decimals){
-                if ( window[returnType](nextProps.value) !==  this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
-                    // if ( nextProps.value !== this.state.value) {
-                    // console.log(nextProps.value)
-                    if(this.checkMaxMin(nextProps.value,null,nextProps)){
-                        this.changeState(nextProps.value, true, nextProps)
+            let isUpdate = decimals !== nextProps.decimals;
+            if(nextProps.value !== value && !isUpdate){
+                //这里判断出去的是空时，接受到为空时不更新
+                let rtv = this.getReturnValue(this.state.value);
+                if(nextProps.value !==rtv){
+                    //这里判断进来的数字是原数字相同时不更新
+                    if ( window[returnType](nextProps.value) !== rtv) {
+                        // if ( nextProps.value !== this.state.value) {
+                        // console.log(nextProps.value)
+                        if(this.checkMaxMin(nextProps.value,null,nextProps)){
+                            isUpdate = true;
+                        }
+                        // this.checkMaxMin(nextProps.value,null,nextProps)
+                        // }
                     }
-                    // this.checkMaxMin(nextProps.value,null,nextProps)
-                    // }
                 }
+            }
+            if(isUpdate){
+                this.changeState(nextProps.value, true, nextProps)
             }
         }
     }
@@ -229,10 +239,16 @@ export default class NumberInput extends React.PureComponent {
                 // console.log('delay...',_this.newValue)
                 clearTimeout(_this.timer);
                 _this.timer = null;
-                fn && fn.call(this,_this.newValue);
+                if(_this.preValue !== _this.newValue){
+                    _this.preValue = _this.newValue;
+                    fn && fn.call(this,_this.newValue);
+                }
             }, this.props.delay) : null;
         } else {
-            fn && fn.call(this,this.newValue);
+            if(this.preValue !== this.newValue){
+                this.preValue = this.newValue;
+                fn && fn.call(this,this.newValue);
+            }
         }
     }
     onChange(e) {
@@ -294,7 +310,10 @@ export default class NumberInput extends React.PureComponent {
                 this.setState({ displayValue })
             }
             let rv = this.getReturnValue(this.state.value);
-            this.props.onChange && this.props.onChange.call(this,rv);
+            if(this.preValue !== rv){
+                this.preValue = rv;
+                this.props.onChange && this.props.onChange.call(this,rv);
+            }
             this.props.onBlur && this.props.onBlur.call(this,e,rv);
         });
     }

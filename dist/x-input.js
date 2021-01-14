@@ -1838,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-01-11 20:10:44
+	   * @LastEditTime: 2021-01-14 11:45:21
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -1985,6 +1985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        _this2.defaultValue = value; //内置defaultValue为初始值.
 	        _this2.state = { value: value, displayValue: _this2.formatThousandthNumber(value, true) };
+	        _this2.preValue = _this2.getReturnValue(value); //记录上一次的值，用来判断change触发条件
 	        _this2.onChange = _this2.onChange.bind(_this2);
 	        _this2.onBlur = _this2.onBlur.bind(_this2);
 	        _this2.onFocus = _this2.onFocus.bind(_this2);
@@ -2009,16 +2010,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof nextProps.value !== 'undefined') {
 	                //只有在不为undefeined的情况下才处理接受值
 	                // console.log('########', nextProps.value,nextProps.decimals,decimals)
-	                if (nextProps.value !== value || decimals !== nextProps.decimals) {
-	                    if (window[returnType](nextProps.value) !== this.getReturnValue(this.state.value) || decimals !== nextProps.decimals) {
-	                        // if ( nextProps.value !== this.state.value) {
-	                        // console.log(nextProps.value)
-	                        if (this.checkMaxMin(nextProps.value, null, nextProps)) {
-	                            this.changeState(nextProps.value, true, nextProps);
+	                var isUpdate = decimals !== nextProps.decimals;
+	                if (nextProps.value !== value && !isUpdate) {
+	                    //这里判断出去的是空时，接受到为空时不更新
+	                    var rtv = this.getReturnValue(this.state.value);
+	                    if (nextProps.value !== rtv) {
+	                        //这里判断进来的数字是原数字相同时不更新
+	                        if (window[returnType](nextProps.value) !== rtv) {
+	                            // if ( nextProps.value !== this.state.value) {
+	                            // console.log(nextProps.value)
+	                            if (this.checkMaxMin(nextProps.value, null, nextProps)) {
+	                                isUpdate = true;
+	                            }
+	                            // this.checkMaxMin(nextProps.value,null,nextProps)
+	                            // }
 	                        }
-	                        // this.checkMaxMin(nextProps.value,null,nextProps)
-	                        // }
 	                    }
+	                }
+	                if (isUpdate) {
+	                    this.changeState(nextProps.value, true, nextProps);
 	                }
 	            }
 	        }
@@ -2069,10 +2079,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    // console.log('delay...',_this.newValue)
 	                    clearTimeout(_this.timer);
 	                    _this.timer = null;
-	                    fn && fn.call(_this3, _this.newValue);
+	                    if (_this.preValue !== _this.newValue) {
+	                        _this.preValue = _this.newValue;
+	                        fn && fn.call(_this3, _this.newValue);
+	                    }
 	                }, this.props.delay) : null;
 	            } else {
-	                fn && fn.call(this, this.newValue);
+	                if (this.preValue !== this.newValue) {
+	                    this.preValue = this.newValue;
+	                    fn && fn.call(this, this.newValue);
+	                }
 	            }
 	        }
 	    }, {
@@ -2152,7 +2168,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    _this5.setState({ displayValue: displayValue });
 	                }
 	                var rv = _this5.getReturnValue(_this5.state.value);
-	                _this5.props.onChange && _this5.props.onChange.call(_this5, rv);
+	                if (_this5.preValue !== rv) {
+	                    _this5.preValue = rv;
+	                    _this5.props.onChange && _this5.props.onChange.call(_this5, rv);
+	                }
 	                _this5.props.onBlur && _this5.props.onBlur.call(_this5, e, rv);
 	            });
 	        }

@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2021-01-11 20:39:20
+ * @LastEditTime: 2021-01-14 11:49:16
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -584,8 +584,8 @@ describe('初始化测试',()=>{
             }
         });
         input.simulate('blur');
-        expect(callback.callCount).toBe(1);
-        expect(callback.returned('')).toBeTruthy();
+        expect(callback.callCount).toBe(0);
+        // expect(callback.returned('')).toBeTruthy();
         input.simulate('change',{
             target:{
                 value:''
@@ -595,7 +595,8 @@ describe('初始化测试',()=>{
             delay:0,
             value:'-'
         });
-        expect(callback.returned('')).toBeTruthy();
+        expect(callback.callCount).toBe(0);
+        // expect(callback.returned('')).toBeTruthy();
     });
     it('传入isAutoZero为false',()=>{
         
@@ -637,12 +638,12 @@ describe('初始化测试',()=>{
                 expect(input.state('displayValue')).toBe('2');
                 expect(input.state('value')).toBe('2');
                 done();
-            },101)
-        },101)
+            },121)
+        },121)
     })
-})
+// })
 
-describe('微调器的测试',()=>{
+// describe('微调器的测试',()=>{
     it('初始化',()=>{
         let {input} = setup({
             spinner:true,
@@ -737,5 +738,60 @@ describe('微调器的测试',()=>{
         expect(input.state('value')).toBe("2.0000");
         down.simulate('click');
         expect(callback.returned(1.9999)).toBe(true);
+    })
+    it('有值时直接输入负号',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            spinner:true,
+            step:0.01,
+            stepDecimals:4,
+            value:2.12,
+            decimals:4,
+            max:5,
+            min:1,
+            onChange:callback,
+        });
+        // let spy = sinon.spy(NumberInput.prototype,'componentWillReceiveProps')//监听生命周期
+        input.find('input').simulate('change',{target:{value:'-'}});//事件模拟
+        expect(callback.returned('')).toBeTruthy();
+        expect(spy.callCount).toEqual(32);//一次进willRecive
+        expect(callback.callCount).toEqual(1);//一次进willRecive
+        input.setProps({value:''});
+        expect(spy.callCount).toEqual(33);//一次进willRecive
+        expect(callback.callCount).toEqual(1);//一次进willRecive
+        expect(input.state('value')).toBe('-');
+        expect(input.state('displayValue')).toBe('-');
+        input.find('input').simulate('change',{target:{value:''}});//事件模拟
+        expect(input.state('value')).toBe('');
+        expect(input.state('displayValue')).toBe('');
+        expect(callback.callCount).toEqual(1);//一次进willRecive
+    })
+    it('值不变时不触发change',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            spinner:true,
+            step:0.01,
+            stepDecimals:4,
+            value:2.12,
+            decimals:4,
+            max:5,
+            min:1,
+            onChange:callback,
+        });
+        // let spy = sinon.spy(NumberInput.prototype,'componentWillReceiveProps')//监听生命周期
+        input.find('input').simulate('blur');//事件模拟
+        expect(spy.callCount).toEqual(33);//一次进willRecive
+        expect(callback.callCount).toEqual(0);//不进change
+        input.setProps({value:'2.12'});
+        expect(spy.callCount).toEqual(34);//2次进willRecive
+        expect(callback.callCount).toEqual(0);//不进change
     })
 });
