@@ -1838,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-01-14 11:45:21
+	   * @LastEditTime: 2021-01-22 17:40:34
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2218,7 +2218,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                v = this.state.value;
 	            } else {
 	                //判断maxLength长度
-	                var integer = v.split('.')[0].replace(/\-/gi, '');
+	                var splitArr = v.split('.');
+	                var integer = splitArr[0].replace(/\-/gi, '');
+	                var floatLength = splitArr.length === 2 ? splitArr[1].length : 0;
+	                //整数加小数不能超过15位
+	                if (props.overFloat && props.returnType === 'Number' && integer.length + floatLength > 15) {
+	                    v = this.state.value;
+	                }
 	                if (props.maxLength && integer.length > props.maxLength) {
 	                    v = this.state.value;
 	                }
@@ -2437,7 +2443,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    min: _propTypes2.default.number,
 	    step: _propTypes2.default.number,
 	    onStep: _propTypes2.default.func,
-	    stepDecimals: _propTypes2.default.number //微调步数精度
+	    stepDecimals: _propTypes2.default.number, //微调步数精度
+	    overFloat: _propTypes2.default.bool
 	};
 	NumberInput.defaultProps = {
 	    returnType: 'Number',
@@ -2457,7 +2464,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    max: Number.MAX_SAFE_INTEGER,
 	    min: Number.MIN_SAFE_INTEGER,
 	    step: 1,
-	    stepDecimals: Number.NaN };
+	    stepDecimals: Number.NaN,
+	    overFloat: false };
 	exports.default = NumberInput;
 
 /***/ }),

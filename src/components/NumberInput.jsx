@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-01-14 11:45:21
+ * @LastEditTime: 2021-01-22 17:40:34
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -60,6 +60,7 @@ export default class NumberInput extends React.PureComponent {
         step:PropTypes.number,
         onStep:PropTypes.func,
         stepDecimals:PropTypes.number,//微调步数精度
+        overFloat:PropTypes.bool,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -79,7 +80,8 @@ export default class NumberInput extends React.PureComponent {
         max:Number.MAX_SAFE_INTEGER,
         min:Number.MIN_SAFE_INTEGER,
         step:1,
-        stepDecimals:Number.NaN
+        stepDecimals:Number.NaN,
+        overFloat:false
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false, props = this.props) {
@@ -351,8 +353,14 @@ export default class NumberInput extends React.PureComponent {
             v = this.state.value;
         } else {
             //判断maxLength长度
-            let integer = v.split('.')[0].replace(/\-/gi, '');
-            if (props.maxLength && integer.length > props.maxLength) {
+            let splitArr =  v.split('.');
+            let integer = splitArr[0].replace(/\-/gi, '');
+            let floatLength = splitArr.length ===2 ? splitArr[1].length : 0;
+            //整数加小数不能超过15位
+            if ( props.overFloat &&  props.returnType === 'Number' &&  integer.length + floatLength >15 ){
+                v = this.state.value;
+            }
+            if ( props.maxLength && integer.length > props.maxLength ) {
                 v = this.state.value;
             }
         }
