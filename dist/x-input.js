@@ -1838,7 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-01-22 17:40:34
+	   * @LastEditTime: 2021-02-01 15:38:20
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2372,7 +2372,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    ref: function ref(_ref) {
 	                        return _this7.node = _ref;
 	                    },
-	                    className: cls,
+	                    className: cls
+	                    // autocomplete='off'
+	                    , autoComplete: 'off',
 	                    title: title,
 	                    onMouseEnter: onMouseEnter,
 	                    onMouseLeave: onMouseLeave,
@@ -2394,7 +2396,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        return _this7.node = _ref2;
 	                    },
 	                    className: cls,
-	                    title: title,
+	                    title: title
+	                    // autocomplete='off'
+	                    , autoComplete: 'off',
 	                    onMouseEnter: onMouseEnter,
 	                    onMouseLeave: onMouseLeave,
 	                    onKeyUp: this.onKeyUp,
