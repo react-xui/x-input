@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2021-01-14 11:49:16
+ * @LastEditTime: 2021-02-07 09:07:25
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -514,7 +514,7 @@ describe('初始化测试',()=>{
         let {input} = setup({
             onChange:callback,
             decimals:2,
-            delay:100,
+            delay:10,
             returnType:'Number',
             value:0
         });
@@ -793,5 +793,23 @@ describe('初始化测试',()=>{
         input.setProps({value:'2.12'});
         expect(spy.callCount).toEqual(34);//2次进willRecive
         expect(callback.callCount).toEqual(0);//不进change
+    })
+    it('整数加小数位不能超过15位',()=>{
+        let onChange = (v)=>{
+            console.log(v)
+            return v;
+        }
+        let callback = sinon.spy(onChange);//监听callback
+        let {input} = setup({
+            spinner:true,
+            step:0.01,
+            stepDecimals:4,
+            value:2.12,
+            decimals:4,
+            max:5,
+            min:1,
+            overFloat:true,
+            onChange:callback,
+        });
     })
 });

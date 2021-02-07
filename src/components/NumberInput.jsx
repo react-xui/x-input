@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-02-01 15:38:20
+ * @LastEditTime: 2021-02-05 18:19:48
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -355,9 +355,9 @@ export default class NumberInput extends React.PureComponent {
             //判断maxLength长度
             let splitArr =  v.split('.');
             let integer = splitArr[0].replace(/\-/gi, '');
-            let floatLength = splitArr.length ===2 ? splitArr[1].length : 0;
+            // let floatLength = splitArr.length ===2 ? splitArr[1].length : 0;
             //整数加小数不能超过15位
-            if ( props.overFloat &&  props.returnType === 'Number' &&  integer.length + floatLength >15 ){
+            if ( props.overFloat &&  props.returnType === 'Number' &&  integer.length + props.decimals >15 ){
                 v = this.state.value;
             }
             if ( props.maxLength && integer.length > props.maxLength ) {
