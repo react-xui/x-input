@@ -1,10 +1,16 @@
-.x-input {
+.x-input,
+.x-textarea {
   background-color: #ffffff;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   padding: 0 14px;
   height: 30px;
   line-height: 30px;
+  outline: none;
+}
+.x-textarea {
+  height: 60px;
+  vertical-align: top;
 }
 .x-input-container {
   position: relative;

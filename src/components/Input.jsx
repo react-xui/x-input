@@ -16,7 +16,7 @@ class Base extends Component {
         this.onChangeHandle = this.onChangeHandle.bind(this);
     }
     componentWillReceiveProps(newProps, newState) {
-        if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value ) {
+        if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value) {
             this.setState({ value: newProps.value });
         }
     }
@@ -34,10 +34,10 @@ class Base extends Component {
         delete newProps['decimals'];
         delete newProps['onChange'];
         delete newProps['returnType'];
-        delete newProps['negative']; 
-        delete newProps['beforeFormat']; 
-        delete newProps['batchUpdate']; 
-        delete newProps['sync']; 
+        delete newProps['negative'];
+        delete newProps['beforeFormat'];
+        delete newProps['batchUpdate'];
+        delete newProps['sync'];
         // delete newProps['value'];
         let value = this.state.value;
         typeof value === 'object' ? value = JSON.stringify(value) : null;
@@ -65,39 +65,39 @@ class Base extends Component {
  */
 const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true) => class extends Component {
     isNaN = isNumber;
-    static defaultProps={
-        autoFormat:true
+    static defaultProps = {
+        autoFormat: true
     }
     static propTypes = {
-        decimals:PropTypes.number
+        decimals: PropTypes.number
     }
     constructor(props) {
         super(props);
         // this.decimals = props.decimals;
-        this.negative = typeof this.props.negative==='undefined'? negative:this.props.negative;
+        this.negative = typeof this.props.negative === 'undefined' ? negative : this.props.negative;
         let decimals = this.props.decimals;
-        if(isNaN(decimals)){
+        if (isNaN(decimals)) {
             decimals = 0;
         }
-        this.state = { value: typeof props.value === 'undefined' ? "" : number_format(this.format(props.value, true),decimals) };
+        this.state = { value: typeof props.value === 'undefined' ? "" : number_format(this.format(props.value, true), decimals) };
         this.onChangeHandle = this.onChangeHandle.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
-    componentDidUpdate(prevProps){
-        if(prevProps.decimals!==this.props.decimals && prevProps.value!='' && this.props.value !="" && this.state.value!=""){
-            this.blurFormat(this.state.value) 
+    componentDidUpdate(prevProps) {
+        if (prevProps.decimals !== this.props.decimals && prevProps.value != '' && this.props.value != "" && this.state.value != "") {
+            this.blurFormat(this.state.value)
         }
     }
     componentWillReceiveProps(newProps, newState) {
-        if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined' && newProps.value!==null) {
+        if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined' && newProps.value !== null) {
             if (!this.isNaN) {
-                let value =this.state.value ===''?'': Number(String(this.state.value).replace(/\,/gi, ''));
+                let value = this.state.value === '' ? '' : Number(String(this.state.value).replace(/\,/gi, ''));
                 if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
                     // this.format(newProps.value)
                     this.blurFormat(newProps.value);
                 }
-                if(newProps.value ==='' && this.state.value  !==''){
-                    this.setState({value:''},()=>{
+                if (newProps.value === '' && this.state.value !== '') {
+                    this.setState({ value: '' }, () => {
                         this.props.onChange && this.props.onChange(this.state.value)
                     })
                 }
@@ -108,7 +108,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
         }
     }
     format(value, isinit) {
-        if(this.props.beforeFormat){
+        if (this.props.beforeFormat) {
             value = this.props.beforeFormat(value);
         }
         let istriggerChange = true;
@@ -127,7 +127,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
                 if (arr.length > 1) {
                     value = arr[0] + '.' + arr[1].substr(0, this.props.decimals);
                 }
-                if(this.props.decimals ===0){
+                if (this.props.decimals === 0) {
                     value = value.split('.')[0];
                 }
                 let res = value.match(reg);
@@ -144,7 +144,7 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
             return value;
         } else {
             this.setState({ value }, () => {
-                if (!this.isNaN && value !='') {
+                if (!this.isNaN && value != '') {
                     value = Number(String(value).replace(/\,/gi, ''));
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
@@ -156,28 +156,28 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
         let { value } = target;
         this.format(value, false, target);
     }
-    onBlur(e){
+    onBlur(e) {
         // console.log(e)
-        if(this.props.autoFormat){
-           let value = e.target.value.replace(/\,/gi,'');
-           if(value ==='-' && !this.isNaN){
-               value = '';
-           }
-           this.blurFormat(value);
+        if (this.props.autoFormat) {
+            let value = e.target.value.replace(/\,/gi, '');
+            if (value === '-' && !this.isNaN) {
+                value = '';
+            }
+            this.blurFormat(value);
         }
-        this.props.onBlur && this.props.onBlur.call(this,e);
+        this.props.onBlur && this.props.onBlur.call(this, e);
     }
-    blurFormat(value){
-        if(value!=='' && !this.isNaN){
-            value = number_format(value,this.props.decimals)
+    blurFormat(value) {
+        if (value !== '' && !this.isNaN) {
+            value = number_format(value, this.props.decimals)
         }
         this.setState({ value }, () => {
-            if (!this.isNaN && value !='') {
+            if (!this.isNaN && value != '') {
                 value = Number(String(value).replace(/\,/gi, ''));
             }
             this.props.returnType ? value = window[this.props.returnType](value) : String(value);
             this.props.onChange && this.props.onChange(value);
-       });
+        });
     }
     render() {
         const newProps = {
@@ -186,42 +186,75 @@ const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true
         }
         const props = Object.assign({}, this.props, newProps);
         delete props.autoFormat;
-        return <WrappedComponnet {...props}  onBlur={this.onBlur}/>
+        return <WrappedComponnet {...props} onBlur={this.onBlur} />
     }
 }
-function number_format(number,n=0){
-    if(number==='')return '';
-    if(!isNaN(n)){
+function number_format(number, n = 0) {
+    if (number === '') return '';
+    if (!isNaN(n)) {
         n = Number(n)
         number = String(number);
-        let num= number;
+        let num = number;
         let arr = number.split('.');
-        let i = (arr[0] +'').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g,'$1,');
-        if(number.indexOf('.')>-1 && n !=0){
+        let i = (arr[0] + '').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
+        if (number.indexOf('.') > -1 && n != 0) {
             let de = arr[1]
-            num =  i+'.'+ (de+Array(n+1).join(0)).slice(0,n);
-        }else{
-            num =  i+'.'+ Array(n+1).join(0).slice(0,n);
+            num = i + '.' + (de + Array(n + 1).join(0)).slice(0, n);
+        } else {
+            num = i + '.' + Array(n + 1).join(0).slice(0, n);
         }
-        if(n == 0){
+        if (n == 0) {
             num = i;
         }
         return num
     }
     return number;
 }
-class Input extends Base {
-    onChangeHandle(e) {
+// class Input extends Base {
+//     onChangeHandle(e) {
+//         let { value } = e.target;
+//         let { target } = e;
+//         this.setState({ value }, () => {
+//             this.props.onChange && this.props.onChange(value);
+//         });
+//     }
+// }
+class Input extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
+    }
+    onChangeHandle = (e) => {
         let { value } = e.target;
-        let { target } = e;
         this.setState({ value }, () => {
-            this.props.onChange && this.props.onChange(value);
-        });
+            if (this.props.changeEvent !== 'blur') {
+                this.props.onChange && this.props.onChange.call(this, value);
+            }
+        })
+    }
+    componentWillReceiveProps(newProps) {
+        if (newProps.value != this.props.value) {
+            this.setState({ value: newProps.value });
+        }
+    }
+    onBlurHandle = (e) => {
+        let { value } = e.target;
+        this.props.onChange && this.props.onChange.call(this, value);
+    }
+    render() {
+       let {className,type='text'} = this.props; 
+        let cls = (className || "") + (type==='text'?' x-input':' x-textarea');
+        let props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle };
+        if(type ==='text'){
+            return <input {...props} type="text" value={this.state.value} className={cls} />
+        }else{
+            return <textarea {...props} value={this.state.value} className={cls}></textarea>
+        }
     }
 }
-var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/,true,false); //数字,含小数
-var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/,true,false); //整数
-var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/,false,false); //正整数
+var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/, true, false); //数字,含小数
+var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/, true, false); //整数
+var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/, false, false); //正整数
 var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
 
 const setCaretPosition = (tObj, sPos) => {
@@ -273,14 +306,14 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
             this.isnegative = false;
         }
         // if(value!="" || this.isnegative){
-            this.format(value, false, target);
+        this.format(value, false, target);
         // }
         // else{
         //     this.props.onChange && this.props.onChange(value);
         // }
     }
     format(value, isinit, target) {
-        if(this.props.beforeFormat){
+        if (this.props.beforeFormat) {
             value = this.props.beforeFormat(value);
         }
         let oldvalue = value;
@@ -299,7 +332,7 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                 rightpos = len - pos;//算出从右计算的光标位置
             }
             // console.log('right:',rightpos)
-            if (this.isnegative&& String(value).indexOf('-')!=0) {
+            if (this.isnegative && String(value).indexOf('-') != 0) {
                 value = '-' + value;
             }
             this.setState({ value }, () => {
@@ -309,13 +342,13 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
                     // console.log(tmp)
                     setCaretPosition(target, tmp);
                 }
-                if (!this.isNaN && value !='' && value!="-") {
+                if (!this.isNaN && value != '' && value != "-") {
                     value = Number(value.replace(/\,/gi, ''));
-                }else {
+                } else {
                     value = value.replace(/\,/gi, '');
                 }
                 this.props.returnType ? value = window[this.props.returnType](value) : String(value);
-                if(!this.isNaN && value ==='-'){
+                if (!this.isNaN && value === '-') {
                     return;
                 }
                 istriggerChange && this.props.onChange && this.props.onChange(value);
@@ -326,9 +359,9 @@ const FormatContainer = (WrappedComponnet, format) => class extends NumericInput
     }
 }
 
-const formatThousandthNumber = function (num, { decimals=0 }, ov) {
+const formatThousandthNumber = function (num, { decimals = 0 }, ov) {
     // number = number.replace(/\,/g,'');
-    ov=String(ov).replace(/\,/g, '');
+    ov = String(ov).replace(/\,/g, '');
     num = String(num).replace(/\,/g, '');
     let isnegative = false;
     if (num.indexOf('-') == 0) {
@@ -362,7 +395,7 @@ const formatThousandthNumber = function (num, { decimals=0 }, ov) {
         if (arr.length > 1) {
             str += '.' + arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
         }
-        if(decimals ===0){
+        if (decimals === 0) {
             str = str.split('.')[0];
         }
         if (isnegative) {
@@ -377,6 +410,6 @@ Input.Inter = InterInput;
 Input.PosInter = PosInterInput;
 Input.Letter = LetterInput;
 Input.Thousand = ThousandInput;
-Input.Base=Base;
-Input.FormatContainer=FormatContainer;
-export {Base,formatThousandthNumber,FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
+Input.Base = Base;
+Input.FormatContainer = FormatContainer;
+export { Base, formatThousandthNumber, FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
