@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-02-05 18:19:48
+ * @LastEditTime: 2021-05-13 17:07:34
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -339,6 +339,19 @@ export default class NumberInput extends React.PureComponent {
         }
         this.props.onKeyUp && this.props.onKeyUp(e, this.state.value);
     }
+    start(type){
+        this.onStep(type);
+        this.mouseTimer = setTimeout(()=>{
+            clearTimeout(this.mouseTimer);
+            this.stepTimer = setInterval(()=>{
+                this.onStep(type);
+            },100)
+        },200);
+    }
+    stop(){
+        this.mouseTimer && clearTimeout(this.mouseTimer);
+        this.stepTimer && clearInterval(this.stepTimer);
+    }
     //统一修改value值
     changeState(value, isAutoZero, props, fn, nofn) {
         let v = String(value).replace(/[\,\+]/gi, '');
@@ -437,6 +450,7 @@ export default class NumberInput extends React.PureComponent {
     }
     //微调点击
     onStep(type,event){
+        // console.log('mousedown')
         let {disabled,readOnly,negative,min} = this.props;
         if(disabled || readOnly){
             //只读
@@ -505,13 +519,14 @@ export default class NumberInput extends React.PureComponent {
                     autoFocus={autoFocus}
                 />
                 <div className={spinnerCls}>
-                <span className="x-input-step-up" onClick={this.onStep.bind(this,'up')}><i/></span>
-                <span className="x-input-step-down" onClick={this.onStep.bind(this,'down')}><i/></span>
+                <span className="x-input-step-up" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this,'up')}><i/></span>
+                <span className="x-input-step-down" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this,'down')}><i/></span>
                 </div>
             </div>
             )
         }else{
             return (
+                <div className="x-input-container">
                 <input
                     ref={ref => this.node = ref}
                     className={cls}
@@ -532,6 +547,7 @@ export default class NumberInput extends React.PureComponent {
                     placeholder={placeholder}
                     autoFocus={autoFocus}
                 />
+                </div>
             )
         }
     }

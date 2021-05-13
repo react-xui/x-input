@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2021-01-11 20:12:57
+ * @LastEditTime: 2021-05-13 15:38:14
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
@@ -15,36 +15,25 @@ npm install jsx-input --save
 ```
 基本使用方式
 ```js
-import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput } from 'jsx-input';
-      <LetterInput placeholder="请输入字母"  value={this.state.v}  onChange={this.changeHandle.bind(this)}/>
-        <Input value={this.state.v} ref={txt=>this.txt=txt}/>
-        <Input multiple={true} value={this.state.v} ref={txt=>this.txt=txt}/>
-        <InterInput className="txb" placeholder="请输入数字" value={this.state.v} />
-        <InterInput className="txb" negative={false} placeholder="请输入正数" value={this.state.v} />
-        <ThousandInput placeholder="负千分位数字" negative={true}  value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>
-        <ThousandInput placeholder="千分位数字" negative={false}  value={this.state.v}  decimals="4" onChange={this.changeHandle.bind(this)}/>
-        <NumericInput value="2.12" negative={true} decimals="2" onChange={this.changeHandle.bind(this)}/>
+import { Input,NumberInput } from 'jsx-input';
+  <NumberInput id="txb2" className="test2" spinner={true} step={1}  onChange={v=>{console.log('change22:',v);}}  maxLength={17} decimals={2} isFormat={true}  returnType={this.state.returnType} value={this.state.numberValue} showTitle={true}/>
+  <NumberInput id="txb2" className="test2" overFloat={true} spinner={true} step={0.0001} delay={1000} onStep={(v,obj)=>{console.log('step::',v,obj)}} onChange={v=>{console.log('change22:',v);}}  maxLength={17} decimals={4} isFormat={true}  returnType={this.state.returnType} value={this.state.numberValue} showTitle={true}/>
+  <Input type="text" className="text"/>
+  <Input type="textarea" className="texxt"/>    
     
 ```
 效果图如下
 
 ![x-input](examples/input.gif)
-## Input 
+# Input 
 输入框
-## negative:[bool]
-是否支持负数
-## multiple:[bool]
-是否为多行textarea输入框
-## NumericInput
-纯数字输入框，只能输入正负整数或小数，属性`decimals`限制小数位数
-## LetterInput
-纯字母输入框
-## ThousandInput
-带千分位的数字输入框，属性`decimals`限制小数位数
-## PosInterInput
-正整数输入限制
-## InputContainer (Input,regular)
-高阶组件，可以对input进行格式定制，第二个参数为格式化的正则表达式，如上面的数字输入框 `InputContainer(Input,/^-?(0|[1-9][0-9]*)$/);`
+## type
+  `text`或`textarea`
+## onChange
+  参数为值内容
+# NumberInput
+## delay
+  优化onChange频繁调用的缓冲时间，毫秒数
 ## returnType 
 返回值类型,支持Number,String等
 ## spinner [bool]
@@ -54,9 +43,9 @@ import { Input,NumericInput,InterInput,PosInterInput,LetterInput,ThousandInput }
 ## onStep(value,{offset:step,'up'||'down})
 微调点击回调
 ## max
-最大值
+最大值,默认MAX_SAFE_NUMBER
 ## min
-最小值
+最小值,默认MIN_SAFE_NUMBER
 ## stepDecimals  [Number]
 精度步数，如果是设置4，则每次调整步数为0.0001
 ### 关于作者

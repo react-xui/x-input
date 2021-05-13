@@ -468,9 +468,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
 	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle };
 	            if (type === 'text') {
-	                return _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls }));
+	                return _react2.default.createElement("div", { className: "x-input-container" }, _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })));
 	            } else {
-	                return _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls }));
+	                return _react2.default.createElement("div", { className: "x-input-container" }, _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })));
 	            }
 	        }
 	    }]);
@@ -1877,7 +1877,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-02-05 18:19:48
+	   * @LastEditTime: 2021-05-13 17:07:34
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2238,12 +2238,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            this.props.onKeyUp && this.props.onKeyUp(e, this.state.value);
 	        }
+	    }, {
+	        key: 'start',
+	        value: function start(type) {
+	            var _this6 = this;
+
+	            this.onStep(type);
+	            this.mouseTimer = setTimeout(function () {
+	                clearTimeout(_this6.mouseTimer);
+	                _this6.stepTimer = setInterval(function () {
+	                    _this6.onStep(type);
+	                }, 100);
+	            }, 200);
+	        }
+	    }, {
+	        key: 'stop',
+	        value: function stop() {
+	            this.mouseTimer && clearTimeout(this.mouseTimer);
+	            this.stepTimer && clearInterval(this.stepTimer);
+	        }
 	        //统一修改value值
 
 	    }, {
 	        key: 'changeState',
 	        value: function changeState(value, isAutoZero, props, fn, nofn) {
-	            var _this6 = this;
+	            var _this7 = this;
 
 	            var v = String(value).replace(/[\,\+]/gi, '');
 	            //这里不再接收传递的isAutoZero参数，只根据是否获取的焦点判断。
@@ -2289,7 +2308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (v === '-') v = '';
 	                    // console.log(oldv,v)
 	                    if (oldv !== v) {
-	                        _this6.returnValue(v);
+	                        _this7.returnValue(v);
 	                    }
 	                    fn && fn(v, dv);
 	                });
@@ -2338,6 +2357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'onStep',
 	        value: function onStep(type, event) {
+	            // console.log('mousedown')
 	            var _props4 = this.props,
 	                disabled = _props4.disabled,
 	                readOnly = _props4.readOnly,
@@ -2384,7 +2404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'renderInput',
 	        value: function renderInput() {
-	            var _this7 = this;
+	            var _this8 = this;
 
 	            var displayValue = this.state.displayValue;
 	            var _props6 = this.props,
@@ -2409,7 +2429,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                //打开微调器
 	                return _react2.default.createElement('div', { className: 'x-input-container' }, _react2.default.createElement('input', {
 	                    ref: function ref(_ref) {
-	                        return _this7.node = _ref;
+	                        return _this8.node = _ref;
 	                    },
 	                    className: cls
 	                    // autocomplete='off'
@@ -2428,11 +2448,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    onChange: this.onChange,
 	                    placeholder: placeholder,
 	                    autoFocus: autoFocus
-	                }), _react2.default.createElement('div', { className: spinnerCls }, _react2.default.createElement('span', { className: 'x-input-step-up', onClick: this.onStep.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onClick: this.onStep.bind(this, 'down') }, _react2.default.createElement('i', null))));
+	                }), _react2.default.createElement('div', { className: spinnerCls }, _react2.default.createElement('span', { className: 'x-input-step-up', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'down') }, _react2.default.createElement('i', null))));
 	            } else {
-	                return _react2.default.createElement('input', {
+	                return _react2.default.createElement('div', { className: 'x-input-container' }, _react2.default.createElement('input', {
 	                    ref: function ref(_ref2) {
-	                        return _this7.node = _ref2;
+	                        return _this8.node = _ref2;
 	                    },
 	                    className: cls,
 	                    title: title
@@ -2451,7 +2471,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    onChange: this.onChange,
 	                    placeholder: placeholder,
 	                    autoFocus: autoFocus
-	                });
+	                }));
 	            }
 	        }
 	    }, {

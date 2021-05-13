@@ -246,9 +246,9 @@ class Input extends React.Component {
         let cls = (className || "") + (type==='text'?' x-input':' x-textarea');
         let props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle };
         if(type ==='text'){
-            return <input {...props} type="text" value={this.state.value} className={cls} />
+            return <div className="x-input-container"><input {...props} type="text" value={this.state.value} className={cls} /></div>
         }else{
-            return <textarea {...props} value={this.state.value} className={cls}></textarea>
+            return <div className="x-input-container"><textarea {...props} value={this.state.value} className={cls}></textarea></div>
         }
     }
 }

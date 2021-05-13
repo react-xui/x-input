@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2021-02-07 09:07:25
+ * @LastEditTime: 2021-05-13 17:11:12
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -161,9 +161,9 @@ describe('初始化测试',()=>{
         input.setProps({value:5555.55});
         expect(input.find('input').prop('value')).toEqual('5,555.5500');
         expect(spy.callCount).toEqual(8);
-        input.simulate('change',{target:{value:3232}});
+        input.find('input').simulate('change',{target:{value:3232}});
         expect(input.find('input').prop('value')).toBe('3,232');
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         expect(input.find('input').prop('value')).toBe('3,232.0000');
         expect(callback.returned(3232.0000)).toBe(true);
     });
@@ -178,15 +178,15 @@ describe('初始化测试',()=>{
             isFormat:true,
             onChange:callback
         });
-        input.simulate('change',{target:{value:'1213.123'}})
+        input.find('input').simulate('change',{target:{value:'1213.123'}})
         expect(input.find('input').prop('value')).toBe('1,213');
         expect(callback.returned(1213)).toBeTruthy();
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         input.setProps({value:111.222,decimals:'aaa'});
         expect(input.find('input').prop('value')).toBe('111');
         input.setProps({value:12,decimals:'2'});
-        input.simulate('change',{target:{value:'22'}});
-        input.simulate('blur');
+        input.find('input').simulate('change',{target:{value:'22'}});
+        input.find('input').simulate('blur');
         expect(input.find('input').prop('value')).toBe('22.00');
         //动态更改小数位测试
         input.setProps({decimals:4,value:'22.00'});
@@ -209,7 +209,7 @@ describe('初始化测试',()=>{
         input.find('input').simulate('change',{target:{value:'1,111,111,111,111,111,122'}});
         expect(callback.returned('1111111111111111122')).toBe(true);
         expect(input.find('input').prop('value')).toEqual('1,111,111,111,111,111,122');
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         input.setProps({value:'1111111111111111225555'});
         expect(input.find('input').prop('value')).toEqual("9,007,199,254,740,991");
         expect(callback.returned(Number.MAX_SAFE_INTEGER)).toBe(true);
@@ -226,13 +226,13 @@ describe('初始化测试',()=>{
             decimals:0,
             negative:false,//正数
         });
-        input.simulate('change',{target:{value:"-"}});
+        input.find('input').simulate('change',{target:{value:"-"}});
         expect(input.find('input').prop('value')).toBe('');
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         input.setProps({value:1});
-        input.simulate('change',{target:{value:"-1"}});
+        input.find('input').simulate('change',{target:{value:"-1"}});
         expect(input.find('input').prop('value')).toBe('1');
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         input.setProps({negative:true,value:-1234});
         expect(input.find('input').prop('value')).toBe("-1,234")
         expect(callback.returned(-1234)).toBeTruthy();
@@ -249,13 +249,13 @@ describe('初始化测试',()=>{
             decimals:0,
             negative:true,//支持负数
         });
-        input.simulate('change',{target:{value:"-"}});
+        input.find('input').simulate('change',{target:{value:"-"}});
         expect(input.find('input').prop('value')).toBe('-');
         expect(input.state('value')).toBe('-');
         expect(callback.calledOnce).toBeFalsy();
-        input.simulate('change',{target:{value:"-1"}});
+        input.find('input').simulate('change',{target:{value:"-1"}});
         expect(callback.returned(-1)).toBeTruthy();
-        input.simulate('change',{target:{value:"-"}});
+        input.find('input').simulate('change',{target:{value:"-"}});
         expect(callback.returned('')).toBeTruthy();
     })
     it('非法输入内容测试',()=>{
@@ -270,14 +270,14 @@ describe('初始化测试',()=>{
             decimals:0,
             negative:false,//正数
         });
-        input.simulate('change',{target:{value:'a'}});
+        input.find('input').simulate('change',{target:{value:'a'}});
         expect(input.find('input').prop('value')).toBe('');
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         input.setProps({value:12});
-        input.simulate('change',{target:{value:'1a2'}});
+        input.find('input').simulate('change',{target:{value:'1a2'}});
         expect(input.find('input').prop('value')).toBe('12');
         expect(callback.returned(12)).toBeTruthy();
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         input.setProps({value:'1b2'});
         expect(input.find('input').prop('value')).toBe('12');
         expect(callback.returned(12)).toBeTruthy();
@@ -296,14 +296,14 @@ describe('初始化测试',()=>{
             maxLength:4
         });
         input.setProps({value:1234})
-        input.simulate('change',{target:{value:'123556'}});
+        input.find('input').simulate('change',{target:{value:'123556'}});
         expect(input.state('value')).toBe("1234.00");
         expect(input.find('input').prop('value')).toBe('1,234.00');
-        input.simulate('change',{target:{value:'-1234'}});
+        input.find('input').simulate('change',{target:{value:'-1234'}});
         expect(input.find('input').prop('value')).toBe('-1,234');
-        input.simulate('change',{target:{value:'-13,234'}});
+        input.find('input').simulate('change',{target:{value:'-13,234'}});
         expect(input.find('input').prop('value')).toBe('-1,234');
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         expect(input.find('input').prop('value')).toBe('-1,234.00');
         input.setProps({value:-12534});
         expect(input.find('input').prop('value')).toBe('-1,234.00');
@@ -320,14 +320,14 @@ describe('初始化测试',()=>{
             decimals:2,
             delay:1000,
         });
-        input.simulate('change',{target:{value:'1'}})
+        input.find('input').simulate('change',{target:{value:'1'}})
         expect(callback.calledOnce).toBeFalsy();
-        input.simulate('change',{target:{value:'12'}})
+        input.find('input').simulate('change',{target:{value:'12'}})
         expect(callback.calledOnce).toBeFalsy();
         setTimeout(()=>{
             expect(callback.calledOnce).toBeTruthy();
             expect(callback.returned(12)).toBe(true);
-            input.simulate('change',{target:{value:'1.'}})
+            input.find('input').simulate('change',{target:{value:'1.'}})
             console.log('==========='+input.find('input').prop('value'))
             done()
         },1000);
@@ -345,10 +345,10 @@ describe('初始化测试',()=>{
             value:1234,
         });
         input.setProps({disabled:true});
-        input.simulate('change',{target:{value:'12345'}});
+        input.find('input').simulate('change',{target:{value:'12345'}});
         expect(input.find('input').prop('value')).toBe('1,234.00');
         input.setProps({disabled:false});
-        input.simulate('change',{target:{value:'12345'}})
+        input.find('input').simulate('change',{target:{value:'12345'}})
         expect(input.find('input').prop('value')).toBe('12,345');
         expect(callback.returned(12345)).toBeTruthy();
     })
@@ -365,10 +365,10 @@ describe('初始化测试',()=>{
             value:1234,
         });
         input.setProps({readOnly:true});
-        input.simulate('change',{target:{value:'12345'}});
+        input.find('input').simulate('change',{target:{value:'12345'}});
         expect(input.find('input').prop('value')).toBe('1,234.00');
         input.setProps({readOnly:false});
-        input.simulate('change',{target:{value:'12345'}})
+        input.find('input').simulate('change',{target:{value:'12345'}})
         expect(input.find('input').prop('value')).toBe('12,345');
         expect(callback.returned(12345)).toBeTruthy();
     });
@@ -384,9 +384,9 @@ describe('初始化测试',()=>{
             decimals:2
         });
         input.setProps({value:2});
-        input.simulate('keyUp',{keyCode:75});
+        input.find('input').simulate('keyUp',{keyCode:75});
         expect(input.find('input').prop('value')).toBe("2,000");
-        input.simulate('keyUp',{keyCode:77});
+        input.find('input').simulate('keyUp',{keyCode:77});
         expect(input.find('input').prop('value')).toBe("2,000,000,000");
         expect(callback.returned(2000000000)).toBeTruthy();
     });
@@ -401,9 +401,9 @@ describe('初始化测试',()=>{
             onChange:callback,
             decimals:2
         });
-        input.simulate('change',{target:{value:'001'}});
+        input.find('input').simulate('change',{target:{value:'001'}});
         expect(input.find('input').prop('value')).toBe("1");
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         expect(input.find('input').prop('value')).toBe("1.00");
     })
     it('-0的展示',()=>{
@@ -417,11 +417,11 @@ describe('初始化测试',()=>{
             onChange:callback,
             decimals:2,
         });
-        input.simulate('change',{target:{value:'-0'}});
+        input.find('input').simulate('change',{target:{value:'-0'}});
         expect(input.find('input').prop('value')).toBe("-0");
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         expect(input.find('input').prop('value')).toBe("0.00");
-        input.simulate('change',{target:{value:'-01'}});
+        input.find('input').simulate('change',{target:{value:'-01'}});
         expect(input.find('input').prop('value')).toBe("-1");
     })
     //TODO:测title，测传入classname
@@ -432,7 +432,7 @@ describe('初始化测试',()=>{
             showTitle:true,
             className:'cls-input'
         });
-        input.simulate('change',{target:{value:'-0123'}});
+        input.find('input').simulate('change',{target:{value:'-0123'}});
         expect(input.find('input').prop('title')).toBe('-123')
         console.log(input.find('input').prop('className'))
         expect(input.find('input').prop('className')).toContain('cls-input');
@@ -451,8 +451,8 @@ describe('初始化测试',()=>{
             onChange:callback,
             delay:1000
         });
-        input.simulate('change',{target:{value:"1"}})
-        input.simulate('blur')
+        input.find('input').simulate('change',{target:{value:"1"}})
+        input.find('input').simulate('blur')
         console.log(input.find('input').prop('value'))
         console.log('=========')
         expect(callback.returned(1)).toBeTruthy();
@@ -469,10 +469,10 @@ describe('初始化测试',()=>{
             decimals:2,
             changeEvent:'blur'
         });
-        input.simulate('change',{target:{value:'1'}});
+        input.find('input').simulate('change',{target:{value:'1'}});
         expect(input.find('input').prop('value')).toBe("1");
         expect(callback.calledOnce).toBeFalsy();
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         expect(callback.calledOnce).toBeTruthy();
         expect(input.find('input').prop('value')).toBe("1.00");
         expect(callback.returned(1)).toBeTruthy();
@@ -491,7 +491,7 @@ describe('初始化测试',()=>{
             returnType:'Number',
             isFormat:true
         });
-        input.simulate('change',{target:{value:'2.'}})
+        input.find('input').simulate('change',{target:{value:'2.'}})
         expect(input.find('input').prop('value')).toBe('2.');
         setTimeout(()=>{
             expect(callback.returned(2)).toBeTruthy();
@@ -520,7 +520,7 @@ describe('初始化测试',()=>{
         });
         expect(input.find('input').prop('value')).toBe("0.00");
         //change value ''
-        input.simulate('change',{target:{value:''}});
+        input.find('input').simulate('change',{target:{value:''}});
         setTimeout(()=>{
             console.log(input.find('input').prop('value'));
             console.log(input.state('value'))
@@ -529,11 +529,11 @@ describe('初始化测试',()=>{
             expect(callback.returned('')).toBeTruthy();
             expect(input.find('input').prop('value')).toBe('');
             //change value 0
-            input.simulate('change',{target:{value:'0'}});
+            input.find('input').simulate('change',{target:{value:'0'}});
             setTimeout(()=>{
                 expect(callback.returned(0)).toBeTruthy();
                 //清空，set props.value =0 
-                input.simulate('change',{target:{value:''}});
+                input.find('input').simulate('change',{target:{value:''}});
                  setTimeout(()=>{
                     expect(input.find('input').prop('value')).toBe('');
                  },101);
@@ -578,15 +578,15 @@ describe('初始化测试',()=>{
             returnType:'Number',
             value:""
         });
-        input.simulate('change',{
+        input.find('input').simulate('change',{
             target:{
                 value:'-'
             }
         });
-        input.simulate('blur');
+        input.find('input').simulate('blur');
         expect(callback.callCount).toBe(0);
         // expect(callback.returned('')).toBeTruthy();
-        input.simulate('change',{
+        input.find('input').simulate('change',{
             target:{
                 value:''
             }
@@ -626,13 +626,13 @@ describe('初始化测试',()=>{
             returnType:'String',
             isFormat:true
         });
-        input.simulate('change',{target:{value:'2.'}})
+        input.find('input').simulate('change',{target:{value:'2.'}})
         expect(input.find('input').prop('value')).toBe('2.');
         setTimeout(()=>{
             expect(callback.returned('2.')).toBeTruthy();
             expect(input.state('displayValue')).toBe('2.');
             expect(input.find('input').prop('value')).toBe('2.');
-            input.simulate('change',{target:{value:'2'}})
+            input.find('input').simulate('change',{target:{value:'2'}})
             setTimeout(()=>{
                 expect(callback.returned('2')).toBeTruthy();
                 expect(input.state('displayValue')).toBe('2');
@@ -661,10 +661,10 @@ describe('初始化测试',()=>{
         });
         let up = input.find('.x-input-step-up');
         let down = input.find('.x-input-step-down');
-        up.simulate('click');
+        up.simulate('mousedown');
         expect(input.state('value')).toBe("2");
         expect(input.state('displayValue')).toBe('2');
-        down.simulate('click');
+        down.simulate('mousedown');
         expect(input.state('value')).toBe("1");
         expect(input.state('displayValue')).toBe('1');
     });
@@ -683,12 +683,12 @@ describe('初始化测试',()=>{
         });
         let up = input.find('.x-input-step-up');
         let down = input.find('.x-input-step-down');
-        up.simulate('click');
+        up.simulate('mousedown');
         expect(input.state('value')).toBe("1.01");
         expect(input.state('displayValue')).toBe('1.01');
         console.log(callback.returned(1.01))
         // expect(callback.returned(1.01)).toBe(true);
-        down.simulate('click');
+        down.simulate('mousedown');
         expect(input.state('value')).toBe("1.00");
         expect(input.state('displayValue')).toBe('1.00');
     })
@@ -732,11 +732,11 @@ describe('初始化测试',()=>{
             onChange:callback,
         });
         let up = input.find('.x-input-step-up');
-        up.simulate('click');
+        up.simulate('mousedown');
         let down = input.find('.x-input-step-down');
-        down.simulate('click');
+        down.simulate('mousedown');
         expect(input.state('value')).toBe("2.0000");
-        down.simulate('click');
+        down.simulate('mousedown');
         expect(callback.returned(1.9999)).toBe(true);
     })
     it('有值时直接输入负号',()=>{
