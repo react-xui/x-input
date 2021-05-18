@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-05-13 17:07:34
+ * @LastEditTime: 2021-05-18 11:08:18
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -408,8 +408,9 @@ export default class NumberInput extends React.PureComponent {
     }
     componentDidMount() {
         this.cpLock = false;
-        this.node.addEventListener('compositionstart',this.compositionstart);
-        this.node.addEventListener('compositionend',this.compositionend);
+        this.node.addEventListener('compositionstart',this.compositionstart.bind(this));
+        this.node.addEventListener('compositionend',this.compositionend.bind(this));
+        window.addEventListener('mouseup',this.stop.bind(this),false);
         // this.node.addEventListener('compositionstart', ()=> {
         //     this.cpLock = true;
         //     // console.log('中文输入开始');
@@ -444,9 +445,10 @@ export default class NumberInput extends React.PureComponent {
     // }
     componentWillUnmount() {
         // this.node.removeEventListener('input', this.onChange);
-        this.node.removeEventListener('compositionend', this.compositionend);
+        this.node.removeEventListener('compositionend', this.compositionend.bind(this));
         // this.node.removeEventListener('compositionupdate', this.compositionupdate);
-        this.node.removeEventListener('compositionstart', this.compositionstart);
+        this.node.removeEventListener('compositionstart', this.compositionstart.bind(this));
+        window.removeEventListener('mouseup',this.stop.bind(this),false);
     }
     //微调点击
     onStep(type,event){
