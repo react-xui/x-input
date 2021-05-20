@@ -463,10 +463,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _props = this.props,
 	                className = _props.className,
 	                _props$type = _props.type,
-	                type = _props$type === undefined ? 'text' : _props$type;
+	                type = _props$type === undefined ? 'text' : _props$type,
+	                style = _props.style;
 
 	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
-	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle };
+	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
 	            if (type === 'text') {
 	                return _react2.default.createElement("div", { className: "x-input-container" }, _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })));
 	            } else {
@@ -2419,7 +2420,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                showTitle = _props6.showTitle,
 	                className = _props6.className,
 	                placeholder = _props6.placeholder,
-	                autoFocus = _props6.autoFocus;
+	                autoFocus = _props6.autoFocus,
+	                style = _props6.style;
 
 	            var title = showTitle ? displayValue : '';
 	            var cls = className + ' x-input';
@@ -2449,7 +2451,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    value: displayValue,
 	                    onChange: this.onChange,
 	                    placeholder: placeholder,
-	                    autoFocus: autoFocus
+	                    autoFocus: autoFocus,
+	                    style: style
 	                }), _react2.default.createElement('div', { className: spinnerCls }, _react2.default.createElement('span', { className: 'x-input-step-up', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'down') }, _react2.default.createElement('i', null))));
 	            } else {
 	                return _react2.default.createElement('div', { className: 'x-input-container' }, _react2.default.createElement('input', {
@@ -2472,7 +2475,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    value: displayValue,
 	                    onChange: this.onChange,
 	                    placeholder: placeholder,
-	                    autoFocus: autoFocus
+	                    autoFocus: autoFocus,
+	                    style: style
 	                }));
 	            }
 	        }

@@ -489,7 +489,7 @@ export default class NumberInput extends React.PureComponent {
     }
     renderInput(){
         let { displayValue } = this.state;
-        let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className,placeholder,autoFocus } = this.props;
+        let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className,placeholder,autoFocus,style } = this.props;
         let title = showTitle ? displayValue : '';
         let cls = className + ' x-input';
         if(this.props.spinner){
@@ -519,6 +519,7 @@ export default class NumberInput extends React.PureComponent {
                     onChange={this.onChange}
                     placeholder={placeholder}
                     autoFocus={autoFocus}
+                    style={style}
                 />
                 <div className={spinnerCls}>
                 <span className="x-input-step-up" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this,'up')}><i/></span>
@@ -548,6 +549,7 @@ export default class NumberInput extends React.PureComponent {
                     onChange={this.onChange}
                     placeholder={placeholder}
                     autoFocus={autoFocus}
+                    style={style}
                 />
                 </div>
             )
