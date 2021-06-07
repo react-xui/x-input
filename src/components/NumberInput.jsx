@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-05-18 11:08:18
+ * @LastEditTime: 2021-06-07 11:57:00
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -218,6 +218,9 @@ export default class NumberInput extends React.PureComponent {
         this.newValue = this.getReturnValue(value);
         // console.log('进入change',this.newValue)
         //changeEvent为change时触发
+        if( this.mouseTimer || this.stepTimer){
+            return;
+        }
         this.props.changeEvent === 'change' && this.debounce(onChange);
     }
     getReturnValue(value) {
@@ -343,6 +346,7 @@ export default class NumberInput extends React.PureComponent {
         this.onStep(type);
         this.mouseTimer = setTimeout(()=>{
             clearTimeout(this.mouseTimer);
+            this.mouseTimer= null;
             this.stepTimer = setInterval(()=>{
                 this.onStep(type);
             },100)
@@ -351,6 +355,9 @@ export default class NumberInput extends React.PureComponent {
     stop(){
         this.mouseTimer && clearTimeout(this.mouseTimer);
         this.stepTimer && clearInterval(this.stepTimer);
+        this.mouseTimer =null;
+        this.stepTimer = null;
+        this.returnValue(this.state.value);
     }
     //统一修改value值
     changeState(value, isAutoZero, props, fn, nofn) {

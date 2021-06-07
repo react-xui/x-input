@@ -1878,7 +1878,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-05-18 11:08:18
+	   * @LastEditTime: 2021-06-07 11:57:00
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2086,6 +2086,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.newValue = this.getReturnValue(value);
 	            // console.log('进入change',this.newValue)
 	            //changeEvent为change时触发
+	            if (this.mouseTimer || this.stepTimer) {
+	                return;
+	            }
 	            this.props.changeEvent === 'change' && this.debounce(onChange);
 	        }
 	    }, {
@@ -2247,6 +2250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.onStep(type);
 	            this.mouseTimer = setTimeout(function () {
 	                clearTimeout(_this6.mouseTimer);
+	                _this6.mouseTimer = null;
 	                _this6.stepTimer = setInterval(function () {
 	                    _this6.onStep(type);
 	                }, 100);
@@ -2257,6 +2261,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function stop() {
 	            this.mouseTimer && clearTimeout(this.mouseTimer);
 	            this.stepTimer && clearInterval(this.stepTimer);
+	            this.mouseTimer = null;
+	            this.stepTimer = null;
+	            this.returnValue(this.state.value);
 	        }
 	        //统一修改value值
 

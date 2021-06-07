@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2020-04-16 19:05:29
- * @LastEditTime: 2021-05-13 17:11:12
+ * @LastEditTime: 2021-06-07 12:01:22
  * @github: https://github.com/tianxiangbing
  */
 import { shallow,mount } from 'enzyme';
@@ -737,6 +737,7 @@ describe('初始化测试',()=>{
         down.simulate('mousedown');
         expect(input.state('value')).toBe("2.0000");
         down.simulate('mousedown');
+        down.simulate('mouseup');
         expect(callback.returned(1.9999)).toBe(true);
     })
     it('有值时直接输入负号',()=>{
