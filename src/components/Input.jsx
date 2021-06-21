@@ -8,6 +8,7 @@
  */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import NumberInput from './NumberInput';
 /*
 //文本输入框
 class Base extends Component {
@@ -463,18 +464,49 @@ export default class Input extends React.Component {
         let { className, type = 'text', style, addonBefore, addonAfter } = this.props;
         let cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
         let props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style };
-        if (type === 'text') {
-            return <div className="x-input-container">
-                {this.renderAddon('before', addonBefore)}
-                <input {...props} type="text" value={this.state.value} className={cls} />
-                {this.renderAddon('after', addonAfter)}
-            </div>
-        } else {
-            return <div className="x-input-container">
-                {this.renderAddon('before', addonBefore)}
-                <textarea {...props} value={this.state.value} className={cls}></textarea>
-                {this.renderAddon('after', addonAfter)}
-            </div>
+        // if (type === 'text') {
+        //     return <div className="x-input-container">
+        //         {this.renderAddon('before', addonBefore)}
+        //         <input {...props} type="text" value={this.state.value} className={cls} />
+        //         {this.renderAddon('after', addonAfter)}
+        //     </div>
+        // } else {
+        //     return <div className="x-input-container">
+        //         {this.renderAddon('before', addonBefore)}
+        //         <textarea {...props} value={this.state.value} className={cls}></textarea>
+        //         {this.renderAddon('after', addonAfter)}
+        //     </div>
+        // }
+        let dom = null;
+        switch (type) {
+            case 'text': {
+                dom = <div className="x-input-container">
+                    {this.renderAddon('before', addonBefore)}
+                    <input {...props} type="text" value={this.state.value} className={cls} />
+                    {this.renderAddon('after', addonAfter)}
+                </div>
+            }
+            case 'textarea': {
+                dom = <div className="x-input-container">
+                    {this.renderAddon('before', addonBefore)}
+                    <textarea {...props} value={this.state.value} className={cls}></textarea>
+                    {this.renderAddon('after', addonAfter)}
+                </div>
+                break;
+            }
+            case 'number': {
+                return <NumberInput {...this.props} type="text" />;
+                break;
+            }
+            default: {
+                return <div className="x-input-container">
+                    {this.renderAddon('before', addonBefore)}
+                    <input {...props} type="text" value={this.state.value} className={cls} />
+                    {this.renderAddon('after', addonAfter)}
+                </div>
+                break;
+            }
         }
+        return dom;
     }
 }

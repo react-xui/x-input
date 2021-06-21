@@ -124,6 +124,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
+	var _NumberInput = __webpack_require__(12);
+
+	var _NumberInput2 = _interopRequireDefault(_NumberInput);
+
 	function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : { default: obj };
 	}
@@ -631,11 +635,42 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
 	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
-	            if (type === 'text') {
-	                return _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
-	            } else {
-	                return _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	            // if (type === 'text') {
+	            //     return <div className="x-input-container">
+	            //         {this.renderAddon('before', addonBefore)}
+	            //         <input {...props} type="text" value={this.state.value} className={cls} />
+	            //         {this.renderAddon('after', addonAfter)}
+	            //     </div>
+	            // } else {
+	            //     return <div className="x-input-container">
+	            //         {this.renderAddon('before', addonBefore)}
+	            //         <textarea {...props} value={this.state.value} className={cls}></textarea>
+	            //         {this.renderAddon('after', addonAfter)}
+	            //     </div>
+	            // }
+	            var dom = null;
+	            switch (type) {
+	                case 'text':
+	                    {
+	                        dom = _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                    }
+	                case 'textarea':
+	                    {
+	                        dom = _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                        break;
+	                    }
+	                case 'number':
+	                    {
+	                        return _react2.default.createElement(_NumberInput2.default, _extends({}, this.props, { type: "text" }));
+	                        break;
+	                    }
+	                default:
+	                    {
+	                        return _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                        break;
+	                    }
 	            }
+	            return dom;
 	        }
 	    }]);
 
