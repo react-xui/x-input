@@ -2,7 +2,7 @@
  * @Descripttion: 数字输入框
  * @Author: tianxiangbing
  * @Date: 2020-04-16 18:45:09
- * @LastEditTime: 2021-06-07 11:57:00
+ * @LastEditTime: 2021-06-21 09:50:17
  * @github: https://github.com/tianxiangbing
  */
 import React from 'react';
@@ -42,7 +42,7 @@ export default class NumberInput extends React.PureComponent {
             PropTypes.number
         ]),
         returnType: PropTypes.string,
-        decimals: PropTypes.number,
+        decimals: PropTypes.arrayOf([PropTypes.number,PropTypes.string]),
         isFormat: PropTypes.bool,//是否格式化
         formatEvent: PropTypes.string,//格式化的事件
         negative: PropTypes.bool,//是否支持负数
@@ -53,14 +53,14 @@ export default class NumberInput extends React.PureComponent {
         showTitle: PropTypes.bool,//是否展示title
         className: PropTypes.string,
         changeEvent: PropTypes.string,
-        isAutoZero:PropTypes.bool,
-        spinner:PropTypes.bool,
-        max:PropTypes.number,
-        min:PropTypes.number,
-        step:PropTypes.number,
-        onStep:PropTypes.func,
-        stepDecimals:PropTypes.number,//微调步数精度
-        overFloat:PropTypes.bool,
+        isAutoZero: PropTypes.bool,
+        spinner: PropTypes.bool,
+        max: PropTypes.number,
+        min: PropTypes.number,
+        step: PropTypes.number,
+        onStep: PropTypes.func,
+        stepDecimals: PropTypes.number,//微调步数精度
+        overFloat: PropTypes.bool,
     }
     static defaultProps = {
         returnType: 'Number',
@@ -76,18 +76,18 @@ export default class NumberInput extends React.PureComponent {
         className: '',
         changeEvent: 'change',
         isAutoZero: true,
-        spinner:false,
-        max:Number.MAX_SAFE_INTEGER,
-        min:Number.MIN_SAFE_INTEGER,
-        step:1,
-        stepDecimals:Number.NaN,
-        overFloat:false
+        spinner: false,
+        max: Number.MAX_SAFE_INTEGER,
+        min: Number.MIN_SAFE_INTEGER,
+        step: 1,
+        stepDecimals: Number.NaN,
+        overFloat: false
     }
     //千分位
     formatThousandthNumber(num, isAutoZero = false, props = this.props) {
         let { decimals, isFormat } = props;
         //如果传入参数isAutoZero为false，则固定不补0;
-        this.props.isAutoZero===false ?isAutoZero = false:null;
+        this.props.isAutoZero === false ? isAutoZero = false : null;
         if (isNaN(decimals)) {
             //当传入的小数位非数字时，不进行自动补0
             isAutoZero = false;
@@ -182,20 +182,20 @@ export default class NumberInput extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
         // console.log('willreceive被调用....')
         // console.log('########', nextProps.value, this.isFocus)
-        let { value, decimals,returnType } = this.props;
-        if (typeof nextProps.value !== 'undefined' ) {
+        let { value, decimals, returnType } = this.props;
+        if (typeof nextProps.value !== 'undefined') {
             //只有在不为undefeined的情况下才处理接受值
             // console.log('########', nextProps.value,nextProps.decimals,decimals)
             let isUpdate = decimals !== nextProps.decimals;
-            if(nextProps.value !== value && !isUpdate){
+            if (nextProps.value !== value && !isUpdate) {
                 //这里判断出去的是空时，接受到为空时不更新
                 let rtv = this.getReturnValue(this.state.value);
-                if(nextProps.value !==rtv){
+                if (nextProps.value !== rtv) {
                     //这里判断进来的数字是原数字相同时不更新
-                    if ( window[returnType](nextProps.value) !== rtv) {
+                    if (window[returnType](nextProps.value) !== rtv) {
                         // if ( nextProps.value !== this.state.value) {
                         // console.log(nextProps.value)
-                        if(this.checkMaxMin(nextProps.value,null,nextProps)){
+                        if (this.checkMaxMin(nextProps.value, null, nextProps)) {
                             isUpdate = true;
                         }
                         // this.checkMaxMin(nextProps.value,null,nextProps)
@@ -203,7 +203,7 @@ export default class NumberInput extends React.PureComponent {
                     }
                 }
             }
-            if(isUpdate){
+            if (isUpdate) {
                 this.changeState(nextProps.value, true, nextProps)
             }
         }
@@ -218,7 +218,7 @@ export default class NumberInput extends React.PureComponent {
         this.newValue = this.getReturnValue(value);
         // console.log('进入change',this.newValue)
         //changeEvent为change时触发
-        if( this.mouseTimer || this.stepTimer){
+        if (this.mouseTimer || this.stepTimer) {
             return;
         }
         this.props.changeEvent === 'change' && this.debounce(onChange);
@@ -231,8 +231,16 @@ export default class NumberInput extends React.PureComponent {
         if (String(value).length <= 16 && value !== '-' && value !== '') {
             newValue = window[returnType](value);
         }
-        if(value ==='-'){
-            newValue ='';
+        if (value === '-') {
+            newValue = '';
+        }
+        if (typeof this.addonValue['before'] !== 'undefined' && newValue !== '') {
+            //前后补值
+            newValue = this.addonValue['before'] + newValue;
+        }
+        if (typeof this.addonValue['after'] !== 'undefined' && newValue !== '') {
+            //前后补值
+            newValue = newValue + this.addonValue['after'];
         }
         return newValue;
     }
@@ -244,23 +252,23 @@ export default class NumberInput extends React.PureComponent {
                 // console.log('delay...',_this.newValue)
                 clearTimeout(_this.timer);
                 _this.timer = null;
-                if(_this.preValue !== _this.newValue){
+                if (_this.preValue !== _this.newValue) {
                     _this.preValue = _this.newValue;
-                    fn && fn.call(this,_this.newValue);
+                    fn && fn.call(this, _this.newValue);
                 }
             }, this.props.delay) : null;
         } else {
-            if(this.preValue !== this.newValue){
+            if (this.preValue !== this.newValue) {
                 this.preValue = this.newValue;
-                fn && fn.call(this,this.newValue);
+                fn && fn.call(this, this.newValue);
             }
         }
     }
     onChange(e) {
         // console.log(this.cpLock,e.target.value)
-        if(this.cpLock){
+        if (this.cpLock) {
             //拼音输入法,直接展示
-            this.setState({displayValue:e.target.value})
+            this.setState({ displayValue: e.target.value })
             return false;
         }
         this.isFocus = true;
@@ -286,28 +294,28 @@ export default class NumberInput extends React.PureComponent {
         // console.log('进了focus')
         this.props.onFocus && this.props.onFocus(e);
     }
-    checkMaxMin(value,fn,props=this.props){
-        let num =  Number(value);
-        let {max,min} = this.props;
-        if(num<min){
-            this.changeState(min, true, props,fn);
+    checkMaxMin(value, fn, props = this.props) {
+        let num = Number(value);
+        let { max, min } = this.props;
+        if (num < min) {
+            this.changeState(min, true, props, fn);
             return false;
         }
-        if(num>max){
-            this.changeState(max, true, props,fn);
+        if (num > max) {
+            this.changeState(max, true, props, fn);
             return false;
         }
-        fn && fn ()
+        fn && fn()
         return true;
     }
     onBlur(e) {
         this.cpLock = false;
-        if(this.timer){
+        if (this.timer) {
             clearTimeout(this.timer);
             this.timer = null;
         }
         //判断max和min范围
-        this.checkMaxMin(this.state.value,()=>{
+        this.checkMaxMin(this.state.value, () => {
             //在blur里只作补0，然后调用props上的blur
             this.isFocus = false;
             let displayValue = this.formatThousandthNumber(this.state.value, true);
@@ -315,11 +323,11 @@ export default class NumberInput extends React.PureComponent {
                 this.setState({ displayValue })
             }
             let rv = this.getReturnValue(this.state.value);
-            if(this.preValue !== rv){
+            if (this.preValue !== rv) {
                 this.preValue = rv;
-                this.props.onChange && this.props.onChange.call(this,rv);
+                this.props.onChange && this.props.onChange.call(this, rv);
             }
-            this.props.onBlur && this.props.onBlur.call(this,e,rv);
+            this.props.onBlur && this.props.onBlur.call(this, e, rv);
         });
     }
     onKeyUp(e) {
@@ -327,7 +335,7 @@ export default class NumberInput extends React.PureComponent {
         // console.log(e.keyCode)
         this.isFocus = true;
         let value = this.state.value;
-        if (value && (e.keyCode ==75|| e.keyCode ==77)) {
+        if (value && (e.keyCode == 75 || e.keyCode == 77)) {
             switch (e.keyCode) {
                 case 75: {
                     value = +value * 1000;
@@ -342,20 +350,20 @@ export default class NumberInput extends React.PureComponent {
         }
         this.props.onKeyUp && this.props.onKeyUp(e, this.state.value);
     }
-    start(type){
+    start(type) {
         this.onStep(type);
-        this.mouseTimer = setTimeout(()=>{
+        this.mouseTimer = setTimeout(() => {
             clearTimeout(this.mouseTimer);
-            this.mouseTimer= null;
-            this.stepTimer = setInterval(()=>{
+            this.mouseTimer = null;
+            this.stepTimer = setInterval(() => {
                 this.onStep(type);
-            },100)
-        },200);
+            }, 100)
+        }, 200);
     }
-    stop(){
+    stop() {
         this.mouseTimer && clearTimeout(this.mouseTimer);
         this.stepTimer && clearInterval(this.stepTimer);
-        this.mouseTimer =null;
+        this.mouseTimer = null;
         this.stepTimer = null;
         this.returnValue(this.state.value);
     }
@@ -373,14 +381,14 @@ export default class NumberInput extends React.PureComponent {
             v = this.state.value;
         } else {
             //判断maxLength长度
-            let splitArr =  v.split('.');
+            let splitArr = v.split('.');
             let integer = splitArr[0].replace(/\-/gi, '');
             // let floatLength = splitArr.length ===2 ? splitArr[1].length : 0;
             //整数加小数不能超过15位
-            if ( props.overFloat &&  props.returnType === 'Number' &&  integer.length + props.decimals >15 ){
+            if (props.overFloat && props.returnType === 'Number' && integer.length + props.decimals > 15) {
                 v = this.state.value;
             }
-            if ( props.maxLength && integer.length > props.maxLength ) {
+            if (props.maxLength && integer.length > props.maxLength) {
                 v = this.state.value;
             }
         }
@@ -388,7 +396,7 @@ export default class NumberInput extends React.PureComponent {
         let len = tmp.length > 1 ? len = tmp[1].length : 0;
         //转换为字符串进行比较，先去除逗号
         let odv = String(this.state.displayValue).replace(/\,/gi, '');
-        if (v !== String(this.state.value) || +props.decimals !== len || String(this.state.value)!==odv) {
+        if (v !== String(this.state.value) || +props.decimals !== len || String(this.state.value) !== odv) {
             //这里如果是科学计数了，就以字符串返回
             if (!isNaN(v)) {
                 //大于16位则返回字符串，是数字
@@ -415,9 +423,9 @@ export default class NumberInput extends React.PureComponent {
     }
     componentDidMount() {
         this.cpLock = false;
-        this.node.addEventListener('compositionstart',this.compositionstart.bind(this));
-        this.node.addEventListener('compositionend',this.compositionend.bind(this));
-        window.addEventListener('mouseup',this.stop.bind(this),false);
+        this.node.addEventListener('compositionstart', this.compositionstart.bind(this));
+        this.node.addEventListener('compositionend', this.compositionend.bind(this));
+        window.addEventListener('mouseup', this.stop.bind(this), false);
         // this.node.addEventListener('compositionstart', ()=> {
         //     this.cpLock = true;
         //     // console.log('中文输入开始');
@@ -432,12 +440,12 @@ export default class NumberInput extends React.PureComponent {
         // })
         // this.node.addEventListener('input',this.onInput)
     }
-    compositionend=(e)=>{
+    compositionend = (e) => {
         // console.log('end')
         this.cpLock = false;
         this.onChange(e)
     }
-    compositionstart=()=>{
+    compositionstart = () => {
         // console.log('start')
         this.cpLock = true;
         // this.node.blur();
@@ -455,33 +463,33 @@ export default class NumberInput extends React.PureComponent {
         this.node.removeEventListener('compositionend', this.compositionend.bind(this));
         // this.node.removeEventListener('compositionupdate', this.compositionupdate);
         this.node.removeEventListener('compositionstart', this.compositionstart.bind(this));
-        window.removeEventListener('mouseup',this.stop.bind(this),false);
+        window.removeEventListener('mouseup', this.stop.bind(this), false);
     }
     //微调点击
-    onStep(type,event){
+    onStep(type, event) {
         // console.log('mousedown')
-        let {disabled,readOnly,negative,min} = this.props;
-        if(disabled || readOnly){
+        let { disabled, readOnly, negative, min } = this.props;
+        if (disabled || readOnly) {
             //只读
             return false;
         }
         // this.node.focus();
         let value = Number(this.state.value);
-        let {step=0,stepDecimals} = this.props;
+        let { step = 0, stepDecimals } = this.props;
         let tiny = step;
         //如果有精度步数就以精度优先
-        if(stepDecimals){
-            tiny = 1/Math.pow(10, stepDecimals);
+        if (stepDecimals) {
+            tiny = 1 / Math.pow(10, stepDecimals);
         }
-        if(type==='up'){
+        if (type === 'up') {
             // value += Number(step);
-            value = Number.floatAdd(value,Number(tiny));
-        }else{
+            value = Number.floatAdd(value, Number(tiny));
+        } else {
             // value -= Number(step);
-            value = Number.floatSub(value,Number(tiny));
-            if(value <0 && !negative){
+            value = Number.floatSub(value, Number(tiny));
+            if (value < 0 && !negative) {
                 //不支持负数时，返回0或最小值 ;
-                value  =Math.max(min,0);
+                value = Math.max(min, 0);
             }
         }
         // let displayValue = this.formatThousandthNumber(value, true);
@@ -489,80 +497,140 @@ export default class NumberInput extends React.PureComponent {
         //     this.setState({ displayValue })
         // }
         // this.isFocus =false;
-        if( this.checkMaxMin(value)){
+        if (this.checkMaxMin(value)) {
             this.changeState(value, true, this.props);
         }
-        this.props.onStep && this.props.onStep(value,{offset:tiny,type});
+        this.props.onStep && this.props.onStep(value, { offset: tiny, type });
     }
-    renderInput(){
+    renderInput() {
         let { displayValue } = this.state;
-        let { onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className,placeholder,autoFocus,style } = this.props;
+        let { addonBefore, addonAfter, onClick, disabled, onFocus, readOnly, onMouseEnter, onMouseLeave, showTitle, className, placeholder, autoFocus, style } = this.props;
         let title = showTitle ? displayValue : '';
         let cls = className + ' x-input';
-        if(this.props.spinner){
+        if (this.props.spinner) {
             let spinnerCls = 'x-input-step';
-            if(disabled || readOnly){
+            if (disabled || readOnly) {
                 spinnerCls += ' disabled'
             }
             //打开微调器
-            return ( 
-            <div className="x-input-container">
-                <input
-                    ref={ref => this.node = ref}
-                    className={cls}
-                    // autocomplete='off'
-                    autoComplete='off'
-                    title={title}
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
-                    onKeyUp={this.onKeyUp}
-                    onFocus={this.onFocus}
-                    type="text"
-                    readOnly={readOnly}
-                    onClick={onClick}
-                    disabled={disabled}
-                    onBlur={this.onBlur}
-                    value={displayValue}
-                    onChange={this.onChange}
-                    placeholder={placeholder}
-                    autoFocus={autoFocus}
-                    style={style}
-                />
-                <div className={spinnerCls}>
-                <span className="x-input-step-up" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this,'up')}><i/></span>
-                <span className="x-input-step-down" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this,'down')}><i/></span>
-                </div>
-            </div>
-            )
-        }else{
             return (
                 <div className="x-input-container">
-                <input
-                    ref={ref => this.node = ref}
-                    className={cls}
-                    title={title}
-                    // autocomplete='off'
-                    autoComplete='off'
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
-                    onKeyUp={this.onKeyUp}
-                    onFocus={this.onFocus}
-                    type="text"
-                    readOnly={readOnly}
-                    onClick={onClick}
-                    disabled={disabled}
-                    onBlur={this.onBlur}
-                    value={displayValue}
-                    onChange={this.onChange}
-                    placeholder={placeholder}
-                    autoFocus={autoFocus}
-                    style={style}
-                />
+                    {this.renderAddon('before', addonBefore)}
+                    <input
+                        ref={ref => this.node = ref}
+                        className={cls}
+                        // autocomplete='off'
+                        autoComplete='off'
+                        title={title}
+                        onMouseEnter={onMouseEnter}
+                        onMouseLeave={onMouseLeave}
+                        onKeyUp={this.onKeyUp}
+                        onFocus={this.onFocus}
+                        type="text"
+                        readOnly={readOnly}
+                        onClick={onClick}
+                        disabled={disabled}
+                        onBlur={this.onBlur}
+                        value={displayValue}
+                        onChange={this.onChange}
+                        placeholder={placeholder}
+                        autoFocus={autoFocus}
+                        style={style}
+                    />
+                    <div className={spinnerCls}>
+                        <span className="x-input-step-up" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this, 'up')}><i /></span>
+                        <span className="x-input-step-down" onMouseUp={this.stop.bind(this)} onMouseDown={this.start.bind(this, 'down')}><i /></span>
+                    </div>
+                    {this.renderAddon('after', addonAfter)}
+                </div>
+            )
+        } else {
+            return (
+                <div className="x-input-container">
+                    {this.renderAddon('before', addonBefore)}
+                    <input
+                        ref={ref => this.node = ref}
+                        className={cls}
+                        title={title}
+                        // autocomplete='off'
+                        autoComplete='off'
+                        onMouseEnter={onMouseEnter}
+                        onMouseLeave={onMouseLeave}
+                        onKeyUp={this.onKeyUp}
+                        onFocus={this.onFocus}
+                        type="text"
+                        readOnly={readOnly}
+                        onClick={onClick}
+                        disabled={disabled}
+                        onBlur={this.onBlur}
+                        value={displayValue}
+                        onChange={this.onChange}
+                        placeholder={placeholder}
+                        autoFocus={autoFocus}
+                        style={style}
+                    />
+                    {this.renderAddon('after', addonAfter)}
                 </div>
             )
         }
     }
+
+    addonValue = {
+        before: undefined,
+        after: undefined
+    };
+    /**
+     * @description: 渲染两头组件
+     * @param {*} position
+     * @return {*}
+     */
+    renderAddon(position, addon) {
+        if (typeof addon !== 'undefined') {
+            if (typeof addon === 'object') {
+                //组件
+                return <div className={"x-input-addon-" + position}>
+                    {addon}
+                </div>;
+            } else {
+                //字符串或数值
+                return <div className={"x-input-addon-" + position}>{addon}</div>
+            }
+        } else {
+            return null;
+        }
+    }
     render() {
-        return  this.renderInput();
+        return this.renderInput();
     }
 }
+/*
+class Addon extends React.Component {
+    constructor(props) {
+        super(props);
+        this.ref = React.createRef();
+    }
+    addonValue = {
+        before: undefined,
+        after: undefined
+    };
+    componentDidMount() {
+        let { position } = this.props;
+        this.addonValue[position] = this.ref.value
+        this.props.onChange && this.props.onChange(this.addonValue);
+    }
+    render() {
+        let { addon, position } = this.props;
+        let com = React.createElement(addon.type, {
+            ...addon.props, onChange: e => {
+                let value = e;
+                if (typeof e === 'object') {
+                    value = e.target.value;
+                }
+                this.addonValue[position] = value;
+                addon.props.onChange && addon.props.onChange(e);
+            },
+            ref: ref => this.ref = ref
+        });
+        return com;
+    }
+}*/

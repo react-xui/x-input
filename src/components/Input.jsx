@@ -8,6 +8,7 @@
  */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+/*
 //文本输入框
 class Base extends Component {
     constructor(props) {
@@ -62,7 +63,7 @@ class Base extends Component {
  * @desc: 格式化输入框
  * @param {boolean}isNaN 是否为非数字，默认为false时是数字
  * @return: 
- */
+ *
 const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true) => class extends Component {
     isNaN = isNumber;
     static defaultProps = {
@@ -412,4 +413,68 @@ Input.Letter = LetterInput;
 Input.Thousand = ThousandInput;
 Input.Base = Base;
 Input.FormatContainer = FormatContainer;
+
 export { Base, formatThousandthNumber, FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
+*/
+
+export default class Input extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
+    }
+    onChangeHandle = (e) => {
+        let { value } = e.target;
+        this.setState({ value }, () => {
+            if (this.props.changeEvent !== 'blur') {
+                this.props.onChange && this.props.onChange.call(this, value);
+            }
+        })
+    }
+    componentWillReceiveProps(newProps) {
+        if (newProps.value != this.props.value) {
+            this.setState({ value: newProps.value });
+        }
+    }
+    onBlurHandle = (e) => {
+        let { value } = e.target;
+        this.props.onChange && this.props.onChange.call(this, value);
+    }
+    /**
+     * @description: 渲染两头组件
+     * @param {*} position
+     * @return {*}
+     */
+    renderAddon(position, addon) {
+        if (typeof addon !== 'undefined') {
+            if (typeof addon === 'object') {
+                //组件
+                return <div className={"x-input-addon-" + position}>
+                    {addon}
+                </div>;
+            } else {
+                //字符串或数值
+                return <div className={"x-input-addon-" + position}>{addon}</div>
+            }
+        } else {
+            return null;
+        }
+    }
+    render() {
+        let { className, type = 'text', style, addonBefore, addonAfter } = this.props;
+        let cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
+        let props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style };
+        if (type === 'text') {
+            return <div className="x-input-container">
+                {this.renderAddon('before', addonBefore)}
+                <input {...props} type="text" value={this.state.value} className={cls} />
+                {this.renderAddon('after', addonAfter)}
+            </div>
+        } else {
+            return <div className="x-input-container">
+                {this.renderAddon('before', addonBefore)}
+                <textarea {...props} value={this.state.value} className={cls}></textarea>
+                {this.renderAddon('after', addonAfter)}
+            </div>
+        }
+    }
+}

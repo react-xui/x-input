@@ -1,6 +1,6 @@
 {
   "name": "jsx-input",
-  "version": "1.8.9",
+  "version": "2.0.0",
   "description": "react xui ",
   "main": "./lib/index.js",
   "repository": {
@@ -59,11 +59,11 @@
     "style-loader": "^0.13.1",
     "uglify-js": "^2.6.0",
     "webpack": "^1.13.0",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.14.1",
+    "sinon": "^7.4.2"
   },
   "dependencies": {
-    "js-tofixed": "^1.0.1",
-    "sinon": "^7.4.2"
+    "js-tofixed": "^1.0.1"
   },
   "peerDependencies": {},
   "tags": [

@@ -58,6 +58,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Input = __webpack_require__(1);
 
+	var _Input2 = _interopRequireDefault(_Input);
+
 	var _NumberInput = __webpack_require__(12);
 
 	var _NumberInput2 = _interopRequireDefault(_NumberInput);
@@ -74,7 +76,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Time: 20:00:00
 	 * Contact: 55342775@qq.com
 	 */
-	module.exports = { NumberInput: _NumberInput2.default, Base: _Input.Base, formatThousandthNumber: _Input.formatThousandthNumber, FormatContainer: _Input.FormatContainer, Input: _Input.Input, NumericInput: _Input.NumericInput, InterInput: _Input.InterInput, PosInterInput: _Input.PosInterInput, LetterInput: _Input.LetterInput, ThousandInput: _Input.ThousandInput, InputContainer: _Input.InputContainer }; //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
+	module.exports = { Input: _Input2.default, NumberInput: _NumberInput2.default }; //使用module.exports时，从es6到es5生成的dist不会出现export.default的问题.
 
 /***/ }),
 /* 1 */
@@ -87,13 +89,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ThousandInput = exports.LetterInput = exports.PosInterInput = exports.InterInput = exports.NumericInput = exports.InputContainer = exports.Input = exports.FormatContainer = exports.formatThousandthNumber = exports.Base = undefined;
-
-	var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-	    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-	} : function (obj) {
-	    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-	};
 
 	var _extends = Object.assign || function (target) {
 	    for (var i = 1; i < arguments.length; i++) {
@@ -103,6 +98,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    }return target;
+	};
+
+	var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+	    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+	} : function (obj) {
+	    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 	};
 
 	var _createClass = function () {
@@ -152,69 +153,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Contact: 55342775@qq.com
 	   */
 
+	/*
 	//文本输入框
-	var Base = function (_Component) {
-	    _inherits(Base, _Component);
-
-	    function Base(props) {
-	        _classCallCheck(this, Base);
-
-	        var _this = _possibleConstructorReturn(this, (Base.__proto__ || Object.getPrototypeOf(Base)).call(this, props));
-
-	        _this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
-	        _this.onChangeHandle = _this.onChangeHandle.bind(_this);
-	        return _this;
+	class Base extends Component {
+	    constructor(props) {
+	        super(props);
+	        this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
+	        this.onChangeHandle = this.onChangeHandle.bind(this);
 	    }
-
-	    _createClass(Base, [{
-	        key: "componentWillReceiveProps",
-	        value: function componentWillReceiveProps(newProps, newState) {
-	            if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value) {
-	                this.setState({ value: newProps.value });
-	            }
+	    componentWillReceiveProps(newProps, newState) {
+	        if (typeof newProps.value !== 'undefined' && newProps.value != this.state.value) {
+	            this.setState({ value: newProps.value });
 	        }
-	    }, {
-	        key: "onChangeHandle",
-	        value: function onChangeHandle(e) {
-	            var _this2 = this;
-
-	            var value = e.target.value;
-	            var target = e.target;
-
-	            this.setState({ value: value }, function () {
-	                _this2.props.onChange && _this2.props.onChange(target);
-	            });
-	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            var cls = (this.props.className || "") + ' x-input';
-	            var newProps = _extends({}, this.props);
-	            // delete newProps['className'];
-	            delete newProps['decimals'];
-	            delete newProps['onChange'];
-	            delete newProps['returnType'];
-	            delete newProps['negative'];
-	            delete newProps['beforeFormat'];
-	            delete newProps['batchUpdate'];
-	            delete newProps['sync'];
-	            // delete newProps['value'];
-	            var value = this.state.value;
-	            (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
-	            var multiple = newProps.multiple;
-
-	            var props = _extends({ onChange: this.onChangeHandle }, newProps, { value: value });
-	            var tag = multiple ? 'textarea' : 'input';
-	            // console.log(value,111,newProps)
-	            return _react2.default.createElement(tag, props);
-	            // return (
-	            //     <input className={cls} onChange={this.onChangeHandle} value={value}  />
-	            // )
-	        }
-	    }]);
-
-	    return Base;
-	}(_react.Component);
+	    }
+	    onChangeHandle(e) {
+	        let { value } = e.target;
+	        let { target } = e;
+	        this.setState({ value }, () => {
+	            this.props.onChange && this.props.onChange(target);
+	        });
+	    }
+	    render() {
+	        let cls = (this.props.className || "") + ' x-input';
+	        let newProps = { ...this.props };
+	        // delete newProps['className'];
+	        delete newProps['decimals'];
+	        delete newProps['onChange'];
+	        delete newProps['returnType'];
+	        delete newProps['negative'];
+	        delete newProps['beforeFormat'];
+	        delete newProps['batchUpdate'];
+	        delete newProps['sync'];
+	        // delete newProps['value'];
+	        let value = this.state.value;
+	        typeof value === 'object' ? value = JSON.stringify(value) : null;
+	        let { multiple } = newProps;
+	        let props = { onChange: this.onChangeHandle, ...newProps, value };
+	        let tag = multiple ? 'textarea' : 'input';
+	        // console.log(value,111,newProps)
+	        return React.createElement(tag, props)
+	        // return (
+	        //     <input className={cls} onChange={this.onChangeHandle} value={value}  />
+	        // )
+	    }
+	}
 
 	// export class NumericInput extends Component{
 	//     render(){
@@ -226,181 +208,143 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @desc: 格式化输入框
 	 * @param {boolean}isNaN 是否为非数字，默认为false时是数字
 	 * @return: 
-	 */
-
-	var InputContainer = function InputContainer(WrappedComponnet, reg) {
-	    var _class, _temp;
-
-	    var negative = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-	    var isNumber = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-	    return _temp = _class = function (_Component2) {
-	        _inherits(_class, _Component2);
-
-	        function _class(props) {
-	            _classCallCheck(this, _class);
-
-	            // this.decimals = props.decimals;
-	            var _this3 = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
-
-	            _this3.isNaN = isNumber;
-	            _this3.negative = typeof _this3.props.negative === 'undefined' ? negative : _this3.props.negative;
-	            var decimals = _this3.props.decimals;
-	            if (isNaN(decimals)) {
-	                decimals = 0;
-	            }
-	            _this3.state = { value: typeof props.value === 'undefined' ? "" : number_format(_this3.format(props.value, true), decimals) };
-	            _this3.onChangeHandle = _this3.onChangeHandle.bind(_this3);
-	            _this3.onBlur = _this3.onBlur.bind(_this3);
-	            return _this3;
-	        }
-
-	        _createClass(_class, [{
-	            key: "componentDidUpdate",
-	            value: function componentDidUpdate(prevProps) {
-	                if (prevProps.decimals !== this.props.decimals && prevProps.value != '' && this.props.value != "" && this.state.value != "") {
-	                    this.blurFormat(this.state.value);
-	                }
-	            }
-	        }, {
-	            key: "componentWillReceiveProps",
-	            value: function componentWillReceiveProps(newProps, newState) {
-	                var _this4 = this;
-
-	                if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined' && newProps.value !== null) {
-	                    if (!this.isNaN) {
-	                        var value = this.state.value === '' ? '' : Number(String(this.state.value).replace(/\,/gi, ''));
-	                        if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
-	                            // this.format(newProps.value)
-	                            this.blurFormat(newProps.value);
-	                        }
-	                        if (newProps.value === '' && this.state.value !== '') {
-	                            this.setState({ value: '' }, function () {
-	                                _this4.props.onChange && _this4.props.onChange(_this4.state.value);
-	                            });
-	                        }
-	                    } else {
-	                        this.format(newProps.value);
-	                    }
-	                    // this.setState({ value: newProps.value });
-	                }
-	            }
-	        }, {
-	            key: "format",
-	            value: function format(value, isinit) {
-	                var _this5 = this;
-
-	                if (this.props.beforeFormat) {
-	                    value = this.props.beforeFormat(value);
-	                }
-	                var istriggerChange = true;
-	                if (/^\-/.test(value) && this.negative) {
-	                    this.isnegative = true;
-	                } else {
-	                    this.isnegative = false;
-	                }
-	                value = String(value).replace(/-/gi, '');
-	                if (reg) {
-	                    var oldvalue = value;
-	                    (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? value = JSON.stringify(value) : null;
-	                    value = String(value).replace(/\,/g, '');
-	                    if (reg && value != '') {
-	                        var arr = value.split('.');
-	                        if (arr.length > 1) {
-	                            value = arr[0] + '.' + arr[1].substr(0, this.props.decimals);
-	                        }
-	                        if (this.props.decimals === 0) {
-	                            value = value.split('.')[0];
-	                        }
-	                        var res = value.match(reg);
-	                        value = res === null ? '' : res[0];
-	                    }
-	                    if (this.state && oldvalue == this.state.value && value == this.state.value) {
-	                        istriggerChange = false;
-	                    }
-	                }
-	                if (this.isnegative) {
-	                    value = '-' + value;
-	                }
-	                if (isinit) {
-	                    return value;
-	                } else {
-	                    this.setState({ value: value }, function () {
-	                        if (!_this5.isNaN && value != '') {
-	                            value = Number(String(value).replace(/\,/gi, ''));
-	                        }
-	                        _this5.props.returnType ? value = window[_this5.props.returnType](value) : String(value);
-	                        istriggerChange && _this5.props.onChange && _this5.props.onChange(value);
-	                    });
-	                }
-	            }
-	        }, {
-	            key: "onChangeHandle",
-	            value: function onChangeHandle(target) {
-	                var value = target.value;
-
-	                this.format(value, false, target);
-	            }
-	        }, {
-	            key: "onBlur",
-	            value: function onBlur(e) {
-	                // console.log(e)
-	                if (this.props.autoFormat) {
-	                    var value = e.target.value.replace(/\,/gi, '');
-	                    if (value === '-' && !this.isNaN) {
-	                        value = '';
-	                    }
-	                    this.blurFormat(value);
-	                }
-	                this.props.onBlur && this.props.onBlur.call(this, e);
-	            }
-	        }, {
-	            key: "blurFormat",
-	            value: function blurFormat(value) {
-	                var _this6 = this;
-
-	                if (value !== '' && !this.isNaN) {
-	                    value = number_format(value, this.props.decimals);
-	                }
-	                this.setState({ value: value }, function () {
-	                    if (!_this6.isNaN && value != '') {
-	                        value = Number(String(value).replace(/\,/gi, ''));
-	                    }
-	                    _this6.props.returnType ? value = window[_this6.props.returnType](value) : String(value);
-	                    _this6.props.onChange && _this6.props.onChange(value);
-	                });
-	            }
-	        }, {
-	            key: "render",
-	            value: function render() {
-	                var newProps = {
-	                    onChange: this.onChangeHandle,
-	                    value: this.state.value
-	                };
-	                var props = _extends({}, this.props, newProps);
-	                delete props.autoFormat;
-	                return _react2.default.createElement(WrappedComponnet, _extends({}, props, { onBlur: this.onBlur }));
-	            }
-	        }]);
-
-	        return _class;
-	    }(_react.Component), _class.defaultProps = {
+	 *
+	const InputContainer = (WrappedComponnet, reg, negative = false, isNumber = true) => class extends Component {
+	    isNaN = isNumber;
+	    static defaultProps = {
 	        autoFormat: true
-	    }, _class.propTypes = {
-	        decimals: _propTypes2.default.number
-	    }, _temp;
-	};
-	function number_format(number) {
-	    var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
+	    }
+	    static propTypes = {
+	        decimals: PropTypes.number
+	    }
+	    constructor(props) {
+	        super(props);
+	        // this.decimals = props.decimals;
+	        this.negative = typeof this.props.negative === 'undefined' ? negative : this.props.negative;
+	        let decimals = this.props.decimals;
+	        if (isNaN(decimals)) {
+	            decimals = 0;
+	        }
+	        this.state = { value: typeof props.value === 'undefined' ? "" : number_format(this.format(props.value, true), decimals) };
+	        this.onChangeHandle = this.onChangeHandle.bind(this);
+	        this.onBlur = this.onBlur.bind(this);
+	    }
+	    componentDidUpdate(prevProps) {
+	        if (prevProps.decimals !== this.props.decimals && prevProps.value != '' && this.props.value != "" && this.state.value != "") {
+	            this.blurFormat(this.state.value)
+	        }
+	    }
+	    componentWillReceiveProps(newProps, newState) {
+	        if (newProps.value !== this.state.value && typeof newProps.value !== 'undefined' && newProps.value !== null) {
+	            if (!this.isNaN) {
+	                let value = this.state.value === '' ? '' : Number(String(this.state.value).replace(/\,/gi, ''));
+	                if (Number(String(newProps.value).replace(/\,/gi, '')) !== value) {
+	                    // this.format(newProps.value)
+	                    this.blurFormat(newProps.value);
+	                }
+	                if (newProps.value === '' && this.state.value !== '') {
+	                    this.setState({ value: '' }, () => {
+	                        this.props.onChange && this.props.onChange(this.state.value)
+	                    })
+	                }
+	            } else {
+	                this.format(newProps.value)
+	            }
+	            // this.setState({ value: newProps.value });
+	        }
+	    }
+	    format(value, isinit) {
+	        if (this.props.beforeFormat) {
+	            value = this.props.beforeFormat(value);
+	        }
+	        let istriggerChange = true;
+	        if (/^\-/.test(value) && this.negative) {
+	            this.isnegative = true;
+	        } else {
+	            this.isnegative = false;
+	        }
+	        value = String(value).replace(/-/gi, '')
+	        if (reg) {
+	            let oldvalue = value;
+	            typeof value === 'object' ? value = JSON.stringify(value) : null;
+	            value = String(value).replace(/\,/g, '');
+	            if (reg && value != '') {
+	                let arr = value.split('.');
+	                if (arr.length > 1) {
+	                    value = arr[0] + '.' + arr[1].substr(0, this.props.decimals);
+	                }
+	                if (this.props.decimals === 0) {
+	                    value = value.split('.')[0];
+	                }
+	                let res = value.match(reg);
+	                value = res === null ? '' : res[0];
+	            }
+	            if (this.state && (oldvalue == this.state.value && value == this.state.value)) {
+	                istriggerChange = false;
+	            }
+	        }
+	        if (this.isnegative) {
+	            value = '-' + value;
+	        }
+	        if (isinit) {
+	            return value;
+	        } else {
+	            this.setState({ value }, () => {
+	                if (!this.isNaN && value != '') {
+	                    value = Number(String(value).replace(/\,/gi, ''));
+	                }
+	                this.props.returnType ? value = window[this.props.returnType](value) : String(value);
+	                istriggerChange && this.props.onChange && this.props.onChange(value);
+	            });
+	        }
+	    }
+	    onChangeHandle(target) {
+	        let { value } = target;
+	        this.format(value, false, target);
+	    }
+	    onBlur(e) {
+	        // console.log(e)
+	        if (this.props.autoFormat) {
+	            let value = e.target.value.replace(/\,/gi, '');
+	            if (value === '-' && !this.isNaN) {
+	                value = '';
+	            }
+	            this.blurFormat(value);
+	        }
+	        this.props.onBlur && this.props.onBlur.call(this, e);
+	    }
+	    blurFormat(value) {
+	        if (value !== '' && !this.isNaN) {
+	            value = number_format(value, this.props.decimals)
+	        }
+	        this.setState({ value }, () => {
+	            if (!this.isNaN && value != '') {
+	                value = Number(String(value).replace(/\,/gi, ''));
+	            }
+	            this.props.returnType ? value = window[this.props.returnType](value) : String(value);
+	            this.props.onChange && this.props.onChange(value);
+	        });
+	    }
+	    render() {
+	        const newProps = {
+	            onChange: this.onChangeHandle,
+	            value: this.state.value
+	        }
+	        const props = Object.assign({}, this.props, newProps);
+	        delete props.autoFormat;
+	        return <WrappedComponnet {...props} onBlur={this.onBlur} />
+	    }
+	}
+	function number_format(number, n = 0) {
 	    if (number === '') return '';
 	    if (!isNaN(n)) {
-	        n = Number(n);
+	        n = Number(n)
 	        number = String(number);
-	        var num = number;
-	        var arr = number.split('.');
-	        var i = (arr[0] + '').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
+	        let num = number;
+	        let arr = number.split('.');
+	        let i = (arr[0] + '').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
 	        if (number.indexOf('.') > -1 && n != 0) {
-	            var de = arr[1];
+	            let de = arr[1]
 	            num = i + '.' + (de + Array(n + 1).join(0)).slice(0, n);
 	        } else {
 	            num = i + '.' + Array(n + 1).join(0).slice(0, n);
@@ -408,7 +352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (n == 0) {
 	            num = i;
 	        }
-	        return num;
+	        return num
 	    }
 	    return number;
 	}
@@ -421,70 +365,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	//         });
 	//     }
 	// }
-
-	var Input = function (_React$Component) {
-	    _inherits(Input, _React$Component);
-
-	    function Input(props) {
-	        _classCallCheck(this, Input);
-
-	        var _this7 = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
-
-	        _this7.onChangeHandle = function (e) {
-	            var value = e.target.value;
-
-	            _this7.setState({ value: value }, function () {
-	                if (_this7.props.changeEvent !== 'blur') {
-	                    _this7.props.onChange && _this7.props.onChange.call(_this7, value);
-	                }
-	            });
-	        };
-
-	        _this7.onBlurHandle = function (e) {
-	            var value = e.target.value;
-
-	            _this7.props.onChange && _this7.props.onChange.call(_this7, value);
-	        };
-
-	        _this7.state = { value: typeof props.value === 'undefined' ? "" : props.value };
-	        return _this7;
+	class Input extends React.Component {
+	    constructor(props) {
+	        super(props);
+	        this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
 	    }
-
-	    _createClass(Input, [{
-	        key: "componentWillReceiveProps",
-	        value: function componentWillReceiveProps(newProps) {
-	            if (newProps.value != this.props.value) {
-	                this.setState({ value: newProps.value });
+	    onChangeHandle = (e) => {
+	        let { value } = e.target;
+	        this.setState({ value }, () => {
+	            if (this.props.changeEvent !== 'blur') {
+	                this.props.onChange && this.props.onChange.call(this, value);
 	            }
+	        })
+	    }
+	    componentWillReceiveProps(newProps) {
+	        if (newProps.value != this.props.value) {
+	            this.setState({ value: newProps.value });
 	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            var _props = this.props,
-	                className = _props.className,
-	                _props$type = _props.type,
-	                type = _props$type === undefined ? 'text' : _props$type,
-	                style = _props.style;
-
-	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
-	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
-	            if (type === 'text') {
-	                return _react2.default.createElement("div", { className: "x-input-container" }, _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })));
-	            } else {
-	                return _react2.default.createElement("div", { className: "x-input-container" }, _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })));
-	            }
+	    }
+	    onBlurHandle = (e) => {
+	        let { value } = e.target;
+	        this.props.onChange && this.props.onChange.call(this, value);
+	    }
+	    render() {
+	       let {className,type='text',style} = this.props; 
+	        let cls = (className || "") + (type==='text'?' x-input':' x-textarea');
+	        let props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle ,style};
+	        if(type ==='text'){
+	            return <div className="x-input-container"><input {...props} type="text" value={this.state.value} className={cls} /></div>
+	        }else{
+	            return <div className="x-input-container"><textarea {...props} value={this.state.value} className={cls}></textarea></div>
 	        }
-	    }]);
-
-	    return Input;
-	}(_react2.default.Component);
-
+	    }
+	}
 	var NumericInput = InputContainer(Base, /-?(0|[1-9][0-9]*)(\.[0-9]*)?/, true, false); //数字,含小数
 	var InterInput = InputContainer(Base, /-?(0|[1-9][0-9]*)?/, true, false); //整数
 	var PosInterInput = InputContainer(Base, /(0|[1-9][0-9]*)/, false, false); //正整数
 	var LetterInput = InputContainer(Base, /[a-zA-Z]+/); //字母
 
-	var setCaretPosition = function setCaretPosition(tObj, sPos) {
+	const setCaretPosition = (tObj, sPos) => {
 	    if (tObj.setSelectionRange) {
 	        setTimeout(function () {
 	            tObj.setSelectionRange(sPos, sPos);
@@ -495,12 +414,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rng.move('character', sPos);
 	        rng.select();
 	    }
-	};
+	}
 	//获取当前光标位置
-	var getPosition = function getPosition(element) {
-	    var cursorPos = 0;
-	    if (document.selection) {
-	        //IE
+	const getPosition = function (element) {
+	    let cursorPos = 0;
+	    if (document.selection) {//IE
 	        var selectRange = document.selection.createRange();
 	        selectRange.moveStart('character', -element.value.length);
 	        cursorPos = selectRange.text.length;
@@ -508,125 +426,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	        cursorPos = element.selectionStart;
 	    }
 	    return cursorPos;
-	};
+	}
 	//getDisplayName
 	function getDisplayName(WrappedComponent) {
-	    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+	    return WrappedComponent.displayName ||
+	        WrappedComponent.name ||
+	        'Component'
 	}
-	var FormatContainer = function FormatContainer(WrappedComponnet, _format) {
-	    var _class2, _temp2;
-
-	    return _temp2 = _class2 = function (_NumericInput) {
-	        _inherits(_class2, _NumericInput);
-
-	        function _class2() {
-	            _classCallCheck(this, _class2);
-
-	            return _possibleConstructorReturn(this, (_class2.__proto__ || Object.getPrototypeOf(_class2)).apply(this, arguments));
+	const FormatContainer = (WrappedComponnet, format) => class extends NumericInput {
+	    static displayName = `HOC(${getDisplayName(WrappedComponnet)})`
+	    onChangeHandle(target) {
+	        let { value } = target;
+	        // if(this.negative){
+	        //     if(value =='-' ){
+	        //         return value;
+	        //     }
+	        // }else{
+	        //     return ''
+	        // }
+	        if (/^\-/.test(value)) {
+	            //如果负号开始
+	            value = value.replace(/\-/i, '');
+	            this.negative ? this.isnegative = true : null;
+	        } else {
+	            this.isnegative = false;
 	        }
-
-	        _createClass(_class2, [{
-	            key: "onChangeHandle",
-	            value: function onChangeHandle(target) {
-	                var value = target.value;
-	                // if(this.negative){
-	                //     if(value =='-' ){
-	                //         return value;
-	                //     }
-	                // }else{
-	                //     return ''
-	                // }
-
-	                if (/^\-/.test(value)) {
-	                    //如果负号开始
-	                    value = value.replace(/\-/i, '');
-	                    this.negative ? this.isnegative = true : null;
-	                } else {
-	                    this.isnegative = false;
-	                }
-	                // if(value!="" || this.isnegative){
-	                this.format(value, false, target);
-	                // }
-	                // else{
-	                //     this.props.onChange && this.props.onChange(value);
-	                // }
+	        // if(value!="" || this.isnegative){
+	        this.format(value, false, target);
+	        // }
+	        // else{
+	        //     this.props.onChange && this.props.onChange(value);
+	        // }
+	    }
+	    format(value, isinit, target) {
+	        if (this.props.beforeFormat) {
+	            value = this.props.beforeFormat(value);
+	        }
+	        let oldvalue = value;
+	        value = format(String(value).replace(/\,/g, ''), this.props, this.state ? this.state.value : '', this.negative);
+	        let istriggerChange = true;
+	        if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
+	            istriggerChange = false;
+	        }
+	        if (!isinit) {
+	            //计算出新值和旧值之间相差几个千分位
+	            let ql = value.split(',').length - String(this.state.value).split(',').length;
+	            let rightpos = 0;
+	            if (target) {
+	                let pos = getPosition(target);
+	                let len = target.value.length;
+	                rightpos = len - pos;//算出从右计算的光标位置
 	            }
-	        }, {
-	            key: "format",
-	            value: function format(value, isinit, target) {
-	                var _this9 = this;
-
-	                if (this.props.beforeFormat) {
-	                    value = this.props.beforeFormat(value);
-	                }
-	                var oldvalue = value;
-	                value = _format(String(value).replace(/\,/g, ''), this.props, this.state ? this.state.value : '', this.negative);
-	                var istriggerChange = true;
-	                if (this.state && (oldvalue == this.state.value || value == this.state.value)) {
-	                    istriggerChange = false;
-	                }
-	                if (!isinit) {
-	                    //计算出新值和旧值之间相差几个千分位
-	                    var ql = value.split(',').length - String(this.state.value).split(',').length;
-	                    var rightpos = 0;
-	                    if (target) {
-	                        var pos = getPosition(target);
-	                        var len = target.value.length;
-	                        rightpos = len - pos; //算出从右计算的光标位置
-	                    }
-	                    // console.log('right:',rightpos)
-	                    if (this.isnegative && String(value).indexOf('-') != 0) {
-	                        value = '-' + value;
-	                    }
-	                    this.setState({ value: value }, function () {
-	                        if (target) {
-	                            var tmp = String(_this9.state.value).length - rightpos;
-	                            // console.log(tmp,this.state.value.length,rightpos)
-	                            // console.log(tmp)
-	                            setCaretPosition(target, tmp);
-	                        }
-	                        if (!_this9.isNaN && value != '' && value != "-") {
-	                            value = Number(value.replace(/\,/gi, ''));
-	                        } else {
-	                            value = value.replace(/\,/gi, '');
-	                        }
-	                        _this9.props.returnType ? value = window[_this9.props.returnType](value) : String(value);
-	                        if (!_this9.isNaN && value === '-') {
-	                            return;
-	                        }
-	                        istriggerChange && _this9.props.onChange && _this9.props.onChange(value);
-	                    });
-	                } else {
-	                    return value;
-	                }
+	            // console.log('right:',rightpos)
+	            if (this.isnegative && String(value).indexOf('-') != 0) {
+	                value = '-' + value;
 	            }
-	        }]);
+	            this.setState({ value }, () => {
+	                if (target) {
+	                    let tmp = String(this.state.value).length - rightpos
+	                    // console.log(tmp,this.state.value.length,rightpos)
+	                    // console.log(tmp)
+	                    setCaretPosition(target, tmp);
+	                }
+	                if (!this.isNaN && value != '' && value != "-") {
+	                    value = Number(value.replace(/\,/gi, ''));
+	                } else {
+	                    value = value.replace(/\,/gi, '');
+	                }
+	                this.props.returnType ? value = window[this.props.returnType](value) : String(value);
+	                if (!this.isNaN && value === '-') {
+	                    return;
+	                }
+	                istriggerChange && this.props.onChange && this.props.onChange(value);
+	            })
+	        } else {
+	            return value;
+	        }
+	    }
+	}
 
-	        return _class2;
-	    }(NumericInput), _class2.displayName = "HOC(" + getDisplayName(WrappedComponnet) + ")", _temp2;
-	};
-
-	var formatThousandthNumber = function formatThousandthNumber(num, _ref, ov) {
-	    var _ref$decimals = _ref.decimals,
-	        decimals = _ref$decimals === undefined ? 0 : _ref$decimals;
-
+	const formatThousandthNumber = function (num, { decimals = 0 }, ov) {
 	    // number = number.replace(/\,/g,'');
 	    ov = String(ov).replace(/\,/g, '');
 	    num = String(num).replace(/\,/g, '');
-	    var isnegative = false;
+	    let isnegative = false;
 	    if (num.indexOf('-') == 0) {
 	        num = num.replace(/\-/gi, '');
 	        isnegative = true;
 	    }
-	    var arr = num.split('.');
-	    var number = arr[0];
+	    let arr = num.split('.');
+	    let number = arr[0]
 	    // let decimals  = arr.length>1 ?arr[1].length:0;
-	    if ((typeof number === "undefined" ? "undefined" : _typeof(number)) == undefined) return '';
+	    if (typeof (number) == undefined) return '';
 	    if (!number && number !== 0) {
 	        return '';
 	    } else {
 	        number = (number + '').replace(/[^0-9+-Ee.]/g, '');
-	        var n = !isFinite(+number) ? ov : +number,
+	        let n = !isFinite(+number) ? ov : +number,
 	            prec = 0,
 	            sep = ',',
 	            dec = '.',
@@ -641,7 +537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            s[1] = s[1] || '';
 	            s[1] += new Array(prec - s[1].length + 1).join('0');
 	        }
-	        var str = s.join(dec);
+	        let str = s.join(dec);
 	        if (arr.length > 1) {
 	            str += '.' + arr[1].substr(0, decimals).replace(/[^0-9]/ig, "");
 	        }
@@ -653,8 +549,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return str;
 	    }
-	};
-	var ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
+	}
+	const ThousandInput = FormatContainer(NumericInput, formatThousandthNumber);
 	Input.Numeric = NumericInput;
 	Input.Inter = InterInput;
 	Input.PosInter = PosInterInput;
@@ -662,16 +558,91 @@ return /******/ (function(modules) { // webpackBootstrap
 	Input.Thousand = ThousandInput;
 	Input.Base = Base;
 	Input.FormatContainer = FormatContainer;
-	exports.Base = Base;
-	exports.formatThousandthNumber = formatThousandthNumber;
-	exports.FormatContainer = FormatContainer;
-	exports.Input = Input;
-	exports.InputContainer = InputContainer;
-	exports.NumericInput = NumericInput;
-	exports.InterInput = InterInput;
-	exports.PosInterInput = PosInterInput;
-	exports.LetterInput = LetterInput;
-	exports.ThousandInput = ThousandInput;
+
+	export { Base, formatThousandthNumber, FormatContainer, Input, InputContainer, NumericInput, InterInput, PosInterInput, LetterInput, ThousandInput };
+	*/
+
+	var Input = function (_React$Component) {
+	    _inherits(Input, _React$Component);
+
+	    function Input(props) {
+	        _classCallCheck(this, Input);
+
+	        var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
+
+	        _this.onChangeHandle = function (e) {
+	            var value = e.target.value;
+
+	            _this.setState({ value: value }, function () {
+	                if (_this.props.changeEvent !== 'blur') {
+	                    _this.props.onChange && _this.props.onChange.call(_this, value);
+	                }
+	            });
+	        };
+
+	        _this.onBlurHandle = function (e) {
+	            var value = e.target.value;
+
+	            _this.props.onChange && _this.props.onChange.call(_this, value);
+	        };
+
+	        _this.state = { value: typeof props.value === 'undefined' ? "" : props.value };
+	        return _this;
+	    }
+
+	    _createClass(Input, [{
+	        key: "componentWillReceiveProps",
+	        value: function componentWillReceiveProps(newProps) {
+	            if (newProps.value != this.props.value) {
+	                this.setState({ value: newProps.value });
+	            }
+	        }
+	    }, {
+	        key: "renderAddon",
+
+	        /**
+	         * @description: 渲染两头组件
+	         * @param {*} position
+	         * @return {*}
+	         */
+	        value: function renderAddon(position, addon) {
+	            if (typeof addon !== 'undefined') {
+	                if ((typeof addon === "undefined" ? "undefined" : _typeof(addon)) === 'object') {
+	                    //组件
+	                    return _react2.default.createElement("div", { className: "x-input-addon-" + position }, addon);
+	                } else {
+	                    //字符串或数值
+	                    return _react2.default.createElement("div", { className: "x-input-addon-" + position }, addon);
+	                }
+	            } else {
+	                return null;
+	            }
+	        }
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            var _props = this.props,
+	                className = _props.className,
+	                _props$type = _props.type,
+	                type = _props$type === undefined ? 'text' : _props$type,
+	                style = _props.style,
+	                addonBefore = _props.addonBefore,
+	                addonAfter = _props.addonAfter;
+
+	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
+	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
+	            if (type === 'text') {
+	                return _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	            } else {
+	                return _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	            }
+	        }
+	    }]);
+
+	    return Input;
+	}(_react2.default.Component);
+
+	exports.default = Input;
 
 /***/ }),
 /* 2 */
@@ -1878,7 +1849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @Descripttion: 数字输入框
 	   * @Author: tianxiangbing
 	   * @Date: 2020-04-16 18:45:09
-	   * @LastEditTime: 2021-06-07 11:57:00
+	   * @LastEditTime: 2021-06-21 09:50:17
 	   * @github: https://github.com/tianxiangbing
 	   */
 
@@ -2012,6 +1983,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // this.node.focus();
 	        };
 
+	        _this2.addonValue = {
+	            before: undefined,
+	            after: undefined
+	        };
 	        var value = props.value,
 	            decimals = props.decimals,
 	            defaultValue = props.defaultValue;
@@ -2107,6 +2082,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            if (value === '-') {
 	                newValue = '';
+	            }
+	            if (typeof this.addonValue['before'] !== 'undefined' && newValue !== '') {
+	                //前后补值
+	                newValue = this.addonValue['before'] + newValue;
+	            }
+	            if (typeof this.addonValue['after'] !== 'undefined' && newValue !== '') {
+	                //前后补值
+	                newValue = newValue + this.addonValue['after'];
 	            }
 	            return newValue;
 	        }
@@ -2418,6 +2401,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var displayValue = this.state.displayValue;
 	            var _props6 = this.props,
+	                addonBefore = _props6.addonBefore,
+	                addonAfter = _props6.addonAfter,
 	                onClick = _props6.onClick,
 	                disabled = _props6.disabled,
 	                onFocus = _props6.onFocus,
@@ -2438,7 +2423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    spinnerCls += ' disabled';
 	                }
 	                //打开微调器
-	                return _react2.default.createElement('div', { className: 'x-input-container' }, _react2.default.createElement('input', {
+	                return _react2.default.createElement('div', { className: 'x-input-container' }, this.renderAddon('before', addonBefore), _react2.default.createElement('input', {
 	                    ref: function ref(_ref) {
 	                        return _this8.node = _ref;
 	                    },
@@ -2460,9 +2445,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    placeholder: placeholder,
 	                    autoFocus: autoFocus,
 	                    style: style
-	                }), _react2.default.createElement('div', { className: spinnerCls }, _react2.default.createElement('span', { className: 'x-input-step-up', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'down') }, _react2.default.createElement('i', null))));
+	                }), _react2.default.createElement('div', { className: spinnerCls }, _react2.default.createElement('span', { className: 'x-input-step-up', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'up') }, _react2.default.createElement('i', null)), _react2.default.createElement('span', { className: 'x-input-step-down', onMouseUp: this.stop.bind(this), onMouseDown: this.start.bind(this, 'down') }, _react2.default.createElement('i', null))), this.renderAddon('after', addonAfter));
 	            } else {
-	                return _react2.default.createElement('div', { className: 'x-input-container' }, _react2.default.createElement('input', {
+	                return _react2.default.createElement('div', { className: 'x-input-container' }, this.renderAddon('before', addonBefore), _react2.default.createElement('input', {
 	                    ref: function ref(_ref2) {
 	                        return _this8.node = _ref2;
 	                    },
@@ -2484,7 +2469,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    placeholder: placeholder,
 	                    autoFocus: autoFocus,
 	                    style: style
-	                }));
+	                }), this.renderAddon('after', addonAfter));
+	            }
+	        }
+	    }, {
+	        key: 'renderAddon',
+
+	        /**
+	         * @description: 渲染两头组件
+	         * @param {*} position
+	         * @return {*}
+	         */
+	        value: function renderAddon(position, addon) {
+	            if (typeof addon !== 'undefined') {
+	                if ((typeof addon === 'undefined' ? 'undefined' : _typeof(addon)) === 'object') {
+	                    //组件
+	                    return _react2.default.createElement('div', { className: "x-input-addon-" + position }, addon);
+	                } else {
+	                    //字符串或数值
+	                    return _react2.default.createElement('div', { className: "x-input-addon-" + position }, addon);
+	                }
+	            } else {
+	                return null;
 	            }
 	        }
 	    }, {
@@ -2496,13 +2502,44 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return NumberInput;
 	}(_react2.default.PureComponent);
+	/*
+	class Addon extends React.Component {
+	    constructor(props) {
+	        super(props);
+	        this.ref = React.createRef();
+	    }
+	    addonValue = {
+	        before: undefined,
+	        after: undefined
+	    };
+	    componentDidMount() {
+	        let { position } = this.props;
+	        this.addonValue[position] = this.ref.value
+	        this.props.onChange && this.props.onChange(this.addonValue);
+	    }
+	    render() {
+	        let { addon, position } = this.props;
+	        let com = React.createElement(addon.type, {
+	            ...addon.props, onChange: e => {
+	                let value = e;
+	                if (typeof e === 'object') {
+	                    value = e.target.value;
+	                }
+	                this.addonValue[position] = value;
+	                addon.props.onChange && addon.props.onChange(e);
+	            },
+	            ref: ref => this.ref = ref
+	        });
+	        return com;
+	    }
+	}*/
 
 	NumberInput.displayName = "NumberInput";
 	NumberInput.propTypes = {
 	    onChange: _propTypes2.default.func,
 	    value: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
 	    returnType: _propTypes2.default.string,
-	    decimals: _propTypes2.default.number,
+	    decimals: _propTypes2.default.arrayOf([_propTypes2.default.number, _propTypes2.default.string]),
 	    isFormat: _propTypes2.default.bool, //是否格式化
 	    formatEvent: _propTypes2.default.string, //格式化的事件
 	    negative: _propTypes2.default.bool, //是否支持负数

@@ -2,12 +2,12 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2019-09-06 17:20:04
- * @LastEditTime: 2021-05-13 16:35:07
+ * @LastEditTime: 2021-06-21 09:55:13
  * @github: https://github.com/tianxiangbing
  */
 import { shallow } from 'enzyme';
 import React from 'react';
-import { Input } from '../components/Input';
+import  Input  from '../components/Input';
 import  sinon from 'sinon';
 const setup = ({ ...props }) => {
     const wrapper = shallow(<Input {...props} />);

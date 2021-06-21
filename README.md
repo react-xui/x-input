@@ -2,7 +2,7 @@
  * @Descripttion: 
  * @Author: tianxiangbing
  * @Date: 2018-11-27 18:08:06
- * @LastEditTime: 2021-05-13 15:38:14
+ * @LastEditTime: 2021-06-21 09:18:43
  * @github: https://github.com/tianxiangbing
  -->
 # x-input
@@ -48,6 +48,10 @@ import { Input,NumberInput } from 'jsx-input';
 最小值,默认MIN_SAFE_NUMBER
 ## stepDecimals  [Number]
 精度步数，如果是设置4，则每次调整步数为0.0001
+## addonBefore
+前置标签
+## addonAfter
+后置标签
 ### 关于作者
 [https://github.com/tianxiangbing](https://github.com/tianxiangbing)
 

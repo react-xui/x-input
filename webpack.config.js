@@ -1,3 +1,11 @@
+/*
+ * @Author: 田想兵
+ * @Date: 2018-11-27 18:08:06
+ * @LastEditTime: 2021-06-18 17:37:33
+ * @github: https://github.com/tianxiangbing
+ * @Contact: 55342775@qq.com
+ * @Desc: 文件描述
+ */
 var fs = require("fs");
 var path = require("path");
 var webpack = require("webpack");
@@ -50,7 +58,7 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /(node_modules|bower_components)/,
-        loader: extractCSS.extract("style-loader", "css-loader?sourceMap","less-loader")
+        loader: extractCSS.extract("style-loader", "css-loader?sourceMap!less-loader")
       },
       {
         test: /\.css$/,

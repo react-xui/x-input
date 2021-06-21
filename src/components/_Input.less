@@ -1,12 +1,11 @@
 .x-input,.x-textarea{
     background-color:#ffffff;
-    border:1px solid #dcdfe6;
-    border-radius: 4px;
     padding:0 14px;
     height: 30px;
     line-height: 30px;
     outline: none;
     width:100%;
+    border:none;
 }
 .x-textarea{
     height: 60px;
@@ -14,10 +13,38 @@
 }
 .x-input-container{
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border:1px solid #dcdfe6;
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 12px;
+}
+.x-input-container .x-input-addon-before,.x-input-container .x-input-addon-after{
+    background-color: #fafafa;
+    padding:0 5px;
+    height: 30px;
+    line-height: 30px;
+    border-right:1px solid #dcdfe6;
+}
+.x-input-container .x-input-addon-after{
+    border:none;
+    border-left:1px solid #dcdfe6;
+    input,select{
+        height: 100%;
+        border: none;
+        background-color: inherit;
+        outline: none;
+        -webkit-appearance:none;
+        -moz-appearance:none;
+        appearance:none; /*去掉下拉箭头*/
+        &::-ms-expand { display: none; }
+    }
 }
 .x-input-container input{
-    padding-right: 16px;
+    padding-right: 10px;
     outline: none;
 }
 .x-input-step{
