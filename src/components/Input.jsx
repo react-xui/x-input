@@ -461,9 +461,9 @@ export default class Input extends React.Component {
         }
     }
     render() {
-        let { className, type = 'text', style, addonBefore, addonAfter } = this.props;
+        let { className, type = 'text', style, addonBefore, addonAfter,placeholder } = this.props;
         let cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
-        let props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style };
+        let props = { placeholder, onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style };
         // if (type === 'text') {
         //     return <div className="x-input-container">
         //         {this.renderAddon('before', addonBefore)}

@@ -631,10 +631,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                type = _props$type === undefined ? 'text' : _props$type,
 	                style = _props.style,
 	                addonBefore = _props.addonBefore,
-	                addonAfter = _props.addonAfter;
+	                addonAfter = _props.addonAfter,
+	                placeholder = _props.placeholder;
 
 	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
-	            var props = { onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
+	            var props = { placeholder: placeholder, onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
 	            // if (type === 'text') {
 	            //     return <div className="x-input-container">
 	            //         {this.renderAddon('before', addonBefore)}
