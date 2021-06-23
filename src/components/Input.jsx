@@ -485,6 +485,7 @@ export default class Input extends React.Component {
                     <input {...props} type="text" value={this.state.value} className={cls} />
                     {this.renderAddon('after', addonAfter)}
                 </div>
+                break;
             }
             case 'textarea': {
                 dom = <div className="x-input-container">

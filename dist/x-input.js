@@ -653,6 +653,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                case 'text':
 	                    {
 	                        dom = _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                        break;
 	                    }
 	                case 'textarea':
 	                    {
