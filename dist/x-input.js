@@ -626,16 +626,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "render",
 	        value: function render() {
 	            var _props = this.props,
-	                className = _props.className,
+	                _props$className = _props.className,
+	                className = _props$className === undefined ? '' : _props$className,
 	                _props$type = _props.type,
 	                type = _props$type === undefined ? 'text' : _props$type,
 	                style = _props.style,
 	                addonBefore = _props.addonBefore,
 	                addonAfter = _props.addonAfter,
-	                placeholder = _props.placeholder;
+	                placeholder = _props.placeholder,
+	                onMouseEnter = _props.onMouseEnter,
+	                onMouseLeave = _props.onMouseLeave,
+	                onFocus = _props.onFocus,
+	                onClick = _props.onClick;
 
-	            var cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
-	            var props = { placeholder: placeholder, onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style };
+	            var cls = type === 'textarea' ? ' x-textarea' : ' x-input';
+
+	            var props = { type: type, placeholder: placeholder, onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style: style, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave, onFocus: onFocus, onClick: onClick };
 	            // if (type === 'text') {
 	            //     return <div className="x-input-container">
 	            //         {this.renderAddon('before', addonBefore)}
@@ -653,12 +659,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            switch (type) {
 	                case 'text':
 	                    {
-	                        dom = _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                        dom = _react2.default.createElement("div", { className: className + " x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
 	                        break;
 	                    }
 	                case 'textarea':
 	                    {
-	                        dom = _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                        dom = _react2.default.createElement("div", { className: className + " x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("textarea", _extends({}, props, { value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
 	                        break;
 	                    }
 	                case 'number':
@@ -668,7 +674,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                default:
 	                    {
-	                        return _react2.default.createElement("div", { className: "x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { type: "text", value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
+	                        return _react2.default.createElement("div", { className: className + " x-input-container" }, this.renderAddon('before', addonBefore), _react2.default.createElement("input", _extends({}, props, { value: this.state.value, className: cls })), this.renderAddon('after', addonAfter));
 	                        break;
 	                    }
 	            }

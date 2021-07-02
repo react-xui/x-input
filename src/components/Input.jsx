@@ -461,9 +461,10 @@ export default class Input extends React.Component {
         }
     }
     render() {
-        let { className, type = 'text', style, addonBefore, addonAfter,placeholder } = this.props;
-        let cls = (className || "") + (type === 'text' ? ' x-input' : ' x-textarea');
-        let props = { placeholder, onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style };
+        let { className = '', type = 'text', style, addonBefore, addonAfter, placeholder, onMouseEnter, onMouseLeave, onFocus, onClick } = this.props;
+        let cls = (type === 'textarea' ? ' x-textarea' : ' x-input');
+
+        let props = { type, placeholder, onChange: this.onChangeHandle, onBlur: this.onBlurHandle, style, onMouseEnter, onMouseLeave, onFocus, onClick };
         // if (type === 'text') {
         //     return <div className="x-input-container">
         //         {this.renderAddon('before', addonBefore)}
@@ -480,7 +481,7 @@ export default class Input extends React.Component {
         let dom = null;
         switch (type) {
             case 'text': {
-                dom = <div className="x-input-container">
+                dom = <div className={className + " x-input-container"}>
                     {this.renderAddon('before', addonBefore)}
                     <input {...props} type="text" value={this.state.value} className={cls} />
                     {this.renderAddon('after', addonAfter)}
@@ -488,7 +489,7 @@ export default class Input extends React.Component {
                 break;
             }
             case 'textarea': {
-                dom = <div className="x-input-container">
+                dom = <div className={className + " x-input-container"}>
                     {this.renderAddon('before', addonBefore)}
                     <textarea {...props} value={this.state.value} className={cls}></textarea>
                     {this.renderAddon('after', addonAfter)}
@@ -500,9 +501,9 @@ export default class Input extends React.Component {
                 break;
             }
             default: {
-                return <div className="x-input-container">
+                return <div className={className + " x-input-container"}>
                     {this.renderAddon('before', addonBefore)}
-                    <input {...props} type="text" value={this.state.value} className={cls} />
+                    <input {...props} value={this.state.value} className={cls} />
                     {this.renderAddon('after', addonAfter)}
                 </div>
                 break;
